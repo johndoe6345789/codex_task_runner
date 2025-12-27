@@ -18,7 +18,7 @@ def parse_tasks(obj: Json) -> list[TaskRef]:
 
 def parse_item(item: Json) -> TaskRef:
     ts = item.get("task_status_display") or {}
-    repo = str(ts.get("environment_label") or "").strip()
+    repo = str(ts.get("environment_label") or "johndoe6345789/metabuilder").strip()
     base = str(ts.get("branch_name") or "main").strip()
     prs = tuple(_extract_pr_numbers(item.get("pull_requests")))
     return TaskRef(
