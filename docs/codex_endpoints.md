@@ -1,6 +1,54 @@
 # Codex Backend Endpoints (observed)
 
-The entries below are best-effort documentation based on client fetch traces and the project's polling scripts. Treat these as observational notes; exact field names may vary in the live API.
+The entries below are best-effort documentation based on client fetch traces, Playwright network interception, and the project's polling scripts. Treat these as observational notes; exact field names may vary in the live API.
+
+**Base URL:** `https://chatgpt.com/backend-api`
+
+## Discovered Endpoints Summary
+
+### WHAM (Codex) Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/wham/tasks/list?limit=N&task_filter=current\|archived\|all` | List tasks |
+| GET | `/wham/tasks/{task_id}` | Task detail |
+| GET | `/wham/tasks/{task_id}/turns` | List turns for a task |
+| GET | `/wham/tasks/{task_id}/turns/{turn_id}/pr` | Get PR status for a turn |
+| POST | `/wham/tasks/{task_id}/turns/{turn_id}/pr` | Create PR for a turn |
+| GET | `/wham/usage` | Usage stats |
+| GET | `/wham/environments` | List environments |
+| GET | `/wham/environments/recent` | Recently used environments |
+| GET | `/wham/settings/user` | User settings |
+| GET | `/wham/github/list-repositories?page=N&per_page=N` | List connected repos |
+| GET | `/wham/github/repositories/{repo_id}` | Repository details |
+
+### Account/User Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/me` | Current user info |
+| GET | `/accounts/check/v4-2023-04-27` | Account status |
+| GET | `/accounts/mfa_info` | MFA settings |
+| GET | `/settings/user` | User settings |
+| GET | `/user_granular_consent` | Consent settings |
+| GET | `/subscriptions?account_id=...` | Subscription info |
+
+### Connector/Integration Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/aip/connectors/list_accessible` | List available connectors |
+| POST | `/aip/connectors/links/list_accessible` | List connector links |
+| GET | `/aip/connectors/oauth_clients?service=github` | OAuth clients |
+| GET | `/aip/connectors/{connector_id}/mfa_requirement` | MFA requirements |
+| GET | `/connectors/check?connector_names=...` | Check connector status |
+
+### Other Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/amphora/notifications?limit=N` | Notifications |
+| GET | `/celsius/ws/user` | WebSocket user info |
+| GET | `/checkout_pricing_config/countries` | Pricing countries |
+| GET | `/checkout_pricing_config/configs/{country}` | Country-specific pricing |
+
+---
 
 ## API Naming Conventions
 
