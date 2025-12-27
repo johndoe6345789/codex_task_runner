@@ -1,6 +1,0 @@
-https://chatgpt.com/codex/
-
-https://chatgpt.com/backend-api/wham/tasks/list?limit=19&task_filter=current
-
-https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab19e54833183593529fd574f91
-
