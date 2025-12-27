@@ -63,10 +63,14 @@
     },
     {
       "name": "yolo",
-      "help": "YOLO: fetch all tasks and merge them (skip checks, admin, auto)",
+      "help": "YOLO: create PRs and merge tasks (with safeguards)",
       "handler": "codex_task_runner.handlers.yolo",
       "args": [
         {"flags": ["-v", "--verbose"], "kwargs": {"action": "store_true", "help": "Verbose logging"}},
+        {"flags": ["--limit"], "kwargs": {"type": "int", "default": 5, "help": "Max tasks to process (default: 5)"}},
+        {"flags": ["--repo"], "kwargs": {"default": "johndoe6345789/metabuilder", "help": "Only process tasks for this repo"}},
+        {"flags": ["--no-confirm"], "kwargs": {"action": "store_true", "help": "Skip confirmation prompt"}},
+        {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Show what would happen without doing it"}},
         {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
       ]
     }
