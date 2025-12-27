@@ -1,0 +1,16 @@
+2025-12-27 22:55:08 [DEBUG] HTTP PING http://example.com
+2025-12-27 22:55:08 [DEBUG] HTTP 200 0 bytes
+2025-12-27 22:55:08 [DEBUG] HTTP PING http://example.com
+2025-12-27 22:55:08 [ERROR] HTTP PING failed: Connection error
+2025-12-27 22:55:08 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 22:55:08 [DEBUG] HTTP <MagicMock name='mock.get().status_code' id='4417648496'> 0 bytes
+2025-12-27 22:55:08 [DEBUG] HTTP JSON keys: ['key']
+2025-12-27 22:55:08 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 22:55:08 [ERROR] HTTP GET failed: Network error
+2025-12-27 22:55:08 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 22:55:08 [DEBUG] HTTP body: {'input': 'test'}
+2025-12-27 22:55:08 [DEBUG] HTTP <MagicMock name='mock.post().status_code' id='4419700784'> 0 bytes
+2025-12-27 22:55:08 [DEBUG] HTTP JSON keys: ['result']
+2025-12-27 22:55:08 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 22:55:08 [DEBUG] HTTP body: None
+2025-12-27 22:55:08 [ERROR] HTTP POST failed: Network error
