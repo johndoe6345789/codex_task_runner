@@ -1,6 +1,6 @@
 from typing import Any
 
-from ..codex.codex_cloud import ping_url
+from ..codex.codex_ping import ping_url
 
 
 def handle(args: Any, session) -> dict:

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..types import TaskRef
-from .codex_parse_prs import extract_pr_numbers
+from .extract_pr_numbers import extract_pr_numbers
 
 
 def parse_item(item: Any) -> TaskRef:

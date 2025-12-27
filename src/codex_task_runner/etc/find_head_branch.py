@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from .slugify import slugify
-from codex_task_runner.gh.gh_api_cli import list_branches
-from codex_task_runner.branch.branch_fuzzy import fuzzy_branch
+from codex_task_runner.gh.list_branches import list_branches
+from codex_task_runner.branch.fuzzy_branch import fuzzy_branch
 
 
 def find_head_branch(repo: str, title: str, task_id: str) -> str | None:

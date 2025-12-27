@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-from codex_task_runner.codex.codex_cloud import session_from_env
+from codex_task_runner.codex.codex_session import session_from_env
 from codex_task_runner.handlers import ping, poll, tasks, task, turns, create_pr, run
 from .cli_parser import build_parser
 

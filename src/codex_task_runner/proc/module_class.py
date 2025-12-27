@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from codex_task_runner.proc import proc_run
+from codex_task_runner.proc.run import run
+from codex_task_runner.proc.run_ok import run_ok
 
 
 class ProcModule:
     """Aggregates process-run helpers."""
 
-    run = staticmethod(proc_run.run)
-    run_ok = staticmethod(proc_run.run_ok)
+    run = staticmethod(run)
+    run_ok = staticmethod(run_ok)

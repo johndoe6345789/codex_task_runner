@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from .codex_http import _json_post
+from .json_post import _json_post
 
 
 def create_pr_for_turn(session, task_id: str, turn_id: str) -> Optional[dict]:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from .codex_http import _json_get
+from .json_get import _json_get
 
 
 def get_turns(session, task_id: str) -> Optional[dict]:
