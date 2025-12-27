@@ -123,3 +123,104 @@ Example response (success):
 Notes & next steps:
 - These schemas are inferred from observed client requests and common REST patterns; confirm exact schemas by capturing an authenticated request with a valid bearer token or requesting API docs from the service owners.
 - If you want, I can try to extract a bearer token from `fetch.txt` and re-run the poll to capture real JSON responses for precise schema extraction.
+
+## Observed endpoint: Create PR for a task turn
+
+Example client call (observed via browser fetch trace):
+
+```
+POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab19e54833183593529fd574f91/turns/task_e_69502ab19e54833183593529fd574f91~assttrn_e_69502ab24a54833189263b19540a6674/pr
+Headers:
+- Accept: */*
+- Content-Type: application/json
+- Authorization: Bearer <JWT_TOKEN>
+- oai-client-version, oai-device-id, oai-language, priority, etc. (client metadata)
+
+Body: {}
+Credentials: include
+Referrer: https://chatgpt.com/codex/tasks/task_e_69502ab19e54833183593529fd574f91
+```
+
+Notes:
+- The request body observed for this endpoint was an empty JSON object (`{}`).
+- The request requires `Authorization: Bearer <token>` (JWT-like) for backend access; replaying cookies alone returned `401` during testing.
+
+Best-effort response schema (inferred):
+
+```json
+{
+  "pr": {
+    "number": 17,
+    "url": "https://github.com/owner/repo/pull/17",
+    "state": "open",
+    "created_at": "2025-12-26T13:00:00Z"
+  },
+  "task_id": "task_e_69502ab19e54833183593529fd574f91",
+  "turn_id": "task_e_69502ab19e54833189263b19540a6674~assttrn_e_69502ab24a54833189263b19540a6674",
+  "status": "success"
+}
+```
+
+Error example when unauthorized:
+
+```json
+{"detail": "Unauthorized"}
+```
+
+Recommendation: to confirm this schema, capture an authenticated response by extracting a valid bearer token from the browser fetch trace or by running a headless browser with the `.env` cookies to let client-side JS obtain the token and then replay the request to record the real response body.
+
+## Observed endpoint: List turns for a task
+
+Example client call (observed via browser fetch trace):
+
+```
+GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab19e54833183593529fd574f91/turns
+Headers:
+- Accept: */*
+- Authorization: Bearer <JWT_TOKEN>
+- oai-client-version, oai-device-id, oai-language, priority, etc. (client metadata)
+
+Referrer: https://chatgpt.com/codex/tasks/task_e_69502ab19e54833183593529fd574f91
+Credentials: include
+```
+
+Notes:
+- The observed request used the `GET` method and no request body (`body` was `null` in the trace).
+- The endpoint returns the list of conversational "turns" (assistant/user exchanges) for the given task.
+- Requires `Authorization: Bearer <token>`; cookies alone were insufficient during testing.
+
+Best-effort response schema (inferred):
+
+```json
+{
+  "count": 3,
+  "results": [
+    {
+      "turn_id": "task_e_69502ab19e54833183593529fd574f91~usrtrn_e_69502ab23...",
+      "role": "user",
+      "text": "Please apply this patch...",
+      "created_at": "2025-12-26T12:35:00Z",
+      "attachments": []
+    },
+    {
+      "turn_id": "task_e_69502ab19e54833183593529fd574f91~assttrn_e_69502ab24...",
+      "role": "assistant",
+      "text": "I prepared a patch and opened a PR.",
+      "created_at": "2025-12-26T12:40:00Z",
+      "diffs": [
+        {"path": "src/foo.py", "patch": "@@ -1 +1 @@\n-old\n+new\n"}
+      ]
+    }
+  ],
+  "next": null,
+  "previous": null
+}
+```
+
+Error example when unauthorized:
+
+```json
+{"detail": "Unauthorized"}
+```
+
+Recommendation: capture an authenticated response (via bearer token replay or headless browser) to confirm exact field names and nested structures for `turns`, `diffs`, and any PR-related metadata.
