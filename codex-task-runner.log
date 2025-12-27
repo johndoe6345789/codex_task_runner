@@ -1148,3 +1148,35 @@ Summary: Kept 20 PRs, closed 31 duplicates
 2025-12-27 23:19:57 [INFO]   SKIP: no PR
 2025-12-27 23:19:57 [INFO] 
 Done: {'created': 5, 'merged': 0, 'skipped': 5, 'failed': 0}
+2025-12-27 23:23:06 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:23:06 [DEBUG] HTTP 200 0 bytes
+2025-12-27 23:23:06 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:23:06 [ERROR] HTTP PING failed: Connection error
+2025-12-27 23:23:06 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:23:06 [DEBUG] HTTP <MagicMock name='mock.get().status_code' id='4487332928'> 0 bytes
+2025-12-27 23:23:06 [DEBUG] HTTP JSON keys: ['key']
+2025-12-27 23:23:06 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:23:06 [ERROR] HTTP GET failed: Network error
+2025-12-27 23:23:06 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:23:06 [DEBUG] HTTP body: {'input': 'test'}
+2025-12-27 23:23:06 [DEBUG] HTTP <MagicMock name='mock.post().status_code' id='4487336960'> 0 bytes
+2025-12-27 23:23:06 [DEBUG] HTTP JSON keys: ['result']
+2025-12-27 23:23:06 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:23:06 [DEBUG] HTTP body: None
+2025-12-27 23:23:06 [ERROR] HTTP POST failed: Network error
+2025-12-27 23:23:58 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:23:58 [DEBUG] HTTP 200 0 bytes
+2025-12-27 23:23:58 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:23:58 [ERROR] HTTP PING failed: Connection error
+2025-12-27 23:23:58 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:23:58 [DEBUG] HTTP <MagicMock name='mock.get().status_code' id='4452402912'> 0 bytes
+2025-12-27 23:23:58 [DEBUG] HTTP JSON keys: ['key']
+2025-12-27 23:23:58 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:23:58 [ERROR] HTTP GET failed: Network error
+2025-12-27 23:23:58 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:23:58 [DEBUG] HTTP body: {'input': 'test'}
+2025-12-27 23:23:58 [DEBUG] HTTP <MagicMock name='mock.post().status_code' id='4452406944'> 0 bytes
+2025-12-27 23:23:58 [DEBUG] HTTP JSON keys: ['result']
+2025-12-27 23:23:58 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:23:58 [DEBUG] HTTP body: None
+2025-12-27 23:23:58 [ERROR] HTTP POST failed: Network error
