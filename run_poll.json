@@ -8,15 +8,15 @@
   "polls": [
     {
       "url": "https://chatgpt.com/backend-api/wham/tasks/list?limit=19&task_filter=current",
-      "status_code": 401,
-      "ok": false,
-      "text_snippet": "{\"detail\":\"Unauthorized\"}"
+      "status_code": 200,
+      "ok": true,
+      "text_snippet": "{\n  \"items\": [\n    {\n      \"id\": \"task_e_69502ab28bcc8331a29f727e77deb37c\",\n      \"title\": \"Add base, advanced, and experimental templates\",\n      \"has_generated_title\": true,\n      \"updated_at\": 1766861808.375611,\n      \"created_at\": 1766861490.546232,\n      \"task_status_display\": {\n        \"latest_turn_status_display\": {\n          \"turn_id\": \"task_e_69502ab28bcc8331a29f727e77deb37c~assttrn_e_69502ab39f108331af3dc29e586011fd\",\n          \"turn_status\": \"completed\",\n          \"diff_stats\": {\n            \"files_modified\": 4,\n            \"lines_added\": 281,\n            \"lines_removed\": 263\n          },\n          \"sibling_turn_ids\": [],\n          \"image_asset_pointer_citations\": null,\n          \"issue_counts\": null,\n          \"intent\": \"pr\",\n          \"cancellation_requested_at\": null\n        },\n        \"environment_label\": \"johndoe6345789/metabuilder\",\n        \"branch_name\": \"main\",\n        \"fix_task_id\": null,\n        \"initial_intent\": \"pr\"\n      },\n      \"archived\": false,\n      \"has_unread_turn\": false,\n     "
     },
     {
       "url": "https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab19e54833183593529fd574f91",
-      "status_code": 401,
-      "ok": false,
-      "text_snippet": "{\"detail\":\"Unauthorized\"}"
+      "status_code": 200,
+      "ok": true,
+      "text_snippet": "{\n  \"task\": {\n    \"id\": \"task_e_69502ab19e54833183593529fd574f91\",\n    \"created_at\": 1766861489.618562,\n    \"title\": \"Create test files for lua-engine\",\n    \"has_generated_title\": true,\n    \"current_turn_id\": \"task_e_69502ab19e54833183593529fd574f91~assttrn_e_69502ab24a54833189263b19540a6674\",\n    \"has_unread_turn\": false,\n    \"denormalized_metadata\": {\n      \"num_follow_ups\": 0,\n      \"repo_name_map\": {},\n      \"last_user_turn_created_at\": null,\n      \"last_turn_status\": null,\n      \"diff_stats\": {\n        \"files_modified\": null,\n        \"lines_added\": null,\n        \"lines_removed\": null\n      },\n      \"last_pushed_turn_id\": null,\n      \"start_branch_name\": null,\n      \"pushed_branch_name\": null,\n      \"cached_pull_request_data\": null\n    },\n    \"archived\": false,\n    \"task_status_display\": {\n      \"latest_turn_status_display\": {\n        \"turn_id\": \"task_e_69502ab19e54833183593529fd574f91~assttrn_e_69502ab24a54833189263b19540a6674\",\n        \"turn_status\": \"completed\",\n        \"diff_stats\": {\n          \"files"
     }
   ]
 }

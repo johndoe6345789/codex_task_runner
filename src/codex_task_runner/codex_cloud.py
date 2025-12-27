@@ -44,11 +44,21 @@ def session_from_env(env_path: str | None = None) -> requests.Session:
                     extra_tokens["csrf_token"] = ln.split("=", 1)[1]
                 if ln.startswith("__Secure-next-auth.callback-url="):
                     extra_tokens.setdefault("callback_url", ln.split("=", 1)[1])
+                # capture explicit bearer/authorization tokens if present
+                if ln.startswith("BEARER=") or ln.startswith("BEARER_TOKEN=") or ln.startswith("AUTHORIZATION=") or ln.startswith("ACCESS_TOKEN="):
+                    k, v = ln.split("=", 1)
+                    # strip surrounding quotes if present
+                    v = v.strip()
+                    if v.startswith('"') and v.endswith('"'):
+                        v = v[1:-1]
+                    extra_tokens.setdefault("bearer", v)
     # fall back to environment variables
     if cookie_val is None:
         cookie_val = os.environ.get("COOKIE")
     extra_tokens.setdefault("session_token", os.environ.get("__Secure-next-auth.session-token") or "")
     extra_tokens.setdefault("csrf_token", os.environ.get("__Host-next-auth.csrf-token") or "")
+    # look for common bearer env vars
+    extra_tokens.setdefault("bearer", os.environ.get("BEARER") or os.environ.get("BEARER_TOKEN") or os.environ.get("AUTHORIZATION") or os.environ.get("ACCESS_TOKEN") or "")
 
     jar = _parse_cookie_string(cookie_val or "")
     # also set individual tokens as cookies if present
@@ -67,10 +77,19 @@ def session_from_env(env_path: str | None = None) -> requests.Session:
         token_val = csrf.split("|", 1)[0]
         sess.headers.update({"x-csrf-token": token_val})
 
-    # If we have a session token, also provide it as an Authorization bearer (best-effort)
-    sess_token = extra_tokens.get("session_token") or ""
-    if sess_token:
-        sess.headers.update({"Authorization": f"Bearer {sess_token}"})
+    # Prefer an explicit bearer token if present, otherwise fall back to session token
+    bearer_val = extra_tokens.get("bearer") or ""
+    if bearer_val:
+        # Accept values that already include the 'Bearer ' prefix or raw tokens
+        if bearer_val.lower().startswith("bearer "):
+            auth_header = bearer_val
+        else:
+            auth_header = f"Bearer {bearer_val}"
+        sess.headers.update({"Authorization": auth_header})
+    else:
+        sess_token = extra_tokens.get("session_token") or ""
+        if sess_token:
+            sess.headers.update({"Authorization": f"Bearer {sess_token}"})
 
     return sess
 
