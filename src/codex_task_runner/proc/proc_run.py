@@ -1,14 +1,5 @@
-from __future__ import annotations
-
 import subprocess
-from dataclasses import dataclass
-
-
-@dataclass(frozen=True)
-class ProcResult:
-    code: int
-    out: str
-    err: str
+from .proc_result import ProcResult
 
 
 def run(cmd: list[str]) -> ProcResult:

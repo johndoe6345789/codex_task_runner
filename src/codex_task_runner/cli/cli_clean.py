@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import json
-from pathlib import Path
 from typing import Optional, List
 
-from .codex_cloud import (
-    session_from_env,
-    ping_url,
-    poll_urls,
-    get_tasks_list,
-    get_task,
-    get_turns,
-    create_pr_for_turn,
-    save_results,
+from .codex_cloud import session_from_env
+from .cli_clean_impl import (
+    ping_cmd,
+    poll_cmd,
+    tasks_cmd,
+    task_cmd,
+    turns_cmd,
+    create_pr_cmd,
+    run_cmd,
 )
 
 
@@ -60,51 +61,25 @@ def main(argv: Optional[List[str]] = None) -> int:
     sess = session_from_env(getattr(args, "env", ".env"))
 
     if args.cmd == "ping":
-        res = ping_url(sess, args.url)
-        print(json.dumps(res, indent=2))
-        return 0
+        return ping_cmd(sess, args.url)
 
     if args.cmd == "poll":
-        urls = Path(args.urls_file).read_text().splitlines()
-        res = poll_urls(sess, urls)
-        save_results(args.out, {"polls": res})
-        print(f"saved results to {args.out}")
-        return 0
+        return poll_cmd(sess, args.urls_file, args.out)
 
     if args.cmd == "tasks":
-        tasks = get_tasks_list(sess, limit=getattr(args, "limit", 20))
-        print(json.dumps([t.__dict__ for t in tasks], indent=2))
-        return 0
+        return tasks_cmd(sess, getattr(args, "limit", 20))
 
     if args.cmd == "task":
-        data = get_task(sess, args.task_id)
-        print(json.dumps(data or {}, indent=2))
-        return 0
+        return task_cmd(sess, args.task_id)
 
     if args.cmd == "turns":
-        data = get_turns(sess, args.task_id)
-        print(json.dumps(data or {}, indent=2))
-        return 0
+        return turns_cmd(sess, args.task_id)
 
     if args.cmd == "create-pr":
-        if args.dry_run:
-            print("dry-run: not creating PR")
-            return 0
-        resp = create_pr_for_turn(sess, args.task_id, args.turn_id)
-        print(json.dumps(resp or {}, indent=2))
-        return 0
+        return create_pr_cmd(sess, args.task_id, args.turn_id, args.dry_run)
 
     if args.cmd == "run":
-        from .runner import make_config, process_tasks
-
-        tasks = get_tasks_list(sess, limit=20)
-        if not tasks:
-            print("No tasks found or request failed.")
-            return 1
-        cfg = make_config(require_checks=False, method="merge", keep_branch=False, admin=False, auto=False, dry_run=args.dry_run, output_dir=args.output_dir)
-        process_tasks(cfg, tasks)
-        print(f"Processed {len(tasks)} tasks (dry-run={args.dry_run}).")
-        return 0
+        return run_cmd(sess, args.dry_run, args.output_dir)
 
     p.print_help()
     return 1
