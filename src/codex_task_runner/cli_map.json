@@ -1,0 +1,64 @@
+{
+  "commands": [
+    {
+      "name": "ping",
+      "help": "Ping a single URL and print result",
+      "handler": "codex_task_runner.handlers.ping",
+      "args": [
+        {"flags": ["url"], "kwargs": {"help": "URL"}}
+      ]
+    },
+    {
+      "name": "poll",
+      "help": "Poll a list of URLs from a file and save JSON",
+      "handler": "codex_task_runner.handlers.poll",
+      "args": [
+        {"flags": ["urls_file"], "kwargs": {"help": "File with URLs"}},
+        {"flags": ["out"], "kwargs": {"help": "Output JSON file", "nargs": "?", "default": "poll.json"}}
+      ]
+    },
+    {
+      "name": "tasks",
+      "help": "List tasks from Codex Cloud",
+      "handler": "codex_task_runner.handlers.tasks",
+      "args": [
+        {"flags": ["--limit"], "kwargs": {"type": "int", "default": 20, "help": "Max items"}}
+      ]
+    },
+    {
+      "name": "task",
+      "help": "Fetch single task detail",
+      "handler": "codex_task_runner.handlers.task",
+      "args": [
+        {"flags": ["task_id"], "kwargs": {"help": "Task ID"}}
+      ]
+    },
+    {
+      "name": "turns",
+      "help": "Fetch turns for a task",
+      "handler": "codex_task_runner.handlers.turns",
+      "args": [
+        {"flags": ["task_id"], "kwargs": {"help": "Task ID"}}
+      ]
+    },
+    {
+      "name": "create-pr",
+      "help": "Create PR for a task turn (calls Codex API)",
+      "handler": "codex_task_runner.handlers.create_pr",
+      "args": [
+        {"flags": ["task_id"], "kwargs": {"help": "Task ID"}},
+        {"flags": ["turn_id"], "kwargs": {"help": "Turn ID"}},
+        {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Do not create PR"}}
+      ]
+    },
+    {
+      "name": "run",
+      "help": "Run integration: fetch tasks and process (dry-run default)",
+      "handler": "codex_task_runner.handlers.run",
+      "args": [
+        {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Dry run"}},
+        {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
+      ]
+    }
+  ]
+}
