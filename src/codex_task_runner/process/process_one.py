@@ -1,26 +1,13 @@
 from __future__ import annotations
 
-from typing import List
-
+from .gh_api import pr_exists_open, create_pr, get_pr, merge_pr
 from .branch_finder import find_head_branch
-from .fsutil import default_run_dir, ensure_dir, append_text
-from .gh_api import (
-    pr_exists_open,
-    create_pr,
-    get_pr,
-    merge_pr,
-)
+from .append_text import append_text
 from .types import TaskRef, PullRequest
 from .config import Config
 
 
-def process_tasks(cfg: Config, tasks: list[TaskRef]) -> None:
-    ensure_dir(cfg.output_dir)
-    for t in tasks:
-        _process_one(cfg, t)
-
-
-def _process_one(cfg: Config, t: TaskRef) -> None:
+def process_one(cfg: Config, t: TaskRef) -> None:
     _log(cfg, _fmt_task(t))
     prn = _task_pr_number(cfg, t)
     if prn is None:
