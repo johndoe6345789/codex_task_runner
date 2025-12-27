@@ -42,8 +42,47 @@ codex-task-runner yolo -v  # verbose - shows HTTP traffic
 ### yolo - Full Automation
 
 ```bash
-codex-task-runner yolo           # Create PRs for tasks without them, merge all
-codex-task-runner yolo -v        # Verbose mode (debug logging to console)
+codex-task-runner yolo                   # Create PRs for tasks without them, merge all
+codex-task-runner yolo -v                # Verbose mode (debug logging to console)
+codex-task-runner yolo --dry-run         # Preview what would happen
+codex-task-runner yolo --limit 10        # Process up to 10 tasks (default: 5)
+codex-task-runner yolo --repo owner/repo # Filter to specific repo
+codex-task-runner yolo --no-confirm      # Skip confirmation prompt
+```
+
+#### Dry Run Output
+
+```
+$ codex-task-runner yolo --dry-run
+Fetching up to 5 tasks...
+Found 5 tasks for johndoe6345789/metabuilder
+
+Tasks to process:
+  - johndoe6345789/metabuilder: Add base, advanced, and experimental templates (needs PR)
+  - johndoe6345789/metabuilder: Create test files for lua-engine (needs PR)
+  - johndoe6345789/metabuilder: Add parser and stats files (needs PR)
+  - johndoe6345789/metabuilder: Create builders and mappers files (needs PR)
+  - johndoe6345789/metabuilder: Add base, advanced, and experimental CSS files (needs PR)
+
+[1/5] Add base, advanced, and experimental templates
+  [DRY RUN] Would create PR
+  [DRY RUN] Would dedup
+  [DRY RUN] Would merge PR
+
+[2/5] Create test files for lua-engine
+  [DRY RUN] Would create PR
+  [DRY RUN] Would dedup
+  [DRY RUN] Would merge PR
+
+... (3 more tasks)
+
+{
+  "created": 5,
+  "merged": 5,
+  "skipped": 0,
+  "failed": 0,
+  "dry_run": true
+}
 ```
 
 ### run - Process Tasks
