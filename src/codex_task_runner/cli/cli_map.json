@@ -60,6 +60,14 @@
         {"flags": ["--yolo"], "kwargs": {"action": "store_true", "help": "Full auto: skip checks, admin merge, delete branches"}},
         {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
       ]
+    },
+    {
+      "name": "yolo",
+      "help": "YOLO: fetch all tasks and merge them (skip checks, admin, auto)",
+      "handler": "codex_task_runner.handlers.yolo",
+      "args": [
+        {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
+      ]
     }
   ]
 }
