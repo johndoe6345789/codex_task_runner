@@ -33,7 +33,7 @@ def load_cookies_from_env():
 
 
 async def discover_endpoints(output_file: str = "discovered_endpoints.json"):
-    """Open Codex Cloud and log all API requests."""
+    """Open Codex Cloud, click around, and log all API requests."""
     endpoints = []
     
     cookies = load_cookies_from_env()
@@ -43,25 +43,23 @@ async def discover_endpoints(output_file: str = "discovered_endpoints.json"):
         print(f"Loaded {len(cookies)} cookies from .env")
     
     async with async_playwright() as p:
-        # Launch browser (not headless so user can interact)
         browser = await p.chromium.launch(headless=False)
-        context = await browser.new_context()
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+        )
         
-        # Add cookies before navigating
         if cookies:
             await context.add_cookies(cookies)
         
         page = await context.new_page()
         
-        # Intercept all requests
         def log_request(request):
             url = request.url
-            if "backend-api" in url or "wham" in url or "api" in url.lower():
+            if "backend-api" in url or "wham" in url:
                 entry = {
                     "method": request.method,
                     "url": url,
                 }
-                # Try to get POST body
                 if request.method == "POST":
                     try:
                         entry["body"] = request.post_data
@@ -72,20 +70,56 @@ async def discover_endpoints(output_file: str = "discovered_endpoints.json"):
         
         page.on("request", log_request)
         
-        # Navigate to Codex Cloud
-        print("Opening Codex Cloud - log in and interact with the UI to discover endpoints")
-        print("Press Ctrl+C in terminal when done\n")
+        print("Opening Codex Cloud...")
         
         try:
             await page.goto("https://chatgpt.com/codex/", wait_until="domcontentloaded", timeout=60000)
         except Exception as e:
             print(f"Navigation: {e}")
         
-        # Keep running until user stops or browser closes
+        # Wait for page to load
+        print("Waiting for tasks to load...")
+        await asyncio.sleep(5)
+        
+        # Try to click on first task
+        print("Looking for a task to click...")
+        try:
+            # Look for task links - they have /codex/tasks/ in href
+            task_link = await page.locator('a[href*="/codex/tasks/task_"]').first.element_handle(timeout=10000)
+            if task_link:
+                print("Found a task, clicking...")
+                await task_link.click()
+                await asyncio.sleep(3)
+                
+                # Look for tabs/sections to click
+                print("Looking for detail sections...")
+                
+                # Try clicking various UI elements that might trigger API calls
+                for selector in [
+                    'button:has-text("PR")',
+                    'button:has-text("Code")', 
+                    'button:has-text("Files")',
+                    'button:has-text("Diff")',
+                    '[data-testid*="pr"]',
+                    '[data-testid*="code"]',
+                ]:
+                    try:
+                        el = await page.locator(selector).first.element_handle(timeout=2000)
+                        if el:
+                            print(f"  Clicking: {selector}")
+                            await el.click()
+                            await asyncio.sleep(2)
+                    except:
+                        pass
+        except Exception as e:
+            print(f"Could not click task: {e}")
+        
+        # Keep running for manual exploration
+        print("\nNow explore manually. Press Ctrl+C when done.\n")
+        
         try:
             while True:
                 await asyncio.sleep(1)
-                # Check if browser is still open
                 if not browser.is_connected():
                     break
         except (KeyboardInterrupt, Exception):
@@ -96,7 +130,12 @@ async def discover_endpoints(output_file: str = "discovered_endpoints.json"):
         except:
             pass
     
-    # Save discovered endpoints
+    # Save discovered endpoints (always, even on interrupt)
+    save_endpoints(endpoints, output_file)
+
+
+def save_endpoints(endpoints, output_file):
+    """Save endpoints to file and print summary."""
     if endpoints:
         output = Path(output_file)
         output.write_text(json.dumps(endpoints, indent=2))
