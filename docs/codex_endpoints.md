@@ -95,9 +95,22 @@ This design mirrors how ChatGPT handles conversation history internally, where y
 ```
 
 ## Endpoint: Tasks list
-- Path (observed): `/backend-api/wham/tasks/list` (query params used for pagination/filtering)
+- Path: `/backend-api/wham/tasks/list`
 - Method: `GET`
 - Description: Returns a paginated list of task summaries.
+
+**Query Parameters:**
+| Param | Type | Description |
+|-------|------|-------------|
+| `limit` | int | Max tasks to return (e.g., 19) |
+| `task_filter` | string | Filter type: `current`, `archived`, or `all` |
+
+Example requests:
+```
+GET /backend-api/wham/tasks/list?limit=19&task_filter=current
+GET /backend-api/wham/tasks/list?limit=19&task_filter=archived
+GET /backend-api/wham/tasks/list?limit=1&task_filter=all
+```
 
 Example response schema (best-effort):
 
