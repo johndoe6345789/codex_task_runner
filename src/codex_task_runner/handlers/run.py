@@ -1,10 +1,10 @@
 from typing import Any, List
 
-from ..codex_cloud import get_tasks_list
+from ..codex.codex_cloud import get_tasks_list
 
 
 def handle(args: Any, session) -> dict:
-    from ..runner import make_config, process_tasks
+    from ..runner.runner import make_config, process_tasks
 
     tasks = get_tasks_list(session, limit=20)
     if not tasks:

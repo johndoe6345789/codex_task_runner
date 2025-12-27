@@ -1,69 +1,77 @@
 #!/usr/bin/env python3
+"""CLI command implementations that delegate to handlers."""
+
 import json
-from pathlib import Path
 from typing import Optional
 
-from codex_task_runner.codex.codex_cloud import (
-    session_from_env,
-    ping_url,
-    poll_urls,
-    get_tasks_list,
-    get_task,
-    get_turns,
-    create_pr_for_turn,
-    save_results,
-)
+from codex_task_runner.handlers import ping, poll, tasks, task, turns, create_pr, run
 
 
 def ping_cmd(sess, url: str) -> int:
-    res = ping_url(sess, url)
+    """Ping a single URL and print result."""
+    from types import SimpleNamespace
+    args = SimpleNamespace(url=url)
+    res = ping.handle(args, sess)
     print(json.dumps(res, indent=2))
     return 0
 
 
 def poll_cmd(sess, urls_file: str, out: str) -> int:
-    urls = Path(urls_file).read_text().splitlines()
-    res = poll_urls(sess, urls)
-    save_results(out, {"polls": res})
-    print(f"saved results to {out}")
+    """Poll a list of URLs from a file and save JSON."""
+    from types import SimpleNamespace
+    args = SimpleNamespace(urls_file=urls_file, out=out)
+    res = poll.handle(args, sess)
+    print(f"saved results to {res.get('saved', out)}")
     return 0
 
 
 def tasks_cmd(sess, limit: int) -> int:
-    tasks = get_tasks_list(sess, limit=limit)
-    print(json.dumps([t.__dict__ for t in tasks], indent=2))
+    """List tasks from Codex Cloud."""
+    from types import SimpleNamespace
+    args = SimpleNamespace(limit=limit)
+    res = tasks.handle(args, sess)
+    print(json.dumps(res, indent=2))
     return 0
 
 
 def task_cmd(sess, task_id: str) -> int:
-    data = get_task(sess, task_id)
+    """Fetch single task detail."""
+    from types import SimpleNamespace
+    args = SimpleNamespace(task_id=task_id)
+    data = task.handle(args, sess)
     print(json.dumps(data or {}, indent=2))
     return 0
 
 
 def turns_cmd(sess, task_id: str) -> int:
-    data = get_turns(sess, task_id)
+    """Fetch turns for a task."""
+    from types import SimpleNamespace
+    args = SimpleNamespace(task_id=task_id)
+    data = turns.handle(args, sess)
     print(json.dumps(data or {}, indent=2))
     return 0
 
 
 def create_pr_cmd(sess, task_id: str, turn_id: str, dry_run: bool) -> int:
+    """Create PR for a task turn (calls Codex API)."""
+    from types import SimpleNamespace
+    args = SimpleNamespace(task_id=task_id, turn_id=turn_id, dry_run=dry_run)
     if dry_run:
         print("dry-run: not creating PR")
         return 0
-    resp = create_pr_for_turn(sess, task_id, turn_id)
+    resp = create_pr.handle(args, sess)
     print(json.dumps(resp or {}, indent=2))
     return 0
 
 
 def run_cmd(sess, dry_run: bool, output_dir: Optional[str]) -> int:
-    from .runner import make_config, process_tasks
-
-    tasks = get_tasks_list(sess, limit=20)
-    if not tasks:
-        print("No tasks found or request failed.")
+    """Run integration: fetch tasks and process."""
+    from types import SimpleNamespace
+    args = SimpleNamespace(dry_run=dry_run, output_dir=output_dir)
+    res = run.handle(args, sess)
+    processed = res.get("processed", 0)
+    if res.get("error"):
+        print(f"No tasks found or request failed.")
         return 1
-    cfg = make_config(require_checks=False, method="merge", keep_branch=False, admin=False, auto=False, dry_run=dry_run, output_dir=output_dir)
-    process_tasks(cfg, tasks)
-    print(f"Processed {len(tasks)} tasks (dry-run={dry_run}).")
+    print(f"Processed {processed} tasks (dry-run={dry_run}).")
     return 0

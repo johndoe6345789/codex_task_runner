@@ -4,6 +4,7 @@ import pathlib
 from dataclasses import dataclass
 
 from .merge_method import MergeMethod
+from .default_run_dir import default_run_dir
 
 
 @dataclass(frozen=True)
@@ -26,7 +27,7 @@ def make_config(
     dry_run: bool,
     output_dir: str | None,
 ) -> Config:
-    out = pathlib.Path(output_dir) if output_dir else pathlib.Path(".")
+    out = pathlib.Path(output_dir) if output_dir else default_run_dir()
     return Config(
         require_checks=require_checks,
         method=MergeMethod(method),

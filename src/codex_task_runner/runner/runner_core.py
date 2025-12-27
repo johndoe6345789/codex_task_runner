@@ -1,30 +1,17 @@
 from __future__ import annotations
 
-import pathlib
-from dataclasses import dataclass
-
 from codex_task_runner.etc.find_head_branch import find_head_branch
 from codex_task_runner.etc.ensure_dir import ensure_dir
+from codex_task_runner.etc.config import Config
 from codex_task_runner.gh.gh_api import (
     pr_exists_open,
     create_pr,
     get_pr,
     merge_pr,
 )
-from codex_task_runner.types import MergeMethod, TaskRef, PullRequest
+from codex_task_runner.types import TaskRef, PullRequest
 
 from .runner_io import _log, _fmt_task, _fmt_pr
-
-
-@dataclass(frozen=True)
-class Config:
-    require_checks: bool
-    method: MergeMethod
-    delete_branch: bool
-    admin: bool
-    auto: bool
-    dry_run: bool
-    output_dir: pathlib.Path
 
 
 def process_tasks(cfg: Config, tasks: list[TaskRef]) -> None:
