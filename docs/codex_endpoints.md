@@ -332,3 +332,45 @@ Error example when unauthorized:
 ```json
 {"detail": "Unauthorized"}
 ```
+
+## Endpoint: GitHub Repository Integration
+
+### List Connected Repositories
+```
+GET /backend-api/wham/github/list-repositories?page=1&per_page=10
+```
+
+Returns paginated list of GitHub repositories connected to the user's account.
+
+### Get Repository Details
+```
+GET /backend-api/wham/github/repositories/{repo_id}
+```
+
+Where `repo_id` is the GitHub repository ID (numeric), e.g., `github-1121989012`.
+
+## Endpoint: Environments
+
+### List All Environments
+```
+GET /backend-api/wham/environments
+```
+
+### List Recent Environments
+```
+GET /backend-api/wham/environments/recent
+```
+
+## Endpoint: Usage Stats
+```
+GET /backend-api/wham/usage
+```
+
+Returns usage statistics for the user's Codex account.
+
+## Endpoint: User Settings
+```
+GET /backend-api/wham/settings/user
+```
+
+Returns Codex-specific user settings and preferences.
