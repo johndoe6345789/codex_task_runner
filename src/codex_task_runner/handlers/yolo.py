@@ -1,9 +1,42 @@
 from typing import Any
 
-from .run import handle as run_handle
+from .dedup_prs import handle as dedup_handle
 from ..pr.ensure_prs import ensure_prs
 from ..codex.codex_tasks_list import get_tasks_list
+from ..gh.get_pr import get_pr
+from ..gh.merge_pr import merge_pr
 from ..etc.log import log
+
+
+def _merge_task(task, dry_run: bool) -> str:
+    """Merge a single task's PR. Returns status string."""
+    if not task.pr_numbers:
+        return "SKIP: no PR"
+    
+    pr_num = task.pr_numbers[0]
+    try:
+        pr = get_pr(task.repo, pr_num)
+    except Exception as e:
+        return f"SKIP: can't fetch PR #{pr_num}: {e}"
+    
+    if pr.state != "open":
+        return f"SKIP: PR #{pr_num} is {pr.state}"
+    
+    if not pr.mergeable:
+        return f"SKIP: PR #{pr_num} not mergeable"
+    
+    if dry_run:
+        return f"DRY RUN: would merge PR #{pr_num}"
+    
+    ok = merge_pr(
+        task.repo, pr_num,
+        method="squash",
+        delete_branch=True,
+        admin=True,
+        auto=True,
+        dry_run=False,
+    )
+    return f"MERGED PR #{pr_num}" if ok else f"FAIL: PR #{pr_num}"
 
 
 def handle(args: Any, session) -> dict:
@@ -46,15 +79,8 @@ def handle(args: Any, session) -> dict:
         log.info(f"  - {t.repo}: {t.title[:50]} ({pr_status})")
     log.info("")
     
-    # Dry run - just show plan
-    if dry_run:
-        needs_pr = [t for t in tasks if not t.pr_numbers]
-        has_pr = [t for t in tasks if t.pr_numbers]
-        log.info(f"DRY RUN: Would create {len(needs_pr)} PRs, merge {len(has_pr)} existing")
-        return {"dry_run": True, "would_create": len(needs_pr), "would_merge": len(has_pr)}
-    
     # Confirm before proceeding
-    if not no_confirm:
+    if not no_confirm and not dry_run:
         try:
             response = input(f"Proceed with {len(tasks)} tasks? [y/N] ")
             if response.lower() != 'y':
@@ -64,18 +90,51 @@ def handle(args: Any, session) -> dict:
             log.info("Aborted")
             return {"aborted": True}
     
-    # Create PRs for tasks without them
-    pr_result = ensure_prs(session, tasks)
-    log.info(f"PRs: {pr_result['created']} created, {pr_result['skipped']} already had PR")
-    if pr_result['errors']:
-        log.warning(f"Errors: {pr_result['errors']}")
+    # Process each task: create PR if needed, dedup, merge immediately
+    results = {"created": 0, "merged": 0, "skipped": 0, "failed": 0}
     
-    # Now run the merge process
-    log.info("Starting merge process...")
-    args.yolo = True
-    args.dry_run = False
-    result = run_handle(args, session)
-    result["prs_created"] = pr_result["created"]
-    log.info(f"Done: {result}")
-    return result
+    for i, task in enumerate(tasks, 1):
+        log.info(f"\n[{i}/{len(tasks)}] {task.title[:60]}")
+        
+        # Step 1: Create PR if needed
+        if not task.pr_numbers:
+            log.info("  Creating PR...")
+            pr_result = ensure_prs(session, [task])
+            if pr_result["created"] > 0:
+                results["created"] += 1
+                log.info("  PR created")
+                
+                # Dedup immediately after creating
+                log.info("  Deduplicating...")
+                import argparse
+                dedup_args = argparse.Namespace(repo=repo_filter, dry_run=dry_run)
+                dedup_handle(dedup_args)
+                
+                # Refresh task to get PR number - refetch from API
+                refreshed = get_tasks_list(session, limit=limit)
+                for rt in refreshed:
+                    if rt.task_id == task.task_id:
+                        task = rt
+                        break
+            else:
+                log.warning("  Failed to create PR")
+                results["failed"] += 1
+                continue
+        
+        # Step 2: Merge the PR
+        log.info(f"  Merging PR #{task.pr_numbers[0] if task.pr_numbers else '?'}...")
+        status = _merge_task(task, dry_run)
+        log.info(f"  {status}")
+        
+        if "MERGED" in status:
+            results["merged"] += 1
+        elif "DRY RUN" in status:
+            results["skipped"] += 1
+        elif "SKIP" in status:
+            results["skipped"] += 1
+        else:
+            results["failed"] += 1
+    
+    log.info(f"\nDone: {results}")
+    return results
 
