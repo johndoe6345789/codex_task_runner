@@ -57,6 +57,7 @@
       "handler": "codex_task_runner.handlers.run",
       "args": [
         {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Dry run"}},
+        {"flags": ["--yolo"], "kwargs": {"action": "store_true", "help": "Full auto: skip checks, admin merge, delete branches"}},
         {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
       ]
     }
