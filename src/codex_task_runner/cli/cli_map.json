@@ -66,6 +66,7 @@
       "help": "YOLO: fetch all tasks and merge them (skip checks, admin, auto)",
       "handler": "codex_task_runner.handlers.yolo",
       "args": [
+        {"flags": ["-v", "--verbose"], "kwargs": {"action": "store_true", "help": "Verbose logging"}},
         {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
       ]
     }
