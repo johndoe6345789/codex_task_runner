@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from .fsutil import append_text, default_run_dir
-from .types import TaskRef, PullRequest
+from codex_task_runner.etc.append_text import append_text
+from codex_task_runner.etc.default_run_dir import default_run_dir
+from codex_task_runner.types import TaskRef, PullRequest
 
 
 def _fmt_task(t: TaskRef) -> str:

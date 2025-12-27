@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from .codex_cloud import (
+from codex_task_runner.codex.codex_cloud import (
     session_from_env,
     ping_url,
     poll_urls,

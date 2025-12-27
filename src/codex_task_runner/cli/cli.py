@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .codex_cloud import session_from_env
+from codex_task_runner.codex.codex_cloud import session_from_env
 from .cli_parser import build_parser
 
 

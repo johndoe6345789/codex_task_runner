@@ -5,7 +5,7 @@ import argparse
 import json
 from typing import Optional, List
 
-from .codex_cloud import session_from_env
+from codex_task_runner.codex.codex_cloud import session_from_env
 from .cli_clean_impl import (
     ping_cmd,
     poll_cmd,

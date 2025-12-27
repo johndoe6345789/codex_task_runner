@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List
 
 from .codex_http import _json_get
-from .types import TaskRef
+from codex_task_runner.types import TaskRef
 
 
 def get_tasks_list(session, limit: int = 20, task_filter: str = "current") -> List[TaskRef]:

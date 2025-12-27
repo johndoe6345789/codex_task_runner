@@ -3,15 +3,15 @@ from __future__ import annotations
 import pathlib
 from dataclasses import dataclass
 
-from .branch_finder import find_head_branch
-from .fsutil import ensure_dir
-from .gh_api import (
+from codex_task_runner.etc.find_head_branch import find_head_branch
+from codex_task_runner.etc.ensure_dir import ensure_dir
+from codex_task_runner.gh.gh_api import (
     pr_exists_open,
     create_pr,
     get_pr,
     merge_pr,
 )
-from .types import MergeMethod, TaskRef, PullRequest
+from codex_task_runner.types import MergeMethod, TaskRef, PullRequest
 
 from .runner_io import _log, _fmt_task, _fmt_pr
 

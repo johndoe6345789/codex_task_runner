@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from .gh_api import pr_exists_open, create_pr, get_pr, merge_pr
-from .branch_finder import find_head_branch
-from .append_text import append_text
-from .types import TaskRef, PullRequest
+from codex_task_runner.gh.gh_api_cli import pr_exists_open, create_pr, merge_pr
+from codex_task_runner.gh.gh_api import get_pr
+from codex_task_runner.etc.find_head_branch import find_head_branch
+from codex_task_runner.etc.append_text import append_text
+from codex_task_runner.types import TaskRef, PullRequest
 from .process_format import fmt_task, fmt_pr
-from .config import Config
+from codex_task_runner.etc.config import Config
 
 
 def process_one(cfg: Config, t: TaskRef) -> None:
