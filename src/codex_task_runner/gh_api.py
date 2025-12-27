@@ -63,9 +63,16 @@ def merge_pr(repo: str, number: int, method: MergeMethod, delete_branch: bool,
 
 
 def list_branches(repo: str, limit: int) -> list[str]:
-    out = run_ok(["gh", "api", f"repos/{repo}/branches",
-                  "-F", f"per_page={limit}"])
-    data = json.loads(out)
+    # Use run() so we can handle non-zero exit codes (e.g. 404 Repo not found)
+    r = run(["gh", "api", f"repos/{repo}/branches",
+             "-F", f"per_page={limit}"])
+    if r.code != 0:
+        # If the repository doesn't exist or is inaccessible, return empty
+        # branch list instead of raising — the caller can decide to skip.
+        if "Not Found (HTTP 404)" in (r.err or ""):
+            return []
+        raise RuntimeError(f"Command failed: ['gh', 'api', 'repos/{repo}/branches']\n{r.err}")
+    data = json.loads(r.out)
     return [str(b.get("name")) for b in data if isinstance(b, dict)]
 
 

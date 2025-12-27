@@ -59,7 +59,11 @@ def _task_pr_number(cfg: Config, t: TaskRef) -> int | None:
 
 def _first_open(repo: str, nums: list[int]) -> int | None:
     for n in nums:
-        pr = get_pr(repo, n)
+        try:
+            pr = get_pr(repo, n)
+        except Exception:
+            # If we can't fetch PR info (repo inaccessible), skip it.
+            continue
         if pr.mergeable:
             return n
     return None
