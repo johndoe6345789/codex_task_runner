@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-from codex_task_runner.cli import cli_legacy, cli_commands
+from codex_task_runner.cli.cli import main
+from codex_task_runner.cli.cli_parser import build_parser
+from codex_task_runner.cli import cli_commands
 
 
 class CliModule:
     """Aggregates CLI entrypoints and implementations for the `cli` package."""
 
-    make_parser = staticmethod(cli_legacy.make_parser)
-    main = staticmethod(cli_legacy.main)
-
+    build_parser = staticmethod(build_parser)
+    main = staticmethod(main)
     ping_cmd = staticmethod(cli_commands.ping_cmd)
     poll_cmd = staticmethod(cli_commands.poll_cmd)
     tasks_cmd = staticmethod(cli_commands.tasks_cmd)

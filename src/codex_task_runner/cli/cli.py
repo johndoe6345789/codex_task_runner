@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
-import importlib
 import json
 from pathlib import Path
-from typing import Any
 
 from codex_task_runner.codex.codex_cloud import session_from_env
+from codex_task_runner.handlers import ping, poll, tasks, task, turns, create_pr, run
 from .cli_parser import build_parser
+
+# Map command names to handler modules
+_HANDLERS = {
+    "ping": ping,
+    "poll": poll,
+    "tasks": tasks,
+    "task": task,
+    "turns": turns,
+    "create-pr": create_pr,
+    "run": run,
+}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -19,15 +29,14 @@ def main(argv: list[str] | None = None) -> int:
 
     session = session_from_env(getattr(args, "env", ".env"))
 
-    handler_path = getattr(args, "_handler", None)
-    if not handler_path:
-        print("No handler configured for this command.")
+    handler = _HANDLERS.get(args.cmd)
+    if not handler:
+        print(f"No handler configured for command: {args.cmd}")
         return 2
-    mod = importlib.import_module(handler_path)
-    if not hasattr(mod, "handle"):
+    if not hasattr(handler, "handle"):
         print("Handler missing 'handle' function.")
         return 3
-    result = mod.handle(args, session)
+    result = handler.handle(args, session)
     try:
         print(json.dumps(result, indent=2))
     except TypeError:
