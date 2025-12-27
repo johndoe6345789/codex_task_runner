@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
+#!/usr/bin/env python3
 from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
 
 from .codex_cloud import (
@@ -97,8 +97,6 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.cmd == "run":
-        # reuse existing script logic but avoid import cycle by calling functions directly
-        from .codex_cloud import get_tasks_list
         from .runner import make_config, process_tasks
 
         tasks = get_tasks_list(sess, limit=20)
@@ -116,122 +114,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-#!/usr/bin/env python3
 from __future__ import annotations
-
-import argparse
-import json
-import sys
-from pathlib import Path
-
-from .codex_cloud import (
-    session_from_env,
-    ping_url,
-    poll_urls,
-    get_tasks_list,
-    get_task,
-    get_turns,
-    create_pr_for_turn,
-    save_results,
-)
-
-
-def make_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="codex-runner")
-    p.add_argument("--env", default=".env", help="Path to .env with cookies/tokens")
-    sub = p.add_subparsers(dest="cmd")
-
-    sp = sub.add_parser("ping", help="Ping a single URL and print result")
-    sp.add_argument("url")
-
-    sp = sub.add_parser("poll", help="Poll a list of URLs from a file and save JSON")
-    sp.add_argument("urls_file")
-    sp.add_argument("out", help="Output JSON file", default="poll.json")
-
-    sp = sub.add_parser("tasks", help="List tasks from Codex Cloud")
-    sp.add_argument("--limit", type=int, default=20)
-
-    sp = sub.add_parser("task", help="Fetch single task detail")
-    sp.add_argument("task_id")
-
-    sp = sub.add_parser("turns", help="Fetch turns for a task")
-    sp.add_argument("task_id")
-
-    sp = sub.add_parser("create-pr", help="Create PR for a task turn (calls Codex API)")
-    sp.add_argument("task_id")
-    sp.add_argument("turn_id")
-    sp.add_argument("--dry-run", action="store_true")
-
-    sp = sub.add_parser("run", help="Run integration: fetch tasks and process (dry-run default)")
-    sp.add_argument("--dry-run", action="store_true", default=True)
-    sp.add_argument("--output-dir", default=None)
-
-    return p
-
-
-def main(argv: list[str] | None = None) -> int:
-    argv = list(argv) if argv is not None else None
-    p = make_parser()
-    args = p.parse_args(argv)
-    if not args.cmd:
-        p.print_help()
-        return 1
-
-    sess = session_from_env(getattr(args, "env", ".env"))
-
-    if args.cmd == "ping":
-        res = ping_url(sess, args.url)
-
-            print("No tasks found or request failed.")
-            return 1
-        cfg = make_config(require_checks=False, method="merge", keep_branch=False, admin=False, auto=False, dry_run=args.dry_run, output_dir=args.output_dir)
-        process_tasks(cfg, tasks)
-        print(f"Processed {len(tasks)} tasks (dry-run={args.dry_run}).")
-        return 0
-
-    p.print_help()
-    return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-from __future__ import annotations
-
-import argparse
-import sys
-
-from .codex_json import load_tasks
-from .io import read_all
-from .runner import make_config, process_tasks
-
-
-def main(argv: list[str] | None = None) -> int:
-    ns = _parse(argv or sys.argv[1:])
-    raw = read_all(ns.input)
-    tasks = load_tasks(raw)
-    cfg = make_config(
-        require_checks=ns.require_checks,
-        method=ns.method,
-        keep_branch=ns.keep_branch,
-        admin=ns.admin,
-        auto=ns.auto,
-        dry_run=ns.dry_run,
-        output_dir=ns.output_dir,
-    )
-    process_tasks(cfg, tasks)
-    return 0
-
-
-def _parse(argv: list[str]) -> argparse.Namespace:
-    p = argparse.ArgumentParser(prog="codex-task-runner")
-    p.add_argument("--input", required=True, help="Path to tasks JSON, or '-'")
-    p.add_argument("--require-checks", action="store_true")
-    p.add_argument("--method", default="squash",
-                   choices=["merge", "squash", "rebase"])
-    p.add_argument("--keep-branch", action="store_true")
-    p.add_argument("--admin", action="store_true")
-    p.add_argument("--auto", action="store_true")
-    p.add_argument("--dry-run", action="store_true")
-    p.add_argument("--output-dir", default=None)
-    return p.parse_args(argv)
