@@ -2,6 +2,33 @@
 
 The entries below are best-effort documentation based on client fetch traces and the project's polling scripts. Treat these as observational notes; exact field names may vary in the live API.
 
+## API Naming Conventions
+
+The Codex API uses some unconventional naming that reflects its internal architecture:
+
+### "WHAM" (`/backend-api/wham/...`)
+The base path for all Codex endpoints. Likely an internal project codename (OpenAI has used whimsical names before - GPT itself started as "Generative Pre-trained Transformer"). WHAM may stand for something like "Workspace Host Agent Manager" or could just be a fun name.
+
+### Task IDs (`task_e_69502ab28bcc8331a29f727e77deb37c`)
+- Format: `task_e_<hex_id>`
+- The `_e_` likely means "entity" - a common pattern in distributed systems to distinguish entity types
+- The hex portion is a unique identifier (possibly UUID-based)
+
+### Turn IDs (`task_e_xxx~assttrn_e_yyy`)
+- Format: `<task_id>~<turn_type>trn_e_<hex_id>`
+- The tilde `~` acts as a namespace separator, binding turns to their parent task
+- `assttrn` = "assistant turn" (Codex's response)
+- `usertrn` = "user turn" (the original prompt/request)
+- This hierarchical ID allows reconstructing the conversation tree
+
+### Turn Mapping Structure
+The `turn_mapping` response uses a tree structure with `parent`/`children` fields rather than a flat list. This supports:
+- Branching conversations (multiple responses to one prompt)
+- Tracking which turn led to which
+- The `current_turn_id` points to the active/latest branch
+
+This design mirrors how ChatGPT handles conversation history internally, where you can "regenerate" responses and have multiple branches.
+
 ## Authentication
 - Many backend calls require an `Authorization: Bearer <token>` header (JWT-like). Replaying cookies and CSRF alone returned `401` during testing.
 - Error response example:
@@ -174,53 +201,46 @@ Recommendation: to confirm this schema, capture an authenticated response by ext
 Example client call (observed via browser fetch trace):
 
 ```
-GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab19e54833183593529fd574f91/turns
+GET https://chatgpt.com/backend-api/wham/tasks/{task_id}/turns
 Headers:
 - Accept: */*
 - Authorization: Bearer <JWT_TOKEN>
-- oai-client-version, oai-device-id, oai-language, priority, etc. (client metadata)
+- oai-client-version, oai-device-id, oai-language, priority, etc.
 
-Referrer: https://chatgpt.com/codex/tasks/task_e_69502ab19e54833183593529fd574f91
 Credentials: include
 ```
 
-Notes:
-- The observed request used the `GET` method and no request body (`body` was `null` in the trace).
-- The endpoint returns the list of conversational "turns" (assistant/user exchanges) for the given task.
-- Requires `Authorization: Bearer <token>`; cookies alone were insufficient during testing.
-
-Best-effort response schema (inferred):
+**Actual response structure** (confirmed via live API):
 
 ```json
 {
-  "count": 3,
-  "results": [
-    {
-      "turn_id": "task_e_69502ab19e54833183593529fd574f91~usrtrn_e_69502ab23...",
-      "role": "user",
-      "text": "Please apply this patch...",
-      "created_at": "2025-12-26T12:35:00Z",
-      "attachments": []
+  "turn_mapping": {
+    "task_e_xxx~usertrn_e_yyy": {
+      "turn": { ... turn details ... },
+      "children": [...],
+      "parent": null
     },
-    {
-      "turn_id": "task_e_69502ab19e54833183593529fd574f91~assttrn_e_69502ab24...",
-      "role": "assistant",
-      "text": "I prepared a patch and opened a PR.",
-      "created_at": "2025-12-26T12:40:00Z",
-      "diffs": [
-        {"path": "src/foo.py", "patch": "@@ -1 +1 @@\n-old\n+new\n"}
-      ]
+    "task_e_xxx~assttrn_e_zzz": {
+      "turn": { ... turn details ... },
+      "children": [],
+      "parent": "task_e_xxx~usertrn_e_yyy"
     }
-  ],
-  "next": null,
-  "previous": null
+  },
+  "current_turn_id": "task_e_xxx~assttrn_e_zzz"
 }
 ```
+
+Key fields:
+- `turn_mapping`: Dict mapping turn IDs to turn data with parent/child relationships
+- `current_turn_id`: The ID of the latest/current turn (use this for PR creation)
+
+Notes:
+- The response does NOT use a simple `turns` or `results` array
+- Use `current_turn_id` to get the latest turn for PR creation
+- Each turn in `turn_mapping` contains full conversation context including tool calls
 
 Error example when unauthorized:
 
 ```json
 {"detail": "Unauthorized"}
 ```
-
-Recommendation: capture an authenticated response (via bearer token replay or headless browser) to confirm exact field names and nested structures for `turns`, `diffs`, and any PR-related metadata.

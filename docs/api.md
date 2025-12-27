@@ -1,40 +1,74 @@
 # API Reference
 
-This file summarizes the main public modules and useful functions in the project.
+This file summarizes the main public modules and functions.
 
-## `src/codex_task_runner/gh_api.py`
+## Handlers (`src/codex_task_runner/handlers/`)
 
-- `list_branches(repo: str, limit: int = 100) -> list`:
-  - Returns a list of branch names for the given `repo`. Handles `404 Not Found` by returning an empty list.
+### `yolo.py`
+- `handle(args, session) -> dict`: Full automation mode
+  - Fetches tasks from Codex API
+  - Creates PRs for tasks without them via `ensure_prs()`
+  - Merges all PRs with admin/auto/skip-checks
 
-- `get_pr(owner: str, repo: str, pr_number: int) -> dict` (behavior may vary):
-  - Fetches PR metadata using `gh` or GitHub APIs. Callers should handle exceptions when the repo or PR is inaccessible.
+### `run.py`
+- `handle(args, session) -> dict`: Process tasks with configurable merge behavior
 
-## `src/codex_task_runner/runner.py`
+### `ping.py`
+- `handle(args, session) -> dict`: Test Codex API connectivity
 
-- `Runner.run()`:
-  - Main orchestration: reads tasks, finds branches, opens/merges PRs as configured.
-  - `Runner._first_open(repo, nums)` now tolerates failures fetching PRs (won't crash on fetch errors).
+### `tasks.py` / `task.py` / `turns.py`
+- List tasks, get task details, get task turns
 
-## `src/codex_task_runner/codex_cloud.py` (new)
+## Codex API (`src/codex_task_runner/codex/`)
 
-- `session_from_env(env_path: Optional[str] = None) -> requests.Session`:
-  - Builds a `requests.Session` using cookie values and tokens from a `.env` file.
-  - Adds `x-csrf-token` and best-effort `Authorization: Bearer` header when available.
+### `codex_session.py`
+- `session_from_env(env_path: str) -> requests.Session`: Build authenticated session from `.env`
 
-- `ping_url(session: requests.Session, url: str) -> dict`:
-  - Performs a GET and returns status, snippet, and ok flag.
+### `codex_tasks_list.py`
+- `get_tasks_list(session, limit: int) -> list[TaskItem]`: Fetch tasks from API
 
-- `poll_urls(session: requests.Session, urls: Sequence[str]) -> list`:
-  - Polls multiple backend endpoints and returns a short result list.
+### `codex_turns.py`
+- `get_turns(session, task_id: str) -> dict`: Get turns for a task
 
-- `save_results(path: str, data: Any)`:
-  - Utility to write poll results (used by `scripts/poll_codex.py`).
+### `codex_create_pr.py`
+- `create_pr_for_turn(session, task_id, turn_id) -> dict`: Create PR via Codex API
 
-## `src/codex_task_runner/cli.py`
+### `json_get.py` / `json_post.py`
+- HTTP helpers with debug logging
 
-- CLI entrypoints and argument parsing for running the task runner.
-- Use the repository `README.md` for examples of invoking the CLI.
+## PR Management (`src/codex_task_runner/pr/`)
+
+### `ensure_prs.py`
+- `ensure_prs(session, tasks) -> dict`: Create PRs for tasks that don't have them
+  - Returns `{"created": int, "skipped": int, "errors": list}`
+
+## GitHub API (`src/codex_task_runner/gh/`)
+
+### `gh_api.py`
+- `list_branches(repo: str, limit: int) -> list`: List branches via `gh` CLI
+- `get_pr(owner: str, repo: str, pr_number: int) -> dict`: Get PR details
+
+## Logging (`src/codex_task_runner/etc/`)
+
+### `get_logger.py`
+- `get_logger(name: str) -> logging.Logger`: Get logger with console + file handlers
+  - Console: INFO level, clean messages
+  - File: DEBUG level, full timestamps to `codex-task-runner.log`
+
+### `set_level.py`
+- `set_level(level: str)`: Set log level (DEBUG/INFO/WARNING/ERROR)
+
+### `log.py`
+- Module-level `log` instance for import
+
+## CLI (`src/codex_task_runner/cli/`)
+
+### `cli.py`
+- `main()`: CLI entrypoint
+- Dispatches to handlers based on subcommand
+
+### `cli_map.json`
+- Command definitions with arguments and flags
 
 ## Other utility modules
 

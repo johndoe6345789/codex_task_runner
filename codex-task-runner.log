@@ -35,3 +35,250 @@
 2025-12-27 22:57:33 [DEBUG] HTTP POST http://example.com/api
 2025-12-27 22:57:33 [DEBUG] HTTP body: None
 2025-12-27 22:57:33 [ERROR] HTTP POST failed: Network error
+2025-12-27 22:57:53 [INFO] Fetching tasks...
+2025-12-27 22:57:53 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/list?limit=20&task_filter=current
+2025-12-27 22:57:53 [DEBUG] HTTP 200 64537 bytes
+2025-12-27 22:57:53 [DEBUG] HTTP JSON keys: ['items', 'cursor']
+2025-12-27 22:57:53 [INFO] Found 20 tasks
+2025-12-27 22:57:53 [INFO] GET turns for task_e_69502ab28bcc8331a29f727e77deb37c: Add base, advanced, and experimental tem
+2025-12-27 22:57:53 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab28bcc8331a29f727e77deb37c/turns
+2025-12-27 22:57:54 [DEBUG] HTTP 200 230249 bytes
+2025-12-27 22:57:54 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:57:54 [DEBUG] Using current_turn_id: task_e_69502ab28bcc8331a29f727e77deb37c~assttrn_e_69502ab39f108331af3dc29e586011fd
+2025-12-27 22:57:54 [INFO] CREATE PR for task_e_69502ab28bcc8331a29f727e77deb37c turn task_e_69502ab28bcc8331a29f727e77deb37c~assttrn_e_69502ab39f108331af3dc29e586011fd
+2025-12-27 22:57:54 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab28bcc8331a29f727e77deb37c/turns/task_e_69502ab28bcc8331a29f727e77deb37c~assttrn_e_69502ab39f108331af3dc29e586011fd/pr
+2025-12-27 22:57:54 [DEBUG] HTTP body: {}
+2025-12-27 22:58:00 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:58:00 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:58:00 [INFO] OK task_e_69502ab28bcc8331a29f727e77deb37c: PR created
+2025-12-27 22:58:00 [INFO] GET turns for task_e_69502ab19e54833183593529fd574f91: Create test files for lua-engine
+2025-12-27 22:58:00 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab19e54833183593529fd574f91/turns
+2025-12-27 22:58:01 [DEBUG] HTTP 200 335429 bytes
+2025-12-27 22:58:01 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:58:01 [DEBUG] Using current_turn_id: task_e_69502ab19e54833183593529fd574f91~assttrn_e_69502ab24a54833189263b19540a6674
+2025-12-27 22:58:01 [INFO] CREATE PR for task_e_69502ab19e54833183593529fd574f91 turn task_e_69502ab19e54833183593529fd574f91~assttrn_e_69502ab24a54833189263b19540a6674
+2025-12-27 22:58:01 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab19e54833183593529fd574f91/turns/task_e_69502ab19e54833183593529fd574f91~assttrn_e_69502ab24a54833189263b19540a6674/pr
+2025-12-27 22:58:01 [DEBUG] HTTP body: {}
+2025-12-27 22:58:09 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:58:09 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:58:09 [INFO] OK task_e_69502ab19e54833183593529fd574f91: PR created
+2025-12-27 22:58:09 [INFO] GET turns for task_e_69502aaff6108331938c52b7eb29b0f3: Add parser and stats files
+2025-12-27 22:58:09 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aaff6108331938c52b7eb29b0f3/turns
+2025-12-27 22:58:10 [DEBUG] HTTP 200 236527 bytes
+2025-12-27 22:58:10 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:58:10 [DEBUG] Using current_turn_id: task_e_69502aaff6108331938c52b7eb29b0f3~assttrn_e_69502ab0ac188331a2e9a91bb8d62b64
+2025-12-27 22:58:10 [INFO] CREATE PR for task_e_69502aaff6108331938c52b7eb29b0f3 turn task_e_69502aaff6108331938c52b7eb29b0f3~assttrn_e_69502ab0ac188331a2e9a91bb8d62b64
+2025-12-27 22:58:10 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aaff6108331938c52b7eb29b0f3/turns/task_e_69502aaff6108331938c52b7eb29b0f3~assttrn_e_69502ab0ac188331a2e9a91bb8d62b64/pr
+2025-12-27 22:58:10 [DEBUG] HTTP body: {}
+2025-12-27 22:58:16 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:58:16 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:58:16 [INFO] OK task_e_69502aaff6108331938c52b7eb29b0f3: PR created
+2025-12-27 22:58:16 [INFO] GET turns for task_e_69502aaeea54833196660733c7b59313: Create builders and mappers files in dba
+2025-12-27 22:58:16 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aaeea54833196660733c7b59313/turns
+2025-12-27 22:58:17 [DEBUG] HTTP 200 234876 bytes
+2025-12-27 22:58:17 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:58:17 [DEBUG] Using current_turn_id: task_e_69502aaeea54833196660733c7b59313~assttrn_e_69502aaf9a98833196865c77eb899d56
+2025-12-27 22:58:17 [INFO] CREATE PR for task_e_69502aaeea54833196660733c7b59313 turn task_e_69502aaeea54833196660733c7b59313~assttrn_e_69502aaf9a98833196865c77eb899d56
+2025-12-27 22:58:17 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aaeea54833196660733c7b59313/turns/task_e_69502aaeea54833196660733c7b59313~assttrn_e_69502aaf9a98833196865c77eb899d56/pr
+2025-12-27 22:58:17 [DEBUG] HTTP body: {}
+2025-12-27 22:58:25 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:58:25 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:58:25 [INFO] OK task_e_69502aaeea54833196660733c7b59313: PR created
+2025-12-27 22:58:25 [INFO] GET turns for task_e_69502aad07348331a0b2b900862522c0: Add base, advanced, and experimental CSS
+2025-12-27 22:58:25 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aad07348331a0b2b900862522c0/turns
+2025-12-27 22:58:26 [DEBUG] HTTP 200 234041 bytes
+2025-12-27 22:58:26 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:58:26 [DEBUG] Using current_turn_id: task_e_69502aad07348331a0b2b900862522c0~assttrn_e_69502aad9dc08331baa4e836f99d59d8
+2025-12-27 22:58:26 [INFO] CREATE PR for task_e_69502aad07348331a0b2b900862522c0 turn task_e_69502aad07348331a0b2b900862522c0~assttrn_e_69502aad9dc08331baa4e836f99d59d8
+2025-12-27 22:58:26 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aad07348331a0b2b900862522c0/turns/task_e_69502aad07348331a0b2b900862522c0~assttrn_e_69502aad9dc08331baa4e836f99d59d8/pr
+2025-12-27 22:58:26 [DEBUG] HTTP body: {}
+2025-12-27 22:58:34 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:58:34 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:58:34 [INFO] OK task_e_69502aad07348331a0b2b900862522c0: PR created
+2025-12-27 22:58:34 [INFO] GET turns for task_e_69502aa9e4f0833195690ee339429145: Create entities and operations exports
+2025-12-27 22:58:34 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa9e4f0833195690ee339429145/turns
+2025-12-27 22:58:35 [DEBUG] HTTP 200 226772 bytes
+2025-12-27 22:58:35 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:58:35 [DEBUG] Using current_turn_id: task_e_69502aa9e4f0833195690ee339429145~assttrn_e_69502aaa9de0833191920d56a5bf39ac
+2025-12-27 22:58:35 [INFO] CREATE PR for task_e_69502aa9e4f0833195690ee339429145 turn task_e_69502aa9e4f0833195690ee339429145~assttrn_e_69502aaa9de0833191920d56a5bf39ac
+2025-12-27 22:58:35 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa9e4f0833195690ee339429145/turns/task_e_69502aa9e4f0833195690ee339429145~assttrn_e_69502aaa9de0833191920d56a5bf39ac/pr
+2025-12-27 22:58:35 [DEBUG] HTTP body: {}
+2025-12-27 22:58:42 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:58:42 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:58:42 [INFO] OK task_e_69502aa9e4f0833195690ee339429145: PR created
+2025-12-27 22:58:42 [INFO] GET turns for task_e_69502aa77f948331ae8800927e1aa84f: Create and organize test files
+2025-12-27 22:58:42 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa77f948331ae8800927e1aa84f/turns
+2025-12-27 22:58:43 [DEBUG] HTTP 200 525699 bytes
+2025-12-27 22:58:43 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:58:43 [DEBUG] Using current_turn_id: task_e_69502aa77f948331ae8800927e1aa84f~assttrn_e_69502aa80fa08331a209ba077ac217f4
+2025-12-27 22:58:43 [INFO] CREATE PR for task_e_69502aa77f948331ae8800927e1aa84f turn task_e_69502aa77f948331ae8800927e1aa84f~assttrn_e_69502aa80fa08331a209ba077ac217f4
+2025-12-27 22:58:43 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa77f948331ae8800927e1aa84f/turns/task_e_69502aa77f948331ae8800927e1aa84f~assttrn_e_69502aa80fa08331a209ba077ac217f4/pr
+2025-12-27 22:58:43 [DEBUG] HTTP body: {}
+2025-12-27 22:58:51 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:58:51 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:58:51 [INFO] OK task_e_69502aa77f948331ae8800927e1aa84f: PR created
+2025-12-27 22:58:51 [INFO] GET turns for task_e_69502aa587208331a4299ccff370639e: Create ToastContainer and config files
+2025-12-27 22:58:51 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa587208331a4299ccff370639e/turns
+2025-12-27 22:58:52 [DEBUG] HTTP 200 185443 bytes
+2025-12-27 22:58:52 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:58:52 [DEBUG] Using current_turn_id: task_e_69502aa587208331a4299ccff370639e~assttrn_e_69502aa6290c833180c5a0f7a6dfb574
+2025-12-27 22:58:52 [INFO] CREATE PR for task_e_69502aa587208331a4299ccff370639e turn task_e_69502aa587208331a4299ccff370639e~assttrn_e_69502aa6290c833180c5a0f7a6dfb574
+2025-12-27 22:58:52 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa587208331a4299ccff370639e/turns/task_e_69502aa587208331a4299ccff370639e~assttrn_e_69502aa6290c833180c5a0f7a6dfb574/pr
+2025-12-27 22:58:52 [DEBUG] HTTP body: {}
+2025-12-27 22:58:59 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:58:59 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:58:59 [INFO] OK task_e_69502aa587208331a4299ccff370639e: PR created
+2025-12-27 22:58:59 [INFO] GET turns for task_e_69502aa2a1a88331af8a1b58d9de9280: Add MenuItemList, Header, and NavSection
+2025-12-27 22:58:59 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa2a1a88331af8a1b58d9de9280/turns
+2025-12-27 22:59:00 [DEBUG] HTTP 200 276106 bytes
+2025-12-27 22:59:00 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:59:00 [DEBUG] Using current_turn_id: task_e_69502aa2a1a88331af8a1b58d9de9280~assttrn_e_69502aa364b88331a78d05e989c9136c
+2025-12-27 22:59:00 [INFO] CREATE PR for task_e_69502aa2a1a88331af8a1b58d9de9280 turn task_e_69502aa2a1a88331af8a1b58d9de9280~assttrn_e_69502aa364b88331a78d05e989c9136c
+2025-12-27 22:59:00 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa2a1a88331af8a1b58d9de9280/turns/task_e_69502aa2a1a88331af8a1b58d9de9280~assttrn_e_69502aa364b88331a78d05e989c9136c/pr
+2025-12-27 22:59:00 [DEBUG] HTTP body: {}
+2025-12-27 22:59:08 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:59:08 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:59:08 [INFO] OK task_e_69502aa2a1a88331af8a1b58d9de9280: PR created
+2025-12-27 22:59:08 [INFO] GET turns for task_e_69502aa139fc8331b62d798fecd83acd: Split components into separate files
+2025-12-27 22:59:08 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa139fc8331b62d798fecd83acd/turns
+2025-12-27 22:59:09 [DEBUG] HTTP 200 333672 bytes
+2025-12-27 22:59:09 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:59:09 [DEBUG] Using current_turn_id: task_e_69502aa139fc8331b62d798fecd83acd~assttrn_e_69502aa1aac883318fb28abd15513b21
+2025-12-27 22:59:09 [INFO] CREATE PR for task_e_69502aa139fc8331b62d798fecd83acd turn task_e_69502aa139fc8331b62d798fecd83acd~assttrn_e_69502aa1aac883318fb28abd15513b21
+2025-12-27 22:59:09 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa139fc8331b62d798fecd83acd/turns/task_e_69502aa139fc8331b62d798fecd83acd~assttrn_e_69502aa1aac883318fb28abd15513b21/pr
+2025-12-27 22:59:09 [DEBUG] HTTP body: {}
+2025-12-27 22:59:17 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:59:17 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:59:17 [INFO] OK task_e_69502aa139fc8331b62d798fecd83acd: PR created
+2025-12-27 22:59:17 [INFO] GET turns for task_e_69502aa097688331be87c07387e5eace: Create FieldGroup and ValidationSummary 
+2025-12-27 22:59:17 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa097688331be87c07387e5eace/turns
+2025-12-27 22:59:18 [DEBUG] HTTP 200 273628 bytes
+2025-12-27 22:59:18 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:59:18 [DEBUG] Using current_turn_id: task_e_69502aa097688331be87c07387e5eace~assttrn_e_69502aa1208c8331a628d5f5316cdef4
+2025-12-27 22:59:18 [INFO] CREATE PR for task_e_69502aa097688331be87c07387e5eace turn task_e_69502aa097688331be87c07387e5eace~assttrn_e_69502aa1208c8331a628d5f5316cdef4
+2025-12-27 22:59:18 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502aa097688331be87c07387e5eace/turns/task_e_69502aa097688331be87c07387e5eace~assttrn_e_69502aa1208c8331a628d5f5316cdef4/pr
+2025-12-27 22:59:18 [DEBUG] HTTP body: {}
+2025-12-27 22:59:27 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:59:27 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:59:27 [INFO] OK task_e_69502aa097688331be87c07387e5eace: PR created
+2025-12-27 22:59:27 [INFO] GET turns for task_e_69502a9f61008331ada239358136de84: Add Dialog and DropdownMenu components
+2025-12-27 22:59:27 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9f61008331ada239358136de84/turns
+2025-12-27 22:59:28 [DEBUG] HTTP 200 351428 bytes
+2025-12-27 22:59:28 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:59:28 [DEBUG] Using current_turn_id: task_e_69502a9f61008331ada239358136de84~assttrn_e_69502aa0226c83319324df659caabcaa
+2025-12-27 22:59:28 [INFO] CREATE PR for task_e_69502a9f61008331ada239358136de84 turn task_e_69502a9f61008331ada239358136de84~assttrn_e_69502aa0226c83319324df659caabcaa
+2025-12-27 22:59:28 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9f61008331ada239358136de84/turns/task_e_69502a9f61008331ada239358136de84~assttrn_e_69502aa0226c83319324df659caabcaa/pr
+2025-12-27 22:59:28 [DEBUG] HTTP body: {}
+2025-12-27 22:59:36 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:59:36 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:59:36 [INFO] OK task_e_69502a9f61008331ada239358136de84: PR created
+2025-12-27 22:59:36 [INFO] GET turns for task_e_69502a9e1ea483319bb6f850c81e9b9a: Create core, overlay, and data exports
+2025-12-27 22:59:36 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9e1ea483319bb6f850c81e9b9a/turns
+2025-12-27 22:59:37 [DEBUG] HTTP 200 178311 bytes
+2025-12-27 22:59:37 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:59:37 [DEBUG] Using current_turn_id: task_e_69502a9e1ea483319bb6f850c81e9b9a~assttrn_e_69502a9e9db08331a5da78b2d0385867
+2025-12-27 22:59:37 [INFO] CREATE PR for task_e_69502a9e1ea483319bb6f850c81e9b9a turn task_e_69502a9e1ea483319bb6f850c81e9b9a~assttrn_e_69502a9e9db08331a5da78b2d0385867
+2025-12-27 22:59:37 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9e1ea483319bb6f850c81e9b9a/turns/task_e_69502a9e1ea483319bb6f850c81e9b9a~assttrn_e_69502a9e9db08331a5da78b2d0385867/pr
+2025-12-27 22:59:37 [DEBUG] HTTP body: {}
+2025-12-27 22:59:47 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:59:47 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:59:47 [INFO] OK task_e_69502a9e1ea483319bb6f850c81e9b9a: PR created
+2025-12-27 22:59:47 [INFO] GET turns for task_e_69502a9d2f7c83319d7cae71b93aa20a: Create FieldTypes, PropertyPanels, and R
+2025-12-27 22:59:47 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9d2f7c83319d7cae71b93aa20a/turns
+2025-12-27 22:59:48 [DEBUG] HTTP 200 340820 bytes
+2025-12-27 22:59:48 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:59:48 [DEBUG] Using current_turn_id: task_e_69502a9d2f7c83319d7cae71b93aa20a~assttrn_e_69502a9dae2c83318c7b0921adda8de0
+2025-12-27 22:59:48 [INFO] CREATE PR for task_e_69502a9d2f7c83319d7cae71b93aa20a turn task_e_69502a9d2f7c83319d7cae71b93aa20a~assttrn_e_69502a9dae2c83318c7b0921adda8de0
+2025-12-27 22:59:48 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9d2f7c83319d7cae71b93aa20a/turns/task_e_69502a9d2f7c83319d7cae71b93aa20a~assttrn_e_69502a9dae2c83318c7b0921adda8de0/pr
+2025-12-27 22:59:48 [DEBUG] HTTP body: {}
+2025-12-27 22:59:56 [DEBUG] HTTP 200 21 bytes
+2025-12-27 22:59:56 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 22:59:56 [INFO] OK task_e_69502a9d2f7c83319d7cae71b93aa20a: PR created
+2025-12-27 22:59:56 [INFO] GET turns for task_e_69502a9b89cc83318c1a3297b48c2875: Add SecurityMessage and ActionButtons co
+2025-12-27 22:59:56 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9b89cc83318c1a3297b48c2875/turns
+2025-12-27 22:59:57 [DEBUG] HTTP 200 210043 bytes
+2025-12-27 22:59:57 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 22:59:57 [DEBUG] Using current_turn_id: task_e_69502a9b89cc83318c1a3297b48c2875~assttrn_e_69502a9d1fc483319d3e2434e99c7a11
+2025-12-27 22:59:57 [INFO] CREATE PR for task_e_69502a9b89cc83318c1a3297b48c2875 turn task_e_69502a9b89cc83318c1a3297b48c2875~assttrn_e_69502a9d1fc483319d3e2434e99c7a11
+2025-12-27 22:59:57 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9b89cc83318c1a3297b48c2875/turns/task_e_69502a9b89cc83318c1a3297b48c2875~assttrn_e_69502a9d1fc483319d3e2434e99c7a11/pr
+2025-12-27 22:59:57 [DEBUG] HTTP body: {}
+2025-12-27 23:00:08 [DEBUG] HTTP 200 21 bytes
+2025-12-27 23:00:08 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 23:00:08 [INFO] OK task_e_69502a9b89cc83318c1a3297b48c2875: PR created
+2025-12-27 23:00:08 [INFO] GET turns for task_e_69502a9a1464833198ce1e1410bcf164: Create NerdModeIDE components and hooks
+2025-12-27 23:00:08 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9a1464833198ce1e1410bcf164/turns
+2025-12-27 23:00:09 [DEBUG] HTTP 200 287636 bytes
+2025-12-27 23:00:09 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 23:00:09 [DEBUG] Using current_turn_id: task_e_69502a9a1464833198ce1e1410bcf164~assttrn_e_69502a9ad1188331b63d470c63ff37e1
+2025-12-27 23:00:09 [INFO] CREATE PR for task_e_69502a9a1464833198ce1e1410bcf164 turn task_e_69502a9a1464833198ce1e1410bcf164~assttrn_e_69502a9ad1188331b63d470c63ff37e1
+2025-12-27 23:00:09 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9a1464833198ce1e1410bcf164/turns/task_e_69502a9a1464833198ce1e1410bcf164~assttrn_e_69502a9ad1188331b63d470c63ff37e1/pr
+2025-12-27 23:00:09 [DEBUG] HTTP body: {}
+2025-12-27 23:00:19 [DEBUG] HTTP 200 21 bytes
+2025-12-27 23:00:19 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 23:00:19 [INFO] OK task_e_69502a9a1464833198ce1e1410bcf164: PR created
+2025-12-27 23:00:19 [INFO] GET turns for task_e_69502a980474833180017aaa92b1f927: Add dialog header, body, and footer comp
+2025-12-27 23:00:19 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a980474833180017aaa92b1f927/turns
+2025-12-27 23:00:19 [DEBUG] HTTP 200 238060 bytes
+2025-12-27 23:00:19 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 23:00:19 [DEBUG] Using current_turn_id: task_e_69502a980474833180017aaa92b1f927~assttrn_e_69502a988f788331b3188737baac7852
+2025-12-27 23:00:19 [INFO] CREATE PR for task_e_69502a980474833180017aaa92b1f927 turn task_e_69502a980474833180017aaa92b1f927~assttrn_e_69502a988f788331b3188737baac7852
+2025-12-27 23:00:19 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a980474833180017aaa92b1f927/turns/task_e_69502a980474833180017aaa92b1f927~assttrn_e_69502a988f788331b3188737baac7852/pr
+2025-12-27 23:00:19 [DEBUG] HTTP body: {}
+2025-12-27 23:00:27 [DEBUG] HTTP 200 21 bytes
+2025-12-27 23:00:27 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 23:00:27 [INFO] OK task_e_69502a980474833180017aaa92b1f927: PR created
+2025-12-27 23:00:27 [INFO] GET turns for task_e_69502a963cec8331b4f54862cce0a653: Create new components for viewers
+2025-12-27 23:00:27 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a963cec8331b4f54862cce0a653/turns
+2025-12-27 23:00:28 [DEBUG] HTTP 200 335863 bytes
+2025-12-27 23:00:28 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 23:00:28 [DEBUG] Using current_turn_id: task_e_69502a963cec8331b4f54862cce0a653~assttrn_e_69502a96ce908331a5cd3b43386cfc92
+2025-12-27 23:00:28 [INFO] CREATE PR for task_e_69502a963cec8331b4f54862cce0a653 turn task_e_69502a963cec8331b4f54862cce0a653~assttrn_e_69502a96ce908331a5cd3b43386cfc92
+2025-12-27 23:00:28 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a963cec8331b4f54862cce0a653/turns/task_e_69502a963cec8331b4f54862cce0a653~assttrn_e_69502a96ce908331a5cd3b43386cfc92/pr
+2025-12-27 23:00:28 [DEBUG] HTTP body: {}
+2025-12-27 23:00:35 [DEBUG] HTTP 200 21 bytes
+2025-12-27 23:00:35 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 23:00:35 [INFO] OK task_e_69502a963cec8331b4f54862cce0a653: PR created
+2025-12-27 23:00:35 [INFO] GET turns for task_e_69502a9576508331b35ec05822a48246: Refactor workflow files and components
+2025-12-27 23:00:35 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9576508331b35ec05822a48246/turns
+2025-12-27 23:00:36 [DEBUG] HTTP 200 475157 bytes
+2025-12-27 23:00:36 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 23:00:36 [DEBUG] Using current_turn_id: task_e_69502a9576508331b35ec05822a48246~assttrn_e_69502a95f5ec833196eae26b501870c3
+2025-12-27 23:00:36 [INFO] CREATE PR for task_e_69502a9576508331b35ec05822a48246 turn task_e_69502a9576508331b35ec05822a48246~assttrn_e_69502a95f5ec833196eae26b501870c3
+2025-12-27 23:00:36 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a9576508331b35ec05822a48246/turns/task_e_69502a9576508331b35ec05822a48246~assttrn_e_69502a95f5ec833196eae26b501870c3/pr
+2025-12-27 23:00:36 [DEBUG] HTTP body: {}
+2025-12-27 23:00:45 [DEBUG] HTTP 200 21 bytes
+2025-12-27 23:00:45 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 23:00:45 [INFO] OK task_e_69502a9576508331b35ec05822a48246: PR created
+2025-12-27 23:00:45 [INFO] GET turns for task_e_69502a93233c83318491415651c66d14: Create dbal and irc modules and componen
+2025-12-27 23:00:45 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/task_e_69502a93233c83318491415651c66d14/turns
+2025-12-27 23:00:46 [DEBUG] HTTP 200 632049 bytes
+2025-12-27 23:00:46 [DEBUG] HTTP JSON keys: ['turn_mapping', 'current_turn_id']
+2025-12-27 23:00:46 [DEBUG] Using current_turn_id: task_e_69502a93233c83318491415651c66d14~assttrn_e_69502a93b2f88331b7191df143047a65
+2025-12-27 23:00:46 [INFO] CREATE PR for task_e_69502a93233c83318491415651c66d14 turn task_e_69502a93233c83318491415651c66d14~assttrn_e_69502a93b2f88331b7191df143047a65
+2025-12-27 23:00:46 [DEBUG] HTTP POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502a93233c83318491415651c66d14/turns/task_e_69502a93233c83318491415651c66d14~assttrn_e_69502a93b2f88331b7191df143047a65/pr
+2025-12-27 23:00:46 [DEBUG] HTTP body: {}
+2025-12-27 23:00:54 [DEBUG] HTTP 200 21 bytes
+2025-12-27 23:00:54 [DEBUG] HTTP JSON keys: ['success']
+2025-12-27 23:00:54 [INFO] OK task_e_69502a93233c83318491415651c66d14: PR created
+2025-12-27 23:00:54 [INFO] PRs: 20 created, 0 already had PR
+2025-12-27 23:00:54 [INFO] Starting merge process...
+2025-12-27 23:00:54 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/list?limit=20&task_filter=current
+2025-12-27 23:00:54 [DEBUG] HTTP 200 99022 bytes
+2025-12-27 23:00:54 [DEBUG] HTTP JSON keys: ['items', 'cursor']
+2025-12-27 23:01:00 [INFO] Done: {'processed': 20, 'dry_run': False, 'yolo': True, 'prs_created': 20}
+2025-12-27 23:01:33 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:01:33 [DEBUG] HTTP 200 0 bytes
+2025-12-27 23:01:33 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:01:33 [ERROR] HTTP PING failed: Connection error
+2025-12-27 23:01:33 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:01:33 [DEBUG] HTTP <MagicMock name='mock.get().status_code' id='4490442608'> 0 bytes
+2025-12-27 23:01:33 [DEBUG] HTTP JSON keys: ['key']
+2025-12-27 23:01:33 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:01:33 [ERROR] HTTP GET failed: Network error
+2025-12-27 23:01:33 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:01:33 [DEBUG] HTTP body: {'input': 'test'}
+2025-12-27 23:01:33 [DEBUG] HTTP <MagicMock name='mock.post().status_code' id='4492462128'> 0 bytes
+2025-12-27 23:01:33 [DEBUG] HTTP JSON keys: ['result']
+2025-12-27 23:01:33 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:01:33 [DEBUG] HTTP body: None
+2025-12-27 23:01:33 [ERROR] HTTP POST failed: Network error

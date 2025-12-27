@@ -1,13 +1,16 @@
-# Codex Task Runner (JSON-driven)
+# Codex Task Runner
 
-This tool consumes a Codex tasks JSON payload (like the one you pasted), and for each task:
+CLI tool for automating Codex Cloud tasks: fetch tasks, create PRs via Codex API, and merge them.
 
-1. Determines the target GitHub repo from `task_status_display.environment_label`.
-2. Ensures there is an open pull request for the task:
-   - If the task already includes PR metadata in `pull_requests`, it uses that PR number.
-   - Otherwise, it attempts to discover the Codex-created branch and opens a PR with `gh pr create`.
-3. Merges the PR if it is clean (mergeable with no conflicts), and optionally if checks are green.
-4. Moves on to the next task.
+## Features
+
+- **yolo mode**: Full automation - creates PRs for tasks without them, then merges all
+- **run**: Process tasks from Codex API with merge options
+- **ping**: Test Codex API connectivity
+- **tasks**: List tasks from Codex Cloud
+- **task**: Get details for a specific task
+- **turns**: Get conversation turns for a task
+- **poll**: Poll multiple endpoints
 
 ## Requirements
 
@@ -15,46 +18,80 @@ This tool consumes a Codex tasks JSON payload (like the one you pasted), and for
 - GitHub CLI `gh` on PATH, authenticated:
   - `gh auth login`
   - `gh auth status`
+- `.env` file with Codex session cookies (see `env.template`)
 
 ## Install
 
 ```bash
-python -m venv .venv
-. .venv/bin/activate  # Windows: .venv\Scripts\activate
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 python -m pip install -e .
 ```
 
-## Usage
+## Quick Start
 
-Input can be a file path or `-` for stdin:
-
-```bash
-codex-task-runner process --input tasks.json
-cat tasks.json | codex-task-runner process --input -
-```
-
-Require checks to be green before merge:
+Full automation (create PRs + merge all tasks):
 
 ```bash
-codex-task-runner process --input tasks.json --require-checks
+codex-task-runner yolo
+codex-task-runner yolo -v  # verbose - shows HTTP traffic
 ```
 
-Dry run (no PR creation/merge, only prints actions):
+## Commands
+
+### yolo - Full Automation
 
 ```bash
-codex-task-runner process --input tasks.json --dry-run
+codex-task-runner yolo           # Create PRs for tasks without them, merge all
+codex-task-runner yolo -v        # Verbose mode (debug logging to console)
 ```
 
-## Branch discovery (when pull_requests is empty)
+### run - Process Tasks
 
-The Codex payload doesn't always include the head branch name. The runner tries:
+```bash
+codex-task-runner run                    # Process tasks, prompt before merge
+codex-task-runner run --yolo             # Auto-merge without prompts
+codex-task-runner run --dry-run          # Show what would happen
+codex-task-runner run --require-checks   # Only merge if CI passes
+```
 
-- `codex/<slugified-title>`
-- Other `codex/*` branches that loosely match the title words
-- A fallback search by task id suffix
+### Other Commands
 
-If it cannot find a matching branch, it logs a SKIP for that task.
+```bash
+codex-task-runner ping              # Test API connectivity
+codex-task-runner tasks             # List all tasks
+codex-task-runner task <task_id>    # Get task details
+codex-task-runner turns <task_id>   # Get task turns
+```
 
-## Output
+## Logging
 
-Logs are written to a run directory under your OS temp folder unless `--output-dir` is set.
+- **Console**: Clean, friendly messages (INFO level)
+- **File**: Full debug output with timestamps to `codex-task-runner.log`
+- Set `CODEX_LOG_FILE` env var to change log file path
+- Use `-v` flag with yolo for verbose console output
+
+## Environment Setup
+
+Copy `env.template` to `.env` and fill in your Codex session cookies:
+
+```bash
+cp env.template .env
+# Edit .env with your session values
+```
+
+## Architecture
+
+Single-function-per-file design:
+
+```
+src/codex_task_runner/
+├── cli/          # CLI parsing and dispatch
+├── codex/        # Codex API clients (tasks, turns, PRs)
+├── gh/           # GitHub API helpers
+├── pr/           # PR creation and management
+├── handlers/     # Command handlers (yolo, run, ping, etc.)
+├── etc/          # Utilities (logging, config, text)
+├── proc/         # Process/subprocess helpers
+└── runner/       # Core runner logic
+```
