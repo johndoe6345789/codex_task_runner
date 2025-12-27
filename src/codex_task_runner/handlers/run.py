@@ -4,7 +4,8 @@ from ..codex.codex_tasks_list import get_tasks_list
 
 
 def handle(args: Any, session) -> dict:
-    from ..runner.runner import make_config, process_tasks
+    from ..runner.do_process_tasks import process_tasks
+    from ..etc.make_config import make_config
 
     tasks = get_tasks_list(session, limit=20)
     if not tasks:
