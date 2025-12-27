@@ -73,6 +73,15 @@
         {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Show what would happen without doing it"}},
         {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
       ]
+    },
+    {
+      "name": "dedup-prs",
+      "help": "Find and close duplicate PRs, keeping the newest",
+      "handler": "codex_task_runner.handlers.dedup_prs",
+      "args": [
+        {"flags": ["--repo"], "kwargs": {"default": "johndoe6345789/metabuilder", "help": "Repository to check"}},
+        {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Show duplicates without closing"}}
+      ]
     }
   ]
 }

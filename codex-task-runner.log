@@ -344,3 +344,185 @@
 2025-12-27 23:12:50 [DEBUG] HTTP POST http://example.com/api
 2025-12-27 23:12:50 [DEBUG] HTTP body: None
 2025-12-27 23:12:50 [ERROR] HTTP POST failed: Network error
+2025-12-27 23:15:30 [INFO] Fetching open PRs for johndoe6345789/metabuilder...
+2025-12-27 23:15:31 [INFO] Found 48 open PRs
+2025-12-27 23:15:31 [INFO] Found 20 sets of duplicate PRs:
+2025-12-27 23:15:31 [INFO] 
+'feat: add dbal client builders and integration entry...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #345 (codex/create-builders-and-mappers-files-in-dbal/core/client-gzxzd7)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #325
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #305
+2025-12-27 23:15:31 [INFO] 
+'Refactor workflow run analysis helpers...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #344 (codex/add-parser-and-stats-files-x6dbnx)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #324
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #304
+2025-12-27 23:15:31 [INFO] 
+'Split lua-engine tests into execution and events suites...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #343 (codex/create-test-files-for-lua-engine-km67a5)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #323
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #303
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #300
+2025-12-27 23:15:31 [INFO] 
+'Modularize template config structure...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #342 (codex/add-base,-advanced,-and-experimental-templates-fz9bp1)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #322
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #302
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #301
+2025-12-27 23:15:31 [INFO] 
+'Modularize demo UIs for DBAL, IRC chat, and screenshot analy...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #341 (codex/create-dbal-and-irc-modules-and-components-mloc44)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #321
+2025-12-27 23:15:31 [INFO] 
+'Refactor GitHub Actions fetcher hooks and run list layout...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #340 (codex/refactor-workflow-files-and-components-rxe21p)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #320
+2025-12-27 23:15:31 [INFO] 
+'Add viewer filter and detail components...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #339 (codex/create-new-components-for-viewers-pvcc7s)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #319
+2025-12-27 23:15:31 [INFO] 
+'Refactor dialog molecule subcomponents...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #338 (codex/add-dialog-header,-body,-and-footer-components-xttcz7)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #318
+2025-12-27 23:15:31 [INFO] 
+'Refactor NerdModeIDE into modular components...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #337 (codex/create-nerdmodeide-components-and-hooks-wf8pyj)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #317
+2025-12-27 23:15:31 [INFO] 
+'Refactor security warning dialog components...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #336 (codex/add-securitymessage-and-actionbuttons-components-bctjgn)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #316
+2025-12-27 23:15:31 [INFO] 
+'Refactor rendering components into modular panels...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #335 (codex/create-fieldtypes,-propertypanels,-and-rendernode-files-ufu1c8)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #315
+2025-12-27 23:15:31 [INFO] 
+'Add UI subset barrels and streamline UI index exports...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #334 (codex/create-core,-overlay,-and-data-exports-54e96s)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #314
+2025-12-27 23:15:31 [INFO] 
+'Add dropdown state hook and dialog sections...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #333 (codex/add-dialog-and-dropdownmenu-components-sirirg)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #313
+2025-12-27 23:15:31 [INFO] 
+'Add shared data form and table components...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #332 (codex/create-fieldgroup-and-validationsummary-components-5r3i5s)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #312
+2025-12-27 23:15:31 [INFO] 
+'Split dialog components into smaller modules...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #331 (codex/split-components-into-separate-files-5h3pqi)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #311
+2025-12-27 23:15:31 [INFO] 
+'Refactor sidebar navigation components into smaller files...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #330 (codex/add-menuitemlist,-header,-and-navsections-le7c32)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #310
+2025-12-27 23:15:31 [INFO] 
+'Refactor sonner toast components...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #329 (codex/create-toastcontainer-and-config-files-u80qjb)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #309
+2025-12-27 23:15:31 [INFO] 
+'test: reorganize hook tests...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #328 (codex/create-and-organize-test-files-a02kqy)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #308
+2025-12-27 23:15:31 [INFO] 
+'refactor: add db core barrel exports...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #327 (codex/create-entities-and-operations-exports-r6tst8)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #307
+2025-12-27 23:15:31 [INFO] 
+'Organize CSS category seed data...'
+2025-12-27 23:15:31 [INFO]   Keep: PR #326 (codex/add-base,-advanced,-and-experimental-css-files-nyw88g)
+2025-12-27 23:15:31 [INFO]   [DRY RUN] Would close PR #306
+2025-12-27 23:15:31 [INFO] 
+Summary: Kept 20 PRs, closed 26 duplicates
+2025-12-27 23:15:35 [INFO] Fetching open PRs for johndoe6345789/metabuilder...
+2025-12-27 23:15:36 [INFO] Found 48 open PRs
+2025-12-27 23:15:36 [INFO] Found 20 sets of duplicate PRs:
+2025-12-27 23:15:36 [INFO] 
+'feat: add dbal client builders and integration entry...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #345 (codex/create-builders-and-mappers-files-in-dbal/core/client-gzxzd7)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #325
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #305
+2025-12-27 23:15:36 [INFO] 
+'Refactor workflow run analysis helpers...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #344 (codex/add-parser-and-stats-files-x6dbnx)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #324
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #304
+2025-12-27 23:15:36 [INFO] 
+'Split lua-engine tests into execution and events suites...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #343 (codex/create-test-files-for-lua-engine-km67a5)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #323
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #303
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #300
+2025-12-27 23:15:36 [INFO] 
+'Modularize template config structure...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #342 (codex/add-base,-advanced,-and-experimental-templates-fz9bp1)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #322
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #302
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #301
+2025-12-27 23:15:36 [INFO] 
+'Modularize demo UIs for DBAL, IRC chat, and screenshot analy...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #341 (codex/create-dbal-and-irc-modules-and-components-mloc44)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #321
+2025-12-27 23:15:36 [INFO] 
+'Refactor GitHub Actions fetcher hooks and run list layout...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #340 (codex/refactor-workflow-files-and-components-rxe21p)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #320
+2025-12-27 23:15:36 [INFO] 
+'Add viewer filter and detail components...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #339 (codex/create-new-components-for-viewers-pvcc7s)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #319
+2025-12-27 23:15:36 [INFO] 
+'Refactor dialog molecule subcomponents...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #338 (codex/add-dialog-header,-body,-and-footer-components-xttcz7)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #318
+2025-12-27 23:15:36 [INFO] 
+'Refactor NerdModeIDE into modular components...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #337 (codex/create-nerdmodeide-components-and-hooks-wf8pyj)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #317
+2025-12-27 23:15:36 [INFO] 
+'Refactor security warning dialog components...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #336 (codex/add-securitymessage-and-actionbuttons-components-bctjgn)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #316
+2025-12-27 23:15:36 [INFO] 
+'Refactor rendering components into modular panels...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #335 (codex/create-fieldtypes,-propertypanels,-and-rendernode-files-ufu1c8)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #315
+2025-12-27 23:15:36 [INFO] 
+'Add UI subset barrels and streamline UI index exports...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #334 (codex/create-core,-overlay,-and-data-exports-54e96s)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #314
+2025-12-27 23:15:36 [INFO] 
+'Add dropdown state hook and dialog sections...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #333 (codex/add-dialog-and-dropdownmenu-components-sirirg)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #313
+2025-12-27 23:15:36 [INFO] 
+'Add shared data form and table components...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #332 (codex/create-fieldgroup-and-validationsummary-components-5r3i5s)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #312
+2025-12-27 23:15:36 [INFO] 
+'Split dialog components into smaller modules...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #331 (codex/split-components-into-separate-files-5h3pqi)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #311
+2025-12-27 23:15:36 [INFO] 
+'Refactor sidebar navigation components into smaller files...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #330 (codex/add-menuitemlist,-header,-and-navsections-le7c32)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #310
+2025-12-27 23:15:36 [INFO] 
+'Refactor sonner toast components...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #329 (codex/create-toastcontainer-and-config-files-u80qjb)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #309
+2025-12-27 23:15:36 [INFO] 
+'test: reorganize hook tests...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #328 (codex/create-and-organize-test-files-a02kqy)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #308
+2025-12-27 23:15:36 [INFO] 
+'refactor: add db core barrel exports...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #327 (codex/create-entities-and-operations-exports-r6tst8)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #307
+2025-12-27 23:15:36 [INFO] 
+'Organize CSS category seed data...'
+2025-12-27 23:15:36 [INFO]   Keep: PR #326 (codex/add-base,-advanced,-and-experimental-css-files-nyw88g)
+2025-12-27 23:15:36 [INFO]   [DRY RUN] Would close PR #306
+2025-12-27 23:15:36 [INFO] 
+Summary: Kept 20 PRs, closed 26 duplicates
