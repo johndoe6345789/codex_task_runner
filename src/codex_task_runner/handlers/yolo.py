@@ -22,7 +22,7 @@ def handle(args: Any, session) -> dict:
         return {"processed": 0, "error": "no tasks"}
     
     log.info(f"Found {len(tasks)} tasks")
-    pr_result = _ensure_prs(session, tasks)
+    pr_result = ensure_prs(session, tasks)
     log.info(f"PRs: {pr_result['created']} created, {pr_result['skipped']} already had PR")
     if pr_result['errors']:
         log.warning(f"Errors: {pr_result['errors']}")
