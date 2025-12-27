@@ -1,21 +1,6 @@
-from __future__ import annotations
+"""Re-exports for backwards compatibility."""
 
-from typing import Optional
+from .json_get import json_get as _json_get
+from .json_post import json_post as _json_post
 
-
-def _json_get(session, url: str, **kwargs) -> Optional[dict]:
-    try:
-        r = session.get(url, **kwargs)
-        r.raise_for_status()
-        return r.json()
-    except Exception:
-        return None
-
-
-def _json_post(session, url: str, data=None, **kwargs) -> Optional[dict]:
-    try:
-        r = session.post(url, json=data or {}, **kwargs)
-        r.raise_for_status()
-        return r.json()
-    except Exception:
-        return None
+__all__ = ["_json_get", "_json_post"]

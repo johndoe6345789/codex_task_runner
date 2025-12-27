@@ -1,17 +1,6 @@
-from __future__ import annotations
+"""Re-exports for backwards compatibility."""
 
-from typing import Any, List
+from .parse_tasks import parse_tasks
+from .load_tasks import load_tasks
 
-from .codex_parse_item import parse_item
-
-
-def parse_tasks(obj: Any) -> List:
-    items = obj.get("items") or []
-    return [parse_item(i) for i in items if isinstance(i, dict)]
-
-
-def load_tasks(raw: str) -> List:
-    import json
-
-    obj = json.loads(raw)
-    return parse_tasks(obj)
+__all__ = ["parse_tasks", "load_tasks"]
