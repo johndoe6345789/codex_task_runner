@@ -7,7 +7,7 @@ Files with cohesive, related functions are acceptable and marked as such.
 
 | Count | File | Status |
 |-------|------|--------|
-| 7 | [src/codex_task_runner/cli/cli_clean_impl.py](../src/codex_task_runner/cli/cli_clean_impl.py) | ✅ Refactored - delegates to handlers |
+| 7 | [src/codex_task_runner/cli/cli_commands.py](../src/codex_task_runner/cli/cli_commands.py) | ✅ Refactored - delegates to handlers |
 | 7 | [src/codex_task_runner/process/process_one.py](../src/codex_task_runner/process/process_one.py) | ✅ Cohesive - all functions work together for task processing |
 | 7 | [src/codex_task_runner/runner/runner_core.py](../src/codex_task_runner/runner/runner_core.py) | ✅ Refactored - Config moved to etc/config.py |
 
@@ -19,7 +19,7 @@ These files have multiple functions that belong together:
 - **4:** [src/codex_task_runner/branch/branch_fuzzy.py](../src/codex_task_runner/branch/branch_fuzzy.py) — Fuzzy branch matching functions
 - **4:** [src/codex_task_runner/gh/gh_api_graphql.py](../src/codex_task_runner/gh/gh_api_graphql.py) — GraphQL query and parsing
 - **3:** [src/codex_task_runner/gh/gh_api_helpers.py](../src/codex_task_runner/gh/gh_api_helpers.py) — Low-level API helpers
-- **2:** [src/codex_task_runner/cli/cli_clean.py](../src/codex_task_runner/cli/cli_clean.py) — Parser and main entry point
+- **2:** [src/codex_task_runner/cli/cli_legacy.py](../src/codex_task_runner/cli/cli_legacy.py) — Legacy parser and main entry point
 - **2:** [src/codex_task_runner/codex/codex_http.py](../src/codex_task_runner/codex/codex_http.py) — HTTP GET/POST helpers
 - **2:** [src/codex_task_runner/codex/codex_parse_prs.py](../src/codex_task_runner/codex/codex_parse_prs.py) — PR number extraction
 - **2:** [src/codex_task_runner/codex/codex_parse_tasks.py](../src/codex_task_runner/codex/codex_parse_tasks.py) — Task parsing functions
@@ -32,5 +32,6 @@ These files have multiple functions that belong together:
 1. **runner_core.py**: Removed duplicate `Config` class, now imports from `etc/config.py`
 2. **runner.py**: Simplified to re-export from `runner_core` and `etc/config`
 3. **runner_io.py**: Now uses `process_format.py` for formatting, no duplication
-4. **cli_clean_impl.py**: Delegates to handler modules instead of duplicating logic
+4. **cli_commands.py**: Delegates to handler modules instead of duplicating logic (renamed from cli_clean_impl.py)
 5. **handlers/**: Fixed import paths to use `codex.codex_cloud` correctly
+6. **cli_clean.py → cli_legacy.py**: Renamed to clarify it's the legacy CLI approach

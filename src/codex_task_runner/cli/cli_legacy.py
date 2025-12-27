@@ -6,7 +6,7 @@ import json
 from typing import Optional, List
 
 from codex_task_runner.codex.codex_cloud import session_from_env
-from .cli_clean_impl import (
+from .cli_commands import (
     ping_cmd,
     poll_cmd,
     tasks_cmd,
@@ -18,7 +18,7 @@ from .cli_clean_impl import (
 
 
 def make_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="codex-runner-clean")
+    p = argparse.ArgumentParser(prog="codex-runner")
     p.add_argument("--env", default=".env", help="Path to .env with cookies/tokens")
     sub = p.add_subparsers(dest="cmd")
 

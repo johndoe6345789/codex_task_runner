@@ -16,7 +16,7 @@ Top-level layout:
 Key folders under `src/codex_task_runner/`:
 
 - `branch/` — branch discovery utilities (e.g., `branch_finder.py`, `find_head_branch.py`).
-- `cli/` — CLI implementation and parser (`cli.py`, `cli_parser.py`, `cli_clean.py`).
+- `cli/` — CLI implementation and parser (`cli.py`, `cli_parser.py`, `cli_commands.py`).
 - `codex/` — core Codex/cloud integration modules handling API, sessions, parsing and polling (many `codex_*.py` files).
 - `etc/` — misc utilities and helpers (`config.py`, `fsutil.py`, `runner.py`, `task_ref.py`, `textutil.py`).
 - `gh/` — GitHub API wrapper and helpers.
