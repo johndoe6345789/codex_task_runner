@@ -95,3 +95,89 @@ src/codex_task_runner/
 ├── proc/         # Process/subprocess helpers
 └── runner/       # Core runner logic
 ```
+
+## End-to-End Workflow
+
+### What happens when you run `codex-task-runner yolo`
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           codex-task-runner yolo                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. AUTHENTICATE                                                             │
+│    Load .env → Build requests.Session with cookies + bearer token           │
+│    session_from_env('.env') → Session with auth headers                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 2. FETCH TASKS                                                              │
+│    GET /backend-api/wham/tasks/list?limit=20                                │
+│    Response: { items: [...], cursor: ... }                                  │
+│    Parse into TaskItem objects with task_id, title, pr_numbers, repo        │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 3. ENSURE PRs (for each task without a PR)                                  │
+│                                                                             │
+│    a. GET /backend-api/wham/tasks/{task_id}/turns                           │
+│       Response: { turn_mapping: {...}, current_turn_id: "..." }             │
+│                                                                             │
+│    b. Extract current_turn_id (the latest assistant turn)                   │
+│                                                                             │
+│    c. POST /backend-api/wham/tasks/{task_id}/turns/{turn_id}/pr             │
+│       Body: {}                                                              │
+│       → Codex creates branch, commits code, opens GitHub PR                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 4. MERGE PRs                                                                │
+│                                                                             │
+│    For each task with a PR:                                                 │
+│    a. gh pr view {pr_number} --json mergeable,state                         │
+│    b. If mergeable:                                                         │
+│       gh pr merge {pr_number} --admin --auto --delete-branch                │
+│    c. Log success/failure                                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 5. REPORT                                                                   │
+│    { processed: 20, merged: 15, prs_created: 5, errors: [...] }             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow
+
+```
+.env (cookies/tokens)
+        │
+        ▼
+┌──────────────┐    GET /tasks/list     ┌──────────────┐
+│   Session    │ ────────────────────▶  │  Codex API   │
+│  (requests)  │ ◀────────────────────  │   (WHAM)     │
+└──────────────┘    JSON response       └──────────────┘
+        │                                      │
+        │ POST /turns/{id}/pr                  │
+        │ ─────────────────────────────────────┘
+        │                                      
+        ▼                                      
+┌──────────────┐    gh pr merge         ┌──────────────┐
+│   gh CLI     │ ────────────────────▶  │   GitHub     │
+│              │ ◀────────────────────  │    API       │
+└──────────────┘    PR merged           └──────────────┘
+```
+
+### Key Insight: Codex Creates the PR
+
+The critical step is `POST /tasks/{task_id}/turns/{turn_id}/pr`. This tells Codex Cloud to:
+1. Take the code changes from that turn
+2. Create/update a branch in your GitHub repo
+3. Open a Pull Request
+
+We don't create the PR ourselves - we ask Codex to do it, then merge what it creates.

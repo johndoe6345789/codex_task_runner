@@ -21,6 +21,15 @@ The base path for all Codex endpoints. Likely an internal project codename (Open
 - `usertrn` = "user turn" (the original prompt/request)
 - This hierarchical ID allows reconstructing the conversation tree
 
+### Why "Turns"?
+The term comes from dialogue theory and conversational AI research. A conversation is modeled as participants "taking turns" speaking - like a game of chess or tennis. Each time the speaker changes, that's a new "turn."
+
+In Codex:
+- **User turn**: You submit a task/prompt
+- **Assistant turn**: Codex responds with code, commits, PR creation, etc.
+
+This terminology is standard in chatbot/LLM systems (you'll see it in OpenAI's Chat Completions API docs too). It's more precise than "message" because a turn can contain multiple messages, tool calls, or actions - it represents one party's complete contribution before handing control back.
+
 ### Turn Mapping Structure
 The `turn_mapping` response uses a tree structure with `parent`/`children` fields rather than a flat list. This supports:
 - Branching conversations (multiple responses to one prompt)
