@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex-task-runner"
+version = "0.2.0"
+description = "Process Codex task JSON, create/merge PRs via gh."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+codex-task-runner = "codex_task_runner.cli:main"
+
+[tool.setuptools.package-dir]
+codex_task_runner = "src/codex_task_runner"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
