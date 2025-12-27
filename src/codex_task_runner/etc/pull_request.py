@@ -8,5 +8,6 @@ class PullRequest:
     url: str
     title: str
     author: str
+    state: str
     mergeable: str
     checks_state: Optional[str]

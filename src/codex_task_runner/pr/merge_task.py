@@ -1,6 +1,7 @@
 """Merge a single task's PR."""
 from ..gh.get_pr import get_pr
 from ..gh.merge_pr import merge_pr
+from ..etc.merge_method import MergeMethod
 
 
 def merge_task(task, dry_run: bool = False) -> str:
@@ -25,7 +26,7 @@ def merge_task(task, dry_run: bool = False) -> str:
     
     ok = merge_pr(
         task.repo, pr_num,
-        method="squash",
+        method=MergeMethod.SQUASH,
         delete_branch=True,
         admin=True,
         auto=True,

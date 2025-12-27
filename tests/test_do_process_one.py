@@ -33,7 +33,7 @@ def test_do_process_one_no_pr(cfg: Config) -> None:
 
 def test_do_process_one_with_pr(cfg: Config) -> None:
     t = TaskRef(task_id="t1", title="Title", repo="o/r", base_branch="main", pr_numbers=(42,))
-    pr = PullRequest(number=42, url="http://gh/42", title="T", author="a", mergeable="MERGEABLE", checks_state="SUCCESS")
+    pr = PullRequest(number=42, url="http://gh/42", title="T", author="a", state="open", mergeable="MERGEABLE", checks_state="SUCCESS")
     
     with patch("codex_task_runner.process.do_process_one.task_pr_number") as mock_prn:
         with patch("codex_task_runner.process.do_process_one.get_pr") as mock_get:

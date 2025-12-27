@@ -7,7 +7,7 @@ name = "codex-task-runner"
 version = "0.2.0"
 description = "Process Codex task JSON, create/merge PRs via gh."
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["playwright", "requests"]
 
 [project.scripts]
 codex-task-runner = "codex_task_runner.cli:main"

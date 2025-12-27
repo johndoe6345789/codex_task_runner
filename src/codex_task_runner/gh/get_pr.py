@@ -13,6 +13,7 @@ _PR_QUERY = """query($owner: String!, $name: String!, $number: Int!) {
       number
       title
       url
+      state
       mergeable
       author { login }
       commits(last: 1) {
@@ -42,6 +43,7 @@ def _parse_pr(node: Any) -> PullRequest:
         url=str(node["url"]),
         title=str(node["title"]),
         author=str(node["author"]["login"]),
+        state=str(node.get("state", "OPEN")).lower(),
         mergeable=str(node.get("mergeable") or ""),
         checks_state=checks,
     )

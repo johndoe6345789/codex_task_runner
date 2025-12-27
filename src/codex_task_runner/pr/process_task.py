@@ -3,6 +3,7 @@ import argparse
 
 from .merge_task import merge_task
 from .ensure_prs import ensure_prs
+from .find_existing_pr import find_existing_pr
 from ..handlers.dedup_prs import handle as dedup_handle
 from ..codex.codex_tasks_list import get_tasks_list
 from ..etc.log import log
@@ -15,8 +16,19 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
     """
     result = {"created": 0, "merged": 0, "skipped": 0, "failed": 0}
     
-    # Step 1: Create PR if needed
-    if not task.pr_numbers:
+    # Step 1: Check if PR already exists (either in task or on GitHub)
+    pr_num = None
+    if task.pr_numbers:
+        pr_num = task.pr_numbers[0]
+    else:
+        # Check GitHub for existing open PR with same title
+        existing = find_existing_pr(task.repo, task.title)
+        if existing:
+            log.info(f"  Found existing PR #{existing}")
+            pr_num = existing
+    
+    # Step 2: Create PR if still needed
+    if not pr_num:
         if dry_run:
             log.info("  [DRY RUN] Would create PR")
             log.info("  [DRY RUN] Would dedup")
@@ -42,19 +54,31 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
                 if rt.task_id == task.task_id:
                     task = rt
                     break
+            pr_num = task.pr_numbers[0] if task.pr_numbers else None
         else:
             log.warning("  Failed to create PR")
             result["failed"] = 1
             return result
     
-    # Step 2: Merge the PR
-    pr_num = task.pr_numbers[0] if task.pr_numbers else "?"
+    # Step 3: Merge the PR
     if dry_run:
         log.info(f"  [DRY RUN] Would merge PR #{pr_num}")
         result["merged"] = 1
         return result
     
     log.info(f"  Merging PR #{pr_num}...")
+    # Update task with found PR number if we found one on GitHub
+    if pr_num and not task.pr_numbers:
+        # Create a modified task with the found PR
+        from ..etc.task_ref import TaskRef
+        task = TaskRef(
+            task_id=task.task_id,
+            title=task.title,
+            repo=task.repo,
+            base_branch=task.base_branch,
+            pr_numbers=(pr_num,),
+        )
+    
     status = merge_task(task, dry_run=False)
     log.info(f"  {status}")
     
