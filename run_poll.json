@@ -1,0 +1,22 @@
+{
+  "main": {
+    "url": "https://chatgpt.com/codex/",
+    "status_code": 200,
+    "ok": true,
+    "text_snippet": "<!DOCTYPE html><html lang=\"en-US\" data-build=\"prod-27708bcc2b52f2ffa559a947c7b032818dec0af9\" data-seq=\"3961572\" dir=\"ltr\" class=\"\"><head><meta charSet=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\"/><link rel=\"preload\" as=\"image\" href=\"https://lh3.googleusercontent.com/a/ACg8ocJjYfhxjg6eMMRok2aSlXc8OWkYBeF9FaGPW_X9Sxh3Jr3ilQ=s96-c\" referrerPolicy=\"no-referrer\"/><title>Codex</title><meta property=\"og:site_name\" content=\"ChatGPT\"/><meta property=\"og:type\" content=\"website\"/><meta property=\"og:title\" content=\"Codex\"/><meta property=\"og:url\" content=\"https://chatgpt.com/codex/\"/><meta name=\"description\" content=\"A cloud-based software engineering agent that answers codebase questions, executes code, and drafts pull requests.\"/><meta property=\"og:description\" content=\"A cloud-based software engineering agent that answers codebase questions, executes code, and drafts pull requests.\"/><meta property=\"og:image\" content=\"https://cdn.openai.com/codex/codex-seo.jpg\"/><me"
+  },
+  "polls": [
+    {
+      "url": "https://chatgpt.com/backend-api/wham/tasks/list?limit=19&task_filter=current",
+      "status_code": 401,
+      "ok": false,
+      "text_snippet": "{\"detail\":\"Unauthorized\"}"
+    },
+    {
+      "url": "https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab19e54833183593529fd574f91",
+      "status_code": 401,
+      "ok": false,
+      "text_snippet": "{\"detail\":\"Unauthorized\"}"
+    }
+  ]
+}

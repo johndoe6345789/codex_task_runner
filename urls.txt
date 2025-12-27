@@ -1,4 +1,4 @@
-https://chatcpt.com/codex/
+https://chatgpt.com/codex/
 
 https://chatgpt.com/backend-api/wham/tasks/list?limit=19&task_filter=current
 
