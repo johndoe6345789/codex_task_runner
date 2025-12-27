@@ -22,7 +22,8 @@
       "help": "List tasks from Codex Cloud",
       "handler": "codex_task_runner.handlers.tasks",
       "args": [
-        {"flags": ["--limit"], "kwargs": {"type": "int", "default": 20, "help": "Max items"}}
+        {"flags": ["--limit"], "kwargs": {"type": "int", "default": 20, "help": "Max items"}},
+        {"flags": ["--filter"], "kwargs": {"choices": ["current", "archived", "all"], "default": "current", "help": "Task filter"}}
       ]
     },
     {
@@ -82,6 +83,41 @@
         {"flags": ["--repo"], "kwargs": {"default": "johndoe6345789/metabuilder", "help": "Repository to check"}},
         {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Show duplicates without closing"}}
       ]
+    },
+    {
+      "name": "usage",
+      "help": "Show Codex usage stats",
+      "handler": "codex_task_runner.handlers.usage",
+      "args": []
+    },
+    {
+      "name": "envs",
+      "help": "List Codex environments",
+      "handler": "codex_task_runner.handlers.envs",
+      "args": [
+        {"flags": ["--recent"], "kwargs": {"action": "store_true", "help": "Show only recent environments"}}
+      ]
+    },
+    {
+      "name": "repos",
+      "help": "List connected GitHub repositories",
+      "handler": "codex_task_runner.handlers.repos",
+      "args": [
+        {"flags": ["--page"], "kwargs": {"type": "int", "default": 1, "help": "Page number"}},
+        {"flags": ["--per-page"], "kwargs": {"type": "int", "default": 10, "help": "Items per page"}}
+      ]
+    },
+    {
+      "name": "me",
+      "help": "Show current user info",
+      "handler": "codex_task_runner.handlers.me",
+      "args": []
+    },
+    {
+      "name": "settings",
+      "help": "Show Codex user settings",
+      "handler": "codex_task_runner.handlers.settings",
+      "args": []
     }
   ]
 }
