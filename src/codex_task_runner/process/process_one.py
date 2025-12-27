@@ -4,17 +4,18 @@ from .gh_api import pr_exists_open, create_pr, get_pr, merge_pr
 from .branch_finder import find_head_branch
 from .append_text import append_text
 from .types import TaskRef, PullRequest
+from .process_format import fmt_task, fmt_pr
 from .config import Config
 
 
 def process_one(cfg: Config, t: TaskRef) -> None:
-    _log(cfg, _fmt_task(t))
+    _log(cfg, fmt_task(t))
     prn = _task_pr_number(cfg, t)
     if prn is None:
         _log(cfg, "SKIP: no PR and could not create\n")
         return
     pr = get_pr(t.repo, prn)
-    _log(cfg, _fmt_pr(pr))
+    _log(cfg, fmt_pr(pr))
     if not _is_clean(pr, cfg.require_checks):
         _log(cfg, "SKIP: not clean\n")
         return
@@ -76,20 +77,7 @@ def _is_clean(pr: PullRequest, require_checks: bool) -> bool:
     return pr.checks_state == "SUCCESS"
 
 
-def _fmt_task(t: TaskRef) -> str:
-    return (
-        f"TASK {t.task_id}\n"
-        f"  title={t.title}\n"
-        f"  repo={t.repo} base={t.base_branch} prs={list(t.pr_numbers)}\n"
-    )
-
-
-def _fmt_pr(pr: PullRequest) -> str:
-    return (
-        f"PR #{pr.number}: {pr.title}\n"
-        f"  url={pr.url}\n"
-        f"  author={pr.author} mergeable={pr.mergeable} checks={pr.checks_state}\n"
-    )
+# formatting helpers moved to process_format
 
 
 def _log(cfg: Config, msg: str) -> None:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .types import PullRequest
+from codex_task_runner.etc.types import PullRequest
 from .gh_api_cli import _graphql, _vars
 
 

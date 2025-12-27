@@ -1,12 +1,13 @@
-from __future__ import annotations
+"""Compatibility shim re-exporting types from the `etc` subpackage.
 
-from typing import Any
+Older imports expect `codex_task_runner.types`; forward to `etc.types`.
+"""
 
-from .merge_method import MergeMethod
-from .task_ref import TaskRef
-from .pull_request import PullRequest
+from .etc.types import (
+    TaskRef,
+    PullRequest,
+    Json,
+    MergeMethod,
+)
 
-
-Json = dict[str, Any]
-
-__all__ = ["MergeMethod", "TaskRef", "PullRequest", "Json"]
+__all__ = ["TaskRef", "PullRequest", "Json", "MergeMethod"]

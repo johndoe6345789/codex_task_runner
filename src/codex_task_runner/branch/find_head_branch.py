@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from ..slugify import slugify
-from ..gh.gh_api import list_branches
+from codex_task_runner.etc.slugify import slugify
+from codex_task_runner.gh.gh_api import list_branches
 from .branch_fuzzy import fuzzy_branch
 
 

@@ -3,7 +3,8 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from .proc_run import run_ok, run
+from codex_task_runner.proc.proc_run import run_ok, run
+from .gh_api_helpers import _api, _graphql, _vars
 
 
 def pr_exists_open(repo: str, head: str) -> int | None:
@@ -63,16 +64,4 @@ def list_branches(repo: str, limit: int) -> list[str]:
     return [str(b.get("name")) for b in data if isinstance(b, dict)]
 
 
-def _api(args: list[str]) -> Any:
-    out = run_ok(["gh", "api", *args])
-    return json.loads(out)
-
-
-def _graphql(query: str, variables: dict[str, Any]) -> Any:
-    payload = json.dumps({"query": query, "variables": variables})
-    return _api(["graphql", "-f", f"query={query}", "-f", f"variables={payload}"])
-
-
-def _vars(repo: str, number: int) -> dict[str, Any]:
-    owner, name = repo.split("/", 1)
-    return {"owner": owner, "name": name, "number": number}
+# low-level helpers moved to gh_api_helpers

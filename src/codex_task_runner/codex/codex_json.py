@@ -1,12 +1,13 @@
-"""Compatibility wrapper re-exporting Codex JSON parsing helpers."""
+"""Compatibility shim re-exporting codex parsing helpers.
 
-from .codex_parse_tasks import load_tasks, parse_tasks
-from .codex_parse_item import parse_item
-from .codex_parse_prs import extract_pr_numbers
+Older imports reference `codex_task_runner.codex_json` — forward those
+symbols to the split `codex` subpackage implementation.
+"""
 
-__all__ = [
-    "load_tasks",
-    "parse_tasks",
-    "parse_item",
-    "extract_pr_numbers",
-]
+from .codex.codex_json import (
+    load_tasks,
+    parse_tasks,
+    parse_item,
+)
+
+__all__ = ["load_tasks", "parse_tasks", "parse_item"]

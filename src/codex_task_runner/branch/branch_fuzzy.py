@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ..words import words
+from codex_task_runner.etc.words import words
 
 
 def fuzzy_branch(branches: list[str], title: str, task_id: str) -> str | None:
