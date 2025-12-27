@@ -1180,3 +1180,89 @@ Done: {'created': 5, 'merged': 0, 'skipped': 5, 'failed': 0}
 2025-12-27 23:23:58 [DEBUG] HTTP POST http://example.com/api
 2025-12-27 23:23:58 [DEBUG] HTTP body: None
 2025-12-27 23:23:58 [ERROR] HTTP POST failed: Network error
+2025-12-27 23:25:21 [INFO] Fetching up to 5 tasks...
+2025-12-27 23:25:21 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/list?limit=5&task_filter=current
+2025-12-27 23:25:22 [DEBUG] HTTP 200 45507 bytes
+2025-12-27 23:25:22 [DEBUG] HTTP JSON keys: ['items', 'cursor']
+2025-12-27 23:25:22 [INFO] Found 5 tasks for johndoe6345789/metabuilder
+2025-12-27 23:25:22 [INFO] 
+2025-12-27 23:25:22 [INFO] Tasks to process:
+2025-12-27 23:25:22 [INFO]   - johndoe6345789/metabuilder: Add base, advanced, and experimental templates (needs PR)
+2025-12-27 23:25:22 [INFO]   - johndoe6345789/metabuilder: Create test files for lua-engine (needs PR)
+2025-12-27 23:25:22 [INFO]   - johndoe6345789/metabuilder: Add parser and stats files (needs PR)
+2025-12-27 23:25:22 [INFO]   - johndoe6345789/metabuilder: Create builders and mappers files in dbal/core/cli (needs PR)
+2025-12-27 23:25:22 [INFO]   - johndoe6345789/metabuilder: Add base, advanced, and experimental CSS files (needs PR)
+2025-12-27 23:25:22 [INFO] 
+2025-12-27 23:25:22 [INFO] DRY RUN: Would create 5 PRs, merge 5 total
+2025-12-27 23:26:57 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:26:57 [DEBUG] HTTP 200 0 bytes
+2025-12-27 23:26:57 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:26:57 [ERROR] HTTP PING failed: Connection error
+2025-12-27 23:26:57 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:26:57 [DEBUG] HTTP <MagicMock name='mock.get().status_code' id='4492166880'> 0 bytes
+2025-12-27 23:26:57 [DEBUG] HTTP JSON keys: ['key']
+2025-12-27 23:26:57 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:26:57 [ERROR] HTTP GET failed: Network error
+2025-12-27 23:26:57 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:26:57 [DEBUG] HTTP body: {'input': 'test'}
+2025-12-27 23:26:57 [DEBUG] HTTP <MagicMock name='mock.post().status_code' id='4492170912'> 0 bytes
+2025-12-27 23:26:57 [DEBUG] HTTP JSON keys: ['result']
+2025-12-27 23:26:57 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:26:57 [DEBUG] HTTP body: None
+2025-12-27 23:26:57 [ERROR] HTTP POST failed: Network error
+2025-12-27 23:27:22 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:27:22 [DEBUG] HTTP 200 0 bytes
+2025-12-27 23:27:22 [DEBUG] HTTP PING http://example.com
+2025-12-27 23:27:22 [ERROR] HTTP PING failed: Connection error
+2025-12-27 23:27:22 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:27:22 [DEBUG] HTTP <MagicMock name='mock.get().status_code' id='4422862560'> 0 bytes
+2025-12-27 23:27:22 [DEBUG] HTTP JSON keys: ['key']
+2025-12-27 23:27:22 [DEBUG] HTTP GET http://example.com/api
+2025-12-27 23:27:22 [ERROR] HTTP GET failed: Network error
+2025-12-27 23:27:22 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:27:22 [DEBUG] HTTP body: {'input': 'test'}
+2025-12-27 23:27:22 [DEBUG] HTTP <MagicMock name='mock.post().status_code' id='4422866592'> 0 bytes
+2025-12-27 23:27:22 [DEBUG] HTTP JSON keys: ['result']
+2025-12-27 23:27:22 [DEBUG] HTTP POST http://example.com/api
+2025-12-27 23:27:22 [DEBUG] HTTP body: None
+2025-12-27 23:27:22 [ERROR] HTTP POST failed: Network error
+2025-12-27 23:27:28 [INFO] Fetching up to 5 tasks...
+2025-12-27 23:27:28 [DEBUG] HTTP GET https://chatgpt.com/backend-api/wham/tasks/list?limit=5&task_filter=current
+2025-12-27 23:27:29 [DEBUG] HTTP 200 45507 bytes
+2025-12-27 23:27:29 [DEBUG] HTTP JSON keys: ['items', 'cursor']
+2025-12-27 23:27:29 [INFO] Found 5 tasks for johndoe6345789/metabuilder
+2025-12-27 23:27:29 [INFO] 
+2025-12-27 23:27:29 [INFO] Tasks to process:
+2025-12-27 23:27:29 [INFO]   - johndoe6345789/metabuilder: Add base, advanced, and experimental templates (needs PR)
+2025-12-27 23:27:29 [INFO]   - johndoe6345789/metabuilder: Create test files for lua-engine (needs PR)
+2025-12-27 23:27:29 [INFO]   - johndoe6345789/metabuilder: Add parser and stats files (needs PR)
+2025-12-27 23:27:29 [INFO]   - johndoe6345789/metabuilder: Create builders and mappers files in dbal/core/cli (needs PR)
+2025-12-27 23:27:29 [INFO]   - johndoe6345789/metabuilder: Add base, advanced, and experimental CSS files (needs PR)
+2025-12-27 23:27:29 [INFO] 
+2025-12-27 23:27:29 [INFO] 
+[1/5] Add base, advanced, and experimental templates
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would create PR
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would dedup
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would merge PR
+2025-12-27 23:27:29 [INFO] 
+[2/5] Create test files for lua-engine
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would create PR
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would dedup
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would merge PR
+2025-12-27 23:27:29 [INFO] 
+[3/5] Add parser and stats files
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would create PR
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would dedup
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would merge PR
+2025-12-27 23:27:29 [INFO] 
+[4/5] Create builders and mappers files in dbal/core/client
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would create PR
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would dedup
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would merge PR
+2025-12-27 23:27:29 [INFO] 
+[5/5] Add base, advanced, and experimental CSS files
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would create PR
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would dedup
+2025-12-27 23:27:29 [INFO]   [DRY RUN] Would merge PR
+2025-12-27 23:27:29 [INFO] 
+Done: {'created': 5, 'merged': 5, 'skipped': 0, 'failed': 0}

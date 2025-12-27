@@ -23,12 +23,9 @@ def handle(args: Any, session) -> dict:
     
     needs_pr, has_pr = show_tasks(tasks)
     
-    if opts.dry_run:
-        log.info(f"DRY RUN: Would create {len(needs_pr)} PRs, merge {len(tasks)} total")
-        return {"dry_run": True, "would_create": len(needs_pr), "would_merge": len(has_pr)}
+    if not opts.dry_run and not opts.no_confirm:
+        if not confirm(f"Proceed with {len(tasks)} tasks?"):
+            return {"aborted": True}
     
-    if not opts.no_confirm and not confirm(f"Proceed with {len(tasks)} tasks?"):
-        return {"aborted": True}
-    
-    return process_all_tasks(session, tasks, opts.repo_filter, opts.limit)
+    return process_all_tasks(session, tasks, opts.repo_filter, opts.limit, dry_run=opts.dry_run)
 

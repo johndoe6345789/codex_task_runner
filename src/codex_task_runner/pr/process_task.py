@@ -8,7 +8,7 @@ from ..codex.codex_tasks_list import get_tasks_list
 from ..etc.log import log
 
 
-def process_task(session, task, repo_filter: str, limit: int) -> dict:
+def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = False) -> dict:
     """Process one task: create PR if needed, dedup, merge.
     
     Returns dict with keys: created, merged, skipped, failed (each 0 or 1)
@@ -17,6 +17,14 @@ def process_task(session, task, repo_filter: str, limit: int) -> dict:
     
     # Step 1: Create PR if needed
     if not task.pr_numbers:
+        if dry_run:
+            log.info("  [DRY RUN] Would create PR")
+            log.info("  [DRY RUN] Would dedup")
+            log.info("  [DRY RUN] Would merge PR")
+            result["created"] = 1
+            result["merged"] = 1
+            return result
+        
         log.info("  Creating PR...")
         pr_result = ensure_prs(session, [task])
         if pr_result["created"] > 0:
@@ -41,6 +49,11 @@ def process_task(session, task, repo_filter: str, limit: int) -> dict:
     
     # Step 2: Merge the PR
     pr_num = task.pr_numbers[0] if task.pr_numbers else "?"
+    if dry_run:
+        log.info(f"  [DRY RUN] Would merge PR #{pr_num}")
+        result["merged"] = 1
+        return result
+    
     log.info(f"  Merging PR #{pr_num}...")
     status = merge_task(task, dry_run=False)
     log.info(f"  {status}")
