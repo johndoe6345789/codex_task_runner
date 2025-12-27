@@ -3,11 +3,13 @@ from __future__ import annotations
 from codex_task_runner.runner.do_process_tasks import process_tasks
 from codex_task_runner.etc.config_class import Config
 from codex_task_runner.process.do_process_one import process_one
-from codex_task_runner.process.task_pr_number import task_pr_number, _first_open, _maybe_create_pr
-from codex_task_runner.process.pr_body import pr_body
+from codex_task_runner.pr.task_pr_number import task_pr_number
+from codex_task_runner.pr.first_open import _first_open
+from codex_task_runner.pr.maybe_create_pr import _maybe_create_pr
+from codex_task_runner.pr.pr_body import pr_body
 from codex_task_runner.process.is_clean import is_clean
 from codex_task_runner.process.fmt_task import fmt_task
-from codex_task_runner.process.fmt_pr import fmt_pr
+from codex_task_runner.pr.fmt_pr import fmt_pr
 
 
 class RunnerModule:

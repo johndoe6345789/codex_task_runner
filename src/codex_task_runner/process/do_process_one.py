@@ -6,8 +6,8 @@ from codex_task_runner.etc.append_text import append_text
 from codex_task_runner.types import TaskRef, PullRequest
 from codex_task_runner.etc.config_class import Config
 from .fmt_task import fmt_task
-from .fmt_pr import fmt_pr
-from .task_pr_number import task_pr_number
+from codex_task_runner.pr.fmt_pr import fmt_pr
+from codex_task_runner.pr.task_pr_number import task_pr_number
 from .is_clean import is_clean
 
 
