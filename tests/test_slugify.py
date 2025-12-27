@@ -1,5 +1,6 @@
 import unittest
-from codex_task_runner.textutil import slugify, words
+from codex_task_runner.etc.slugify import slugify
+from codex_task_runner.etc.words import words
 
 
 class TestTextUtil(unittest.TestCase):

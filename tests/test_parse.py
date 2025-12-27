@@ -1,5 +1,5 @@
 import unittest
-from codex_task_runner.codex_json import parse_tasks
+from codex_task_runner.codex.parse_tasks import parse_tasks
 
 
 class TestParse(unittest.TestCase):
