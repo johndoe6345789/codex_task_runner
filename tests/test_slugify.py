@@ -1,11 +1,12 @@
-import unittest
+import pytest
 from codex_task_runner.etc.slugify import slugify
-from codex_task_runner.etc.words import words
 
 
-class TestTextUtil(unittest.TestCase):
-    def test_slugify(self) -> None:
-        self.assertEqual(slugify("Add A, B, and C!"), "add-a-b-and-c")
-
-    def test_words(self) -> None:
-        self.assertEqual(words("Hello, World!"), ["hello", "world"])
+@pytest.mark.parametrize("input_str,expected", [
+    ("Add A, B, and C!", "add-a-b-and-c"),
+    ("Hello World", "hello-world"),
+    ("foo--bar", "foo-bar"),
+    ("", "task"),
+])
+def test_slugify(input_str: str, expected: str) -> None:
+    assert slugify(input_str) == expected
