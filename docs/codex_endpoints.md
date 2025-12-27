@@ -223,6 +223,24 @@ Notes & next steps:
 
 ## Observed endpoint: Create PR for a task turn
 
+The PR endpoint supports both GET (check status) and POST (create PR):
+
+**GET - Check PR status:**
+```
+GET https://chatgpt.com/backend-api/wham/tasks/{task_id}/turns/{turn_id}/pr
+```
+
+**POST - Create PR:**
+```
+POST https://chatgpt.com/backend-api/wham/tasks/{task_id}/turns/{turn_id}/pr
+Headers:
+- Accept: */*
+- Content-Type: application/json
+- Authorization: Bearer <JWT_TOKEN>
+
+Body: {}
+```
+
 Example client call (observed via browser fetch trace):
 
 ```
