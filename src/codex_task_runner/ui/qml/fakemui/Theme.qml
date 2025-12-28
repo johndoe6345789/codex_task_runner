@@ -101,8 +101,8 @@ QtObject {
     property color actionSelected: mode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)"
     property color actionDisabled: mode === "dark" ? "rgba(255, 255, 255, 0.26)" : "rgba(0, 0, 0, 0.26)"
     
-    // Legacy aliases
-    property alias accent: primary
+    // Legacy aliases (binding, not alias - can't alias same-object properties)
+    property color accent: primary
     
     // Typography
     property int fontSizeXs: 10
@@ -165,10 +165,10 @@ QtObject {
     property int transitionStandard: 300
     property int transitionComplex: 375
     
-    // Animation (legacy)
-    property alias animFast: transitionShortest
-    property alias animNormal: transitionStandard
-    property alias animSlow: transitionComplex
+    // Animation (legacy bindings)
+    property int animFast: transitionShortest
+    property int animNormal: transitionStandard
+    property int animSlow: transitionComplex
     
     // Z-index
     property int zIndexMobileStepper: 1000
