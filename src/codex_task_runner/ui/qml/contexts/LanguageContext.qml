@@ -424,19 +424,13 @@ QtObject {
         // Additional languages follow same pattern...
     })
     
-    // Settings for persistence
-    property Settings _settings: Settings {
-        category: "i18n"
-    }
-    
     /**
-     * Set language and persist
+     * Set language
      */
     function setLanguage(lang) {
         if (languages[lang]) {
             language = lang
             currentLanguage = lang
-            _settings.setValue("language", lang)
         }
     }
     
