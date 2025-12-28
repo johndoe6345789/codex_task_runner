@@ -36,6 +36,10 @@ Spacer 1.0 Spacer.qml
 FlexRow 1.0 FlexRow.qml
 FlexCol 1.0 FlexCol.qml
 
+# Grid/Layout Components (mirrors SCSS _grid.scss)
+CGrid 1.0 CGrid.qml
+CGridItem 1.0 CGridItem.qml
+
 # Lab Components
 CLoadingButton 1.0 CLoadingButton.qml
 CTimeline 1.0 CTimeline.qml
