@@ -177,8 +177,10 @@ Item {
             clip: true
             
             GridLayout {
+                id: taskGrid
                 width: parent.width
-                columns: Math.max(1, Math.floor(width / 360))
+                // Auto-fill grid similar to CSS: repeat(auto-fill, minmax(320px, 1fr))
+                columns: Math.max(1, Math.floor(width / 320))
                 columnSpacing: 16
                 rowSpacing: 16
                 
@@ -187,7 +189,7 @@ Item {
                     
                     delegate: CCard {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 180
+                        Layout.preferredHeight: 220
                         
                         required property int index
                         required property string taskId
@@ -202,67 +204,91 @@ Item {
                         
                         ColumnLayout {
                             anchors.fill: parent
-                            anchors.margins: 16
-                            spacing: 8
+                            spacing: 0
                             
-                            // Header row with status chips
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: 8
-                                
-                                CChip {
-                                    text: getStatusLabel(status, hasPr, prUrl)
-                                    color: getStatusColor(status, hasPr)
-                                }
-                                
-                                CChip {
-                                    text: "#" + alias
-                                    variant: "outlined"
-                                }
-                            }
-                            
-                            // Title
-                            Text {
-                                Layout.fillWidth: true
-                                text: title || LanguageContext.t("untitledTask")
-                                font.pixelSize: 16
-                                font.bold: true
-                                color: Theme.text
-                                elide: Text.ElideRight
-                                maximumLineCount: 2
-                                wrapMode: Text.WordWrap
-                            }
-                            
-                            // Repo
-                            Text {
+                            // Card content area
+                            ColumnLayout {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                text: repo || LanguageContext.t("noRepo")
-                                font.pixelSize: 12
-                                color: Theme.textSecondary
-                                elide: Text.ElideRight
+                                Layout.margins: 16
+                                spacing: 8
+                                
+                                // Header row with status chips
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 8
+                                    
+                                    CChip {
+                                        text: getStatusLabel(status, hasPr, prUrl)
+                                        color: getStatusColor(status, hasPr)
+                                    }
+                                    
+                                    CChip {
+                                        text: "#" + alias
+                                        variant: "outlined"
+                                    }
+                                }
+                                
+                                // Title
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: title || LanguageContext.t("untitledTask")
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: Theme.text
+                                    elide: Text.ElideRight
+                                    maximumLineCount: 2
+                                    wrapMode: Text.WordWrap
+                                }
+                                
+                                // Description placeholder (would use prompt from full task data)
+                                Text {
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    text: ""  // Description not available from TaskModel roles
+                                    font.pixelSize: 13
+                                    color: Theme.textSecondary
+                                    wrapMode: Text.WordWrap
+                                    maximumLineCount: 2
+                                    elide: Text.ElideRight
+                                    visible: false  // Hidden until we have description data
+                                }
+                                
+                                // Spacer to push content up
+                                Item { Layout.fillHeight: true }
+                                
+                                // Repo
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: repo || LanguageContext.t("noRepo")
+                                    font.pixelSize: 13
+                                    color: Theme.textSecondary
+                                    elide: Text.ElideRight
+                                }
+                                
+                                // Branch / ID (nerd mode)
+                                Text {
+                                    text: NerdModeContext.nerdMode ? taskId : (branch || "main")
+                                    font.pixelSize: 12
+                                    font.family: "monospace"
+                                    color: Theme.textMuted
+                                    elide: Text.ElideMiddle
+                                    Layout.fillWidth: true
+                                }
                             }
                             
-                            // Branch / ID (nerd mode)
-                            Text {
-                                text: NerdModeContext.nerdMode ? taskId : (branch || "main")
-                                font.pixelSize: 11
-                                font.family: "monospace"
-                                color: Theme.textMuted
-                                elide: Text.ElideMiddle
-                                Layout.maximumWidth: parent.width
+                            // Actions row with top border (matches React card__actions)
+                            Rectangle {
+                                Layout.fillWidth: true
+                                height: 1
+                                color: Theme.border
                             }
                             
-                            // Created date
-                            Text {
-                                text: created
-                                font.pixelSize: 11
-                                color: Theme.textMuted
-                            }
-                            
-                            // Actions row
                             RowLayout {
                                 Layout.fillWidth: true
+                                Layout.margins: 8
+                                Layout.leftMargin: 16
+                                Layout.rightMargin: 16
                                 spacing: 8
                                 
                                 CButton {
@@ -270,6 +296,17 @@ Item {
                                     variant: "outlined"
                                     size: "small"
                                     onClicked: taskSelected(index)
+                                }
+                                
+                                Item { Layout.fillWidth: true }
+                                
+                                CIconButton {
+                                    icon: "📝"
+                                    size: "small"
+                                    tooltip: LanguageContext.t("getPatch")
+                                    onClicked: {
+                                        app.extractPatch(index)
+                                    }
                                 }
                                 
                                 CIconButton {
@@ -283,7 +320,7 @@ Item {
                                     icon: "🔗"
                                     size: "small"
                                     tooltip: "Open PR"
-                                    visible: hasPr && prUrl
+                                    visible: hasPr && prUrl !== ""
                                     onClicked: app.openUrl(prUrl)
                                 }
                             }
