@@ -1,20 +1,55 @@
+# Secrets & credentials
 .env
+.env.*
+
+# Runtime data
 fetch.txt
 run_poll.json
 tasks.json
 codex-task-runner.log
+*.log
 
 # Frontend
 node_modules/
 frontend/node_modules/
+frontend/dist/
 
 # Build output
 src/codex_task_runner/flask_app/static/assets/
 src/codex_task_runner/flask_app/static/index.html
+dist/
+build/
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+*.egg
 *.egg-info/
+.eggs/
 venv/
 .venv/
+env/
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Temp files
+*.tmp
+/tmp/

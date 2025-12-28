@@ -385,7 +385,6 @@ class AppController(QObject):
     def loadTasks(self):
         """Load tasks from API."""
         import time
-        import sys
         
         if not self._session:
             self._init_session()
@@ -393,15 +392,7 @@ class AppController(QObject):
         if not self._session:
             self.errorOccurred.emit("No session configured. Set up .env file.")
             self._log("❌ No session configured")
-            print("❌ No session configured", file=sys.stderr)
             return
-        
-        # Debug session state
-        print(f"DEBUG: Session has {len(self._session.cookies)} cookies", file=sys.stderr)
-        session_token = self._session.cookies.get("__Secure-next-auth.session-token", "")
-        print(f"DEBUG: Session token: {'present (' + str(len(session_token)) + ' chars)' if session_token else 'MISSING'}", file=sys.stderr)
-        self._log(f"Session has {len(self._session.cookies)} cookies")
-        self._log(f"Session token: {'present (' + str(len(session_token)) + ' chars)' if session_token else 'MISSING'}")
         
         request_id = self._ajax_queue.addRequest("Loading tasks", "tasks")
         
@@ -412,7 +403,7 @@ class AppController(QObject):
             self._log("→ GET /wham/tasks")
             start = time.time()
             # Get tasks and convert TaskRef objects to dicts
-            tasks_refs = get_tasks_list(self._session, limit=100, task_filter="current")
+            tasks_refs = get_tasks_list(self._session, limit=20, task_filter="current")
             tasks = []
             for t in tasks_refs:
                 d = t.__dict__.copy() if hasattr(t, '__dict__') else dict(t)

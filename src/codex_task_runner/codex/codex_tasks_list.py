@@ -4,9 +4,14 @@ from typing import List
 
 from .json_get import _json_get
 from codex_task_runner.types import TaskRef
+from ..etc.log import log
 
 
 def get_tasks_list(session, limit: int = 20, task_filter: str = "current") -> List[TaskRef]:
+    # API enforces max limit of 20
+    if limit > 20:
+        log.warning(f"Requested limit={limit} exceeds API max of 20, capping to 20")
+        limit = 20
     url = f"https://chatgpt.com/backend-api/wham/tasks/list?limit={limit}&task_filter={task_filter}"
     data = _json_get(session, url)
     out: list[TaskRef] = []

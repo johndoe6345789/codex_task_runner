@@ -1,2 +1,0 @@
-[console_scripts]
-codex-task-runner = codex_task_runner.cli:main
