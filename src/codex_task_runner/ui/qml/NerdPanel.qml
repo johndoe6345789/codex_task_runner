@@ -4,22 +4,25 @@ import QtQuick.Layouts
 
 Rectangle {
     id: root
-    color: themeColors.background
+    color: colors.background
     
     property string sessionInfo: "{}"
     property alias logText: logArea.text
-    property var themeColors: ({
-        background: "#1a1a2e",
-        surface: "#252542",
-        primary: "#4dabf7",
-        secondary: "#69db7c",
-        accent: "#ffd43b",
-        text: "#ffffff",
-        textMuted: "#888888",
-        border: "#3d3d5c",
-        success: "#51cf66",
-        warning: "#fcc419",
-        error: "#ff6b6b",
+    property var themeColors: ({})
+    
+    // Internal colors that map from passed themeColors or use defaults
+    readonly property var colors: ({
+        background: colors.base || colors.background || "#1a1a2e",
+        surface: colors.alternateBase || colors.surface || "#252542",
+        primary: colors.highlight || colors.primary || "#4dabf7",
+        secondary: colors.accent || colors.secondary || "#69db7c",
+        accent: colors.accent || "#ffd43b",
+        text: colors.text || colors.windowText || "#ffffff",
+        textMuted: colors.textSecondary || colors.textMuted || "#888888",
+        border: colors.mid || colors.border || "#3d3d5c",
+        success: colors.success || "#51cf66",
+        warning: colors.warning || "#fcc419",
+        error: colors.error || "#ff6b6b",
         nerd: "#00ff41"
     })
     
@@ -46,7 +49,7 @@ Rectangle {
                 text: "🤓 NERD MODE"
                 font.bold: true
                 font.pixelSize: 14
-                color: themeColors.nerd
+                color: colors.nerd
                 font.family: "Menlo"
             }
             
@@ -55,7 +58,7 @@ Rectangle {
             Label {
                 text: "API Logs • Session Info • Debug"
                 opacity: 0.6
-                color: themeColors.nerd
+                color: colors.nerd
                 font.pixelSize: 11
             }
         }
@@ -66,7 +69,7 @@ Rectangle {
             Layout.fillWidth: true
             
             background: Rectangle {
-                color: Qt.darker(themeColors.background, 1.2)
+                color: Qt.darker(colors.background, 1.2)
             }
             
             TabButton {
@@ -74,12 +77,12 @@ Rectangle {
                 font.pixelSize: 11
                 
                 background: Rectangle {
-                    color: nerdTabs.currentIndex === 0 ? themeColors.surface : "transparent"
+                    color: nerdTabs.currentIndex === 0 ? colors.surface : "transparent"
                     radius: 4
                 }
                 contentItem: Text {
                     text: parent.text
-                    color: nerdTabs.currentIndex === 0 ? themeColors.nerd : themeColors.textMuted
+                    color: nerdTabs.currentIndex === 0 ? colors.nerd : colors.textMuted
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -90,12 +93,12 @@ Rectangle {
                 font.pixelSize: 11
                 
                 background: Rectangle {
-                    color: nerdTabs.currentIndex === 1 ? themeColors.surface : "transparent"
+                    color: nerdTabs.currentIndex === 1 ? colors.surface : "transparent"
                     radius: 4
                 }
                 contentItem: Text {
                     text: parent.text
-                    color: nerdTabs.currentIndex === 1 ? themeColors.nerd : themeColors.textMuted
+                    color: nerdTabs.currentIndex === 1 ? colors.nerd : colors.textMuted
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -106,12 +109,12 @@ Rectangle {
                 font.pixelSize: 11
                 
                 background: Rectangle {
-                    color: nerdTabs.currentIndex === 2 ? themeColors.surface : "transparent"
+                    color: nerdTabs.currentIndex === 2 ? colors.surface : "transparent"
                     radius: 4
                 }
                 contentItem: Text {
                     text: parent.text
-                    color: nerdTabs.currentIndex === 2 ? themeColors.nerd : themeColors.textMuted
+                    color: nerdTabs.currentIndex === 2 ? colors.nerd : colors.textMuted
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -136,7 +139,7 @@ Rectangle {
                         
                         Label {
                             text: logArea.text.split('\n').length - 1 + " entries"
-                            color: themeColors.textMuted
+                            color: colors.textMuted
                             font.pixelSize: 10
                         }
                         
@@ -153,11 +156,11 @@ Rectangle {
                             
                             contentItem: Text {
                                 text: parent.text
-                                color: themeColors.error
+                                color: colors.error
                                 horizontalAlignment: Text.AlignHCenter
                             }
                             background: Rectangle {
-                                color: parent.hovered ? themeColors.surface : "transparent"
+                                color: parent.hovered ? colors.surface : "transparent"
                                 radius: 2
                             }
                         }
@@ -170,11 +173,11 @@ Rectangle {
                             
                             contentItem: Text {
                                 text: parent.text
-                                color: themeColors.primary
+                                color: colors.primary
                                 horizontalAlignment: Text.AlignHCenter
                             }
                             background: Rectangle {
-                                color: parent.hovered ? themeColors.surface : "transparent"
+                                color: parent.hovered ? colors.surface : "transparent"
                                 radius: 2
                             }
                         }
@@ -191,14 +194,14 @@ Rectangle {
                             readOnly: true
                             font.family: "Menlo"
                             font.pixelSize: 11
-                            color: themeColors.nerd
-                            selectionColor: themeColors.nerd
-                            selectedTextColor: themeColors.background
+                            color: colors.nerd
+                            selectionColor: colors.nerd
+                            selectedTextColor: colors.background
                             wrapMode: Text.NoWrap
                             selectByMouse: true
                             
                             background: Rectangle {
-                                color: Qt.darker(themeColors.background, 1.2)
+                                color: Qt.darker(colors.background, 1.2)
                                 radius: 4
                             }
                             
@@ -223,7 +226,7 @@ Rectangle {
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.preferredHeight: sessionCol.implicitHeight + 16
-                            color: Qt.darker(themeColors.background, 1.2)
+                            color: Qt.darker(colors.background, 1.2)
                             radius: 4
                             
                             ColumnLayout {
@@ -235,7 +238,7 @@ Rectangle {
                                 Label {
                                     text: "Session Status"
                                     font.bold: true
-                                    color: themeColors.nerd
+                                    color: colors.nerd
                                     font.pixelSize: 12
                                 }
                                 
@@ -249,9 +252,9 @@ Rectangle {
                                         color: {
                                             try {
                                                 var info = JSON.parse(sessionInfo)
-                                                return info.has_session ? themeColors.success : themeColors.error
+                                                return info.has_session ? colors.success : colors.error
                                             } catch(e) {
-                                                return themeColors.error
+                                                return colors.error
                                             }
                                         }
                                     }
@@ -265,7 +268,7 @@ Rectangle {
                                                 return "Unknown"
                                             }
                                         }
-                                        color: themeColors.text
+                                        color: colors.text
                                         font.pixelSize: 11
                                     }
                                 }
@@ -279,7 +282,7 @@ Rectangle {
                                             return "Cookie: N/A"
                                         }
                                     }
-                                    color: themeColors.textMuted
+                                    color: colors.textMuted
                                     font.pixelSize: 10
                                     font.family: "Menlo"
                                 }
@@ -293,7 +296,7 @@ Rectangle {
                                             return "Base URL: N/A"
                                         }
                                     }
-                                    color: themeColors.textMuted
+                                    color: colors.textMuted
                                     font.pixelSize: 10
                                     font.family: "Menlo"
                                 }
@@ -304,7 +307,7 @@ Rectangle {
                         Label {
                             text: "Raw Session Info"
                             font.bold: true
-                            color: themeColors.nerd
+                            color: colors.nerd
                             font.pixelSize: 12
                         }
                         
@@ -315,12 +318,12 @@ Rectangle {
                             readOnly: true
                             font.family: "Menlo"
                             font.pixelSize: 10
-                            color: themeColors.primary
+                            color: colors.primary
                             wrapMode: Text.Wrap
                             selectByMouse: true
                             
                             background: Rectangle {
-                                color: Qt.darker(themeColors.background, 1.2)
+                                color: Qt.darker(colors.background, 1.2)
                                 radius: 4
                             }
                         }
@@ -341,7 +344,7 @@ Rectangle {
                         Label {
                             text: "Keyboard Shortcuts"
                             font.bold: true
-                            color: themeColors.nerd
+                            color: colors.nerd
                             font.pixelSize: 12
                         }
                         
@@ -363,13 +366,13 @@ Rectangle {
                                 Rectangle {
                                     Layout.preferredWidth: 100
                                     Layout.preferredHeight: 24
-                                    color: themeColors.surface
+                                    color: colors.surface
                                     radius: 4
                                     
                                     Label {
                                         anchors.centerIn: parent
                                         text: modelData.key
-                                        color: themeColors.accent
+                                        color: colors.accent
                                         font.family: "Menlo"
                                         font.pixelSize: 11
                                     }
@@ -377,7 +380,7 @@ Rectangle {
                                 
                                 Label {
                                     text: modelData.action
-                                    color: themeColors.text
+                                    color: colors.text
                                     font.pixelSize: 11
                                 }
                             }
@@ -388,7 +391,7 @@ Rectangle {
                         Label {
                             text: "CLI Commands"
                             font.bold: true
-                            color: themeColors.nerd
+                            color: colors.nerd
                             font.pixelSize: 12
                         }
                         
@@ -398,11 +401,11 @@ Rectangle {
                             readOnly: true
                             font.family: "Menlo"
                             font.pixelSize: 10
-                            color: themeColors.primary
+                            color: colors.primary
                             text: "codex tasks          # List tasks\ncodex task <id>      # Task detail\ncodex prompt \"...\"   # Create task\ncodex patch <id>     # Extract diff\ncodex yolo           # Auto-merge all\ncodex ui             # Launch this UI"
                             
                             background: Rectangle {
-                                color: Qt.darker(themeColors.background, 1.2)
+                                color: Qt.darker(colors.background, 1.2)
                                 radius: 4
                             }
                         }
