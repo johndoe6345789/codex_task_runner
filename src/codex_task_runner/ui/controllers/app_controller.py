@@ -385,6 +385,7 @@ class AppController(QObject):
     def loadTasks(self):
         """Load tasks from API."""
         import time
+        import sys
         
         if not self._session:
             self._init_session()
@@ -392,7 +393,15 @@ class AppController(QObject):
         if not self._session:
             self.errorOccurred.emit("No session configured. Set up .env file.")
             self._log("❌ No session configured")
+            print("❌ No session configured", file=sys.stderr)
             return
+        
+        # Debug session state
+        print(f"DEBUG: Session has {len(self._session.cookies)} cookies", file=sys.stderr)
+        session_token = self._session.cookies.get("__Secure-next-auth.session-token", "")
+        print(f"DEBUG: Session token: {'present (' + str(len(session_token)) + ' chars)' if session_token else 'MISSING'}", file=sys.stderr)
+        self._log(f"Session has {len(self._session.cookies)} cookies")
+        self._log(f"Session token: {'present (' + str(len(session_token)) + ' chars)' if session_token else 'MISSING'}")
         
         request_id = self._ajax_queue.addRequest("Loading tasks", "tasks")
         
@@ -701,19 +710,25 @@ class AppController(QObject):
             # Try multiple locations for .env file
             env_paths = [
                 os.environ.get("CODEX_ENV_PATH"),  # Environment variable
-                ".env",  # Current directory
+                Path.cwd() / ".env",  # Current working directory (absolute)
                 Path.home() / ".config" / "codex-task-runner" / ".env",
-                Path(__file__).parent.parent.parent.parent.parent / ".env",  # Project root
+                Path(__file__).resolve().parent.parent.parent.parent.parent / ".env",  # Project root
             ]
             
+            self._log(f"Looking for .env in: {[str(p) for p in env_paths if p]}")
+            
             for env_path in env_paths:
-                if env_path and Path(str(env_path)).exists():
-                    self._session = session_from_env(str(env_path))
-                    self._log(f"✓ Session loaded from {env_path}")
-                    return
+                if env_path:
+                    p = Path(str(env_path))
+                    if p.exists():
+                        self._session = session_from_env(str(p))
+                        self._log(f"✓ Session loaded from {p}")
+                        return
             
             # Try without path (will use environment variables)
             self._session = session_from_env()
             self._log("✓ Session loaded from environment variables")
         except Exception as e:
             self._log(f"❌ Failed to init session: {e}")
+            import traceback
+            self._log(traceback.format_exc())
