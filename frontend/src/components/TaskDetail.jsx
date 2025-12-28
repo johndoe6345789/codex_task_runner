@@ -27,7 +27,54 @@ import {
 } from '@mui/icons-material'
 import { NerdModeContext } from '../App'
 import MarkdownRenderer from './MarkdownRenderer'
-import Editor from '@monaco-editor/react'
+import Editor, { loader } from '@monaco-editor/react'
+
+// Register diff language with proper syntax highlighting
+loader.init().then((monaco) => {
+  // Register the diff language if not already registered
+  if (!monaco.languages.getLanguages().some(({ id }) => id === 'gitdiff')) {
+    monaco.languages.register({ id: 'gitdiff' })
+    
+    monaco.languages.setMonarchTokensProvider('gitdiff', {
+      tokenizer: {
+        root: [
+          // File headers
+          [/^diff --git.*$/, 'keyword'],
+          [/^index [a-f0-9]+\.\.[a-f0-9]+.*$/, 'comment'],
+          [/^---.*$/, 'keyword.deleted'],
+          [/^\+\+\+.*$/, 'keyword.added'],
+          // Hunk headers
+          [/^@@.*@@.*$/, 'tag'],
+          // Added lines
+          [/^\+.*$/, 'string.added'],
+          // Removed lines
+          [/^-.*$/, 'string.deleted'],
+          // Context lines
+          [/^ .*$/, 'comment'],
+          // New file mode
+          [/^new file mode.*$/, 'keyword'],
+          [/^deleted file mode.*$/, 'keyword'],
+        ],
+      },
+    })
+
+    // Define custom theme for diffs
+    monaco.editor.defineTheme('diff-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'string.added', foreground: '98c379', fontStyle: 'bold' },
+        { token: 'string.deleted', foreground: 'e06c75', fontStyle: 'bold' },
+        { token: 'keyword.added', foreground: '61afef' },
+        { token: 'keyword.deleted', foreground: 'e06c75' },
+        { token: 'keyword', foreground: 'c678dd' },
+        { token: 'tag', foreground: '56b6c2', fontStyle: 'bold' },
+        { token: 'comment', foreground: '5c6370' },
+      ],
+      colors: {},
+    })
+  }
+})
 
 export default function TaskDetail({ task, onBack, apiBase }) {
   const { nerdMode } = useContext(NerdModeContext)
@@ -334,9 +381,9 @@ export default function TaskDetail({ task, onBack, apiBase }) {
               <Box sx={{ borderRadius: 1, overflow: 'hidden', height: 500 }}>
                 <Editor
                   height="100%"
-                  defaultLanguage="diff"
+                  defaultLanguage="gitdiff"
                   value={patch.diff || 'No diff available'}
-                  theme="vs-dark"
+                  theme="diff-dark"
                   options={{
                     readOnly: true,
                     minimap: { enabled: true },
