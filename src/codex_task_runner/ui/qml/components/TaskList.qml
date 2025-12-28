@@ -90,7 +90,10 @@ Item {
                 textRole: "text"
                 valueRole: "value"
                 currentIndex: 0
-                onActivated: filter = currentValue
+                onActivated: {
+                    filter = currentValue
+                    refresh()
+                }
                 
                 background: Rectangle {
                     color: Theme.surface
@@ -107,7 +110,10 @@ Item {
                 id: limitCombo
                 model: [10, 20, 50, 100]
                 currentIndex: 1
-                onActivated: limit = currentValue
+                onActivated: {
+                    limit = currentValue
+                    refresh()
+                }
                 
                 background: Rectangle {
                     color: Theme.surface
@@ -122,14 +128,14 @@ Item {
             // Refresh button
             CIconButton {
                 icon: "🔄"
-                onClicked: fetchTasks()
+                onClicked: refresh()
             }
             
             Item { Layout.fillWidth: true }
             
-            // Task count
+            // Task count - use model count
             Text {
-                text: tasks.length + " " + LanguageContext.t("tasksCount")
+                text: app.taskModel.rowCount() + " " + LanguageContext.t("tasksCount")
                 color: Theme.textSecondary
                 font.pixelSize: 14
             }
@@ -163,7 +169,7 @@ Item {
             }
         }
         
-        // Task Grid
+        // Task Grid - uses app.taskModel from Python controller
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -177,11 +183,22 @@ Item {
                 rowSpacing: 16
                 
                 Repeater {
-                    model: tasks
+                    model: app.taskModel
                     
                     delegate: CCard {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 180
+                        
+                        required property int index
+                        required property string taskId
+                        required property string title
+                        required property string status
+                        required property string repo
+                        required property string branch
+                        required property string created
+                        required property string alias
+                        required property string prUrl
+                        required property bool hasPr
                         
                         ColumnLayout {
                             anchors.fill: parent
@@ -194,21 +211,20 @@ Item {
                                 spacing: 8
                                 
                                 CChip {
-                                    text: getStatusLabel(modelData)
-                                    color: getStatusColor(modelData)
+                                    text: getStatusLabel(status, hasPr, prUrl)
+                                    color: getStatusColor(status, hasPr)
                                 }
                                 
                                 CChip {
-                                    text: "#" + (modelData._alias || index + 1)
+                                    text: "#" + alias
                                     variant: "outlined"
-                                    visible: modelData._alias !== undefined
                                 }
                             }
                             
                             // Title
                             Text {
                                 Layout.fillWidth: true
-                                text: modelData.title || LanguageContext.t("untitledTask")
+                                text: title || LanguageContext.t("untitledTask")
                                 font.pixelSize: 16
                                 font.bold: true
                                 color: Theme.text
@@ -217,36 +233,31 @@ Item {
                                 wrapMode: Text.WordWrap
                             }
                             
-                            // Description
+                            // Repo
                             Text {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                text: (modelData.description || modelData.prompt || "").substring(0, 120) + 
-                                      ((modelData.description || modelData.prompt || "").length > 120 ? "..." : "")
+                                text: repo || LanguageContext.t("noRepo")
                                 font.pixelSize: 12
                                 color: Theme.textSecondary
                                 elide: Text.ElideRight
-                                wrapMode: Text.WordWrap
-                                maximumLineCount: 2
                             }
                             
-                            // Repo
+                            // Branch / ID (nerd mode)
                             Text {
-                                text: modelData.repo || LanguageContext.t("noRepo")
-                                font.pixelSize: 12
-                                color: Theme.textMuted
-                            }
-                            
-                            // ID (nerd mode) or branch
-                            Text {
-                                text: NerdModeContext.nerdMode ? 
-                                      (modelData.task_id || modelData.id) : 
-                                      (modelData.base_branch || "main")
+                                text: NerdModeContext.nerdMode ? taskId : (branch || "main")
                                 font.pixelSize: 11
                                 font.family: "monospace"
                                 color: Theme.textMuted
                                 elide: Text.ElideMiddle
                                 Layout.maximumWidth: parent.width
+                            }
+                            
+                            // Created date
+                            Text {
+                                text: created
+                                font.pixelSize: 11
+                                color: Theme.textMuted
                             }
                             
                             // Actions row
@@ -258,21 +269,22 @@ Item {
                                     text: LanguageContext.t("view")
                                     variant: "outlined"
                                     size: "small"
-                                    onClicked: taskSelected(modelData)
-                                }
-                                
-                                CIconButton {
-                                    icon: "📝"
-                                    size: "small"
-                                    tooltip: LanguageContext.t("getPatch")
-                                    onClicked: Qt.openUrlExternally(apiBase + "/tasks/" + (modelData.task_id || modelData.id) + "/patch")
+                                    onClicked: taskSelected(index)
                                 }
                                 
                                 CIconButton {
                                     icon: "📦"
                                     size: "small"
                                     tooltip: LanguageContext.t("archive")
-                                    onClicked: archiveTask(modelData.task_id || modelData.id)
+                                    onClicked: archiveTask(index)
+                                }
+                                
+                                CIconButton {
+                                    icon: "🔗"
+                                    size: "small"
+                                    tooltip: "Open PR"
+                                    visible: hasPr && prUrl
+                                    onClicked: app.openUrl(prUrl)
                                 }
                             }
                         }
@@ -285,7 +297,7 @@ Item {
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            visible: !loading && tasks.length === 0
+            visible: !loading && app.taskModel.rowCount() === 0
             
             CEmptyState {
                 anchors.centerIn: parent
