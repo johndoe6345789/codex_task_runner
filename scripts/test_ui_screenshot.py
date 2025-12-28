@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Run UI screenshot test."""
 import sys
+import os
 from pathlib import Path
 import tempfile
+
+# Force Basic style for full customization
+os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Basic'
 
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtQml import QQmlApplicationEngine
