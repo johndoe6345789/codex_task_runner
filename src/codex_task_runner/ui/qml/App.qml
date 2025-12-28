@@ -474,7 +474,7 @@ ApplicationWindow {
         id: searchDialog
         visible: searchOpen
         apiBase: app.apiBase
-        onClose: searchOpen = false
+        onRejected: searchOpen = false
         onTaskSelected: function(task) {
             searchOpen = false
             selectTask(task)
