@@ -56,12 +56,15 @@ def launch(session=None):
     # Register before loading QML
     engine.rootContext().setContextProperty("app", _controller)
     
-    # Add QML import path for components
+    # Add QML import path for components and fakemui
     qml_dir = Path(__file__).parent / "qml"
     engine.addImportPath(str(qml_dir))
+    engine.addImportPath(str(qml_dir / "fakemui"))
+    engine.addImportPath(str(qml_dir / "components"))
+    engine.addImportPath(str(qml_dir / "contexts"))
     
-    # Load QML - use the new UI
-    qml_path = qml_dir / "MainNew.qml"
+    # Load QML - Main.qml is the full-featured entry point
+    qml_path = qml_dir / "Main.qml"
     engine.load(QUrl.fromLocalFile(str(qml_path)))
     
     if not engine.rootObjects():

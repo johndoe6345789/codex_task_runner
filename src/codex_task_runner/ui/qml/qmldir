@@ -11,3 +11,5 @@ PatchDialog 1.0 PatchDialog.qml
 SendPromptDialog 1.0 SendPromptDialog.qml
 ThemeSelector 1.0 ThemeSelector.qml
 LanguageSelector 1.0 LanguageSelector.qml
+DetailPane 1.0 DetailPane.qml
+AjaxQueueWidget 1.0 AjaxQueueWidget.qml

@@ -26,7 +26,14 @@ def main():
     # CRITICAL: Set context property BEFORE load
     _engine.rootContext().setContextProperty("app", _controller)
     
-    qml_path = Path(__file__).parent.parent / "src" / "codex_task_runner" / "ui" / "qml" / "Main.qml"
+    # Add import paths for QML modules
+    qml_dir = Path(__file__).parent.parent / "src" / "codex_task_runner" / "ui" / "qml"
+    _engine.addImportPath(str(qml_dir))
+    _engine.addImportPath(str(qml_dir / "fakemui"))
+    _engine.addImportPath(str(qml_dir / "components"))
+    _engine.addImportPath(str(qml_dir / "contexts"))
+    
+    qml_path = qml_dir / "Main.qml"
     print(f"Loading: {qml_path}")
     
     # Connect to objectCreated signal to verify loading
