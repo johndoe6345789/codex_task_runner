@@ -174,6 +174,17 @@
         {"flags": ["--branch"], "kwargs": {"default": "main", "help": "Branch name (default: main)"}},
         {"flags": ["--best-of"], "kwargs": {"type": "int", "default": 1, "help": "Number of responses to generate (default: 1)"}}
       ]
+    },
+    {
+      "name": "serve",
+      "aliases": ["server", "api", "flask"],
+      "help": "Start Flask API server",
+      "handler": "codex_task_runner.handlers.serve",
+      "args": [
+        {"flags": ["--host"], "kwargs": {"default": "127.0.0.1", "help": "Host to bind to (default: 127.0.0.1)"}},
+        {"flags": ["--port"], "kwargs": {"type": "int", "default": 5000, "help": "Port to bind to (default: 5000)"}},
+        {"flags": ["--debug"], "kwargs": {"action": "store_true", "help": "Enable debug mode"}}
+      ]
     }
   ]
 }

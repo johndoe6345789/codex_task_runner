@@ -1,7 +1,55 @@
 """Main application controller exposed to QML."""
-from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty, QTimer
+from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty, QTimer, QVariant
 from PyQt6.QtCore import QAbstractListModel, QModelIndex, Qt
 import json
+
+
+class EnvironmentModel(QAbstractListModel):
+    """Model for environment list."""
+    
+    IdRole = Qt.ItemDataRole.UserRole + 1
+    NameRole = Qt.ItemDataRole.UserRole + 2
+    FullNameRole = Qt.ItemDataRole.UserRole + 3
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._environments = []
+    
+    def roleNames(self):
+        return {
+            self.IdRole: b"envId",
+            self.NameRole: b"name",
+            self.FullNameRole: b"fullName",
+        }
+    
+    def rowCount(self, parent=QModelIndex()):
+        return len(self._environments)
+    
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
+        if not index.isValid() or index.row() >= len(self._environments):
+            return None
+        
+        env = self._environments[index.row()]
+        if role == self.IdRole:
+            return env.get("id") or env.get("environment_id", "")
+        elif role == self.NameRole:
+            return env.get("name") or env.get("full_name", "")
+        elif role == self.FullNameRole:
+            return env.get("full_name") or env.get("name", "")
+        return None
+    
+    def set_environments(self, envs):
+        self.beginResetModel()
+        self._environments = envs
+        self.endResetModel()
+    
+    def get_environment(self, index):
+        if 0 <= index < len(self._environments):
+            return self._environments[index]
+        return None
+    
+    def get_all(self):
+        return self._environments
 
 
 class TaskModel(QAbstractListModel):
@@ -14,6 +62,8 @@ class TaskModel(QAbstractListModel):
     BranchRole = Qt.ItemDataRole.UserRole + 5
     CreatedRole = Qt.ItemDataRole.UserRole + 6
     AliasRole = Qt.ItemDataRole.UserRole + 7
+    PrUrlRole = Qt.ItemDataRole.UserRole + 8
+    HasPrRole = Qt.ItemDataRole.UserRole + 9
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,6 +78,8 @@ class TaskModel(QAbstractListModel):
             self.BranchRole: b"branch",
             self.CreatedRole: b"created",
             self.AliasRole: b"alias",
+            self.PrUrlRole: b"prUrl",
+            self.HasPrRole: b"hasPr",
         }
     
     def rowCount(self, parent=QModelIndex()):
@@ -52,6 +104,11 @@ class TaskModel(QAbstractListModel):
             return task.get("created_at", "")[:10] if task.get("created_at") else ""
         elif role == self.AliasRole:
             return str(index.row() + 1)
+        elif role == self.PrUrlRole:
+            pr = task.get("pull_request") or {}
+            return pr.get("html_url") or pr.get("url", "")
+        elif role == self.HasPrRole:
+            return bool(task.get("pull_request"))
         return None
     
     def set_tasks(self, tasks):
@@ -73,18 +130,27 @@ class AppController(QObject):
     errorOccurred = pyqtSignal(str)
     statusMessage = pyqtSignal(str)
     patchReady = pyqtSignal(str)
+    environmentsLoaded = pyqtSignal('QVariantList')
+    promptSuccess = pyqtSignal(str)  # task_id
+    promptError = pyqtSignal(str)  # error message
     
     def __init__(self, session=None, parent=None):
         super().__init__(parent)
         self._session = session
         self._task_model = TaskModel(self)
+        self._env_model = EnvironmentModel(self)
         self._current_task = None
         self._poll_timer = QTimer(self)
         self._poll_timer.timeout.connect(self._poll_tasks)
+        self._environments = []
     
     @pyqtProperty(QObject, constant=True)
     def taskModel(self):
         return self._task_model
+    
+    @pyqtProperty(QObject, constant=True)
+    def envModel(self):
+        return self._env_model
     
     @pyqtSlot()
     def loadTasks(self):
@@ -217,6 +283,105 @@ class AppController(QObject):
         """Open Codex in system browser for task creation."""
         import webbrowser
         webbrowser.open("https://chatgpt.com/codex/")
+    
+    @pyqtSlot()
+    def loadEnvironments(self):
+        """Load available environments for task creation."""
+        if not self._session:
+            self._init_session()
+        
+        if not self._session:
+            self.promptError.emit("No session configured. Set up .env file.")
+            return
+        
+        try:
+            from ...codex.json_get import _json_get
+            
+            # Try recent environments first
+            url = "https://chatgpt.com/backend-api/wham/environments/recent"
+            envs = _json_get(self._session, url)
+            
+            if not envs:
+                # Fallback to all environments
+                url = "https://chatgpt.com/backend-api/wham/environments"
+                envs = _json_get(self._session, url)
+            
+            if envs and isinstance(envs, list):
+                self._environments = envs
+                self._env_model.set_environments(envs)
+                # Convert to QVariantList for QML
+                env_list = [
+                    {
+                        "id": e.get("id") or e.get("environment_id", ""),
+                        "name": e.get("name") or e.get("full_name", ""),
+                        "full_name": e.get("full_name") or e.get("name", ""),
+                    }
+                    for e in envs
+                ]
+                self.environmentsLoaded.emit(env_list)
+                self.statusMessage.emit(f"Loaded {len(envs)} environments")
+            else:
+                self.promptError.emit("No environments found. Connect a repository in Codex first.")
+        except Exception as e:
+            self.promptError.emit(f"Failed to load environments: {e}")
+    
+    @pyqtSlot(str, str, str, int)
+    def sendPrompt(self, prompt, envId, branch, bestOf):
+        """Create a new task with the given prompt."""
+        if not self._session:
+            self._init_session()
+        
+        if not self._session:
+            self.promptError.emit("No session configured")
+            return
+        
+        if not prompt:
+            self.promptError.emit("No prompt provided")
+            return
+        
+        if not envId:
+            self.promptError.emit("No environment selected")
+            return
+        
+        try:
+            from ...codex.codex_create_task import create_task
+            
+            result = create_task(
+                session=self._session,
+                prompt=prompt,
+                environment_id=envId,
+                branch=branch or "main",
+                best_of_n=bestOf or 1,
+            )
+            
+            if result:
+                task_id = result.get("task_id") or result.get("id", "")
+                self.promptSuccess.emit(task_id)
+                self.statusMessage.emit(f"Task created: {task_id[:8]}...")
+                # Refresh task list after a short delay
+                QTimer.singleShot(2000, self.loadTasks)
+            else:
+                self.promptError.emit("Failed to create task. Check authentication.")
+        except Exception as e:
+            self.promptError.emit(f"Failed to create task: {e}")
+    
+    @pyqtSlot(str)
+    def openUrl(self, url):
+        """Open URL in system browser."""
+        if url:
+            import webbrowser
+            webbrowser.open(url)
+    
+    @pyqtSlot(str)
+    def copyToClipboard(self, text):
+        """Copy text to clipboard."""
+        try:
+            from PyQt6.QtWidgets import QApplication
+            clipboard = QApplication.clipboard()
+            clipboard.setText(text)
+            self.statusMessage.emit("Copied to clipboard")
+        except Exception as e:
+            self.errorOccurred.emit(f"Copy failed: {e}")
     
     def _poll_tasks(self):
         """Poll for task updates."""

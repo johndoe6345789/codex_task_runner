@@ -1,0 +1,2 @@
+# This folder contains the built React frontend
+# Build with: cd frontend && npm install && npm run build

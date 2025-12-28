@@ -20,6 +20,9 @@ ApplicationWindow {
         function onErrorOccurred(msg) { statusText = "Error: " + msg }
         function onPatchReady(patch) { patchDialog.show(patch) }
         function onTaskDetailLoaded(json) { detailPane.taskJson = json }
+        function onEnvironmentsLoaded(envList) { sendPromptDialog.setEnvironments(envList) }
+        function onPromptSuccess(taskId) { sendPromptDialog.showSuccess(taskId) }
+        function onPromptError(msg) { sendPromptDialog.showError(msg) }
     }
     
     Component.onCompleted: {
@@ -45,11 +48,24 @@ ApplicationWindow {
                     onClicked: app.loadTasks()
                 }
                 
+                ToolSeparator {}
+                
                 ToolButton {
-                    text: "🌐 New Task"
+                    text: "✨ New Task"
+                    highlighted: true
+                    onClicked: {
+                        app.loadEnvironments()
+                        sendPromptDialog.open()
+                    }
+                    ToolTip.visible: hovered
+                    ToolTip.text: "Create a new Codex task with a prompt"
+                }
+                
+                ToolButton {
+                    text: "🌐 Open Codex"
                     onClicked: app.openCodexBrowser()
                     ToolTip.visible: hovered
-                    ToolTip.text: "Opens Codex in browser (task creation uses WebSocket)"
+                    ToolTip.text: "Open Codex web interface"
                 }
                 
                 Item { Layout.fillWidth: true }
@@ -79,10 +95,22 @@ ApplicationWindow {
                     anchors.margins: 8
                     spacing: 4
                     
-                    Label {
-                        text: "Tasks"
-                        font.bold: true
-                        font.pixelSize: 16
+                    RowLayout {
+                        Layout.fillWidth: true
+                        
+                        Label {
+                            text: "Tasks"
+                            font.bold: true
+                            font.pixelSize: 16
+                        }
+                        
+                        Item { Layout.fillWidth: true }
+                        
+                        Label {
+                            text: taskList.count + " tasks"
+                            opacity: 0.6
+                            font.pixelSize: 12
+                        }
                     }
                     
                     ListView {
@@ -95,7 +123,7 @@ ApplicationWindow {
                         
                         delegate: ItemDelegate {
                             width: taskList.width
-                            height: 72
+                            height: 80
                             highlighted: ListView.isCurrentItem
                             
                             onClicked: {
@@ -123,6 +151,26 @@ ApplicationWindow {
                                         elide: Text.ElideRight
                                         font.bold: true
                                     }
+                                    
+                                    // PR indicator
+                                    Label {
+                                        text: "🔀"
+                                        visible: model.hasPr
+                                        ToolTip.visible: prMouseArea.containsMouse
+                                        ToolTip.text: "Has pull request"
+                                        
+                                        MouseArea {
+                                            id: prMouseArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: model.prUrl ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                            onClicked: {
+                                                if (model.prUrl) {
+                                                    app.openUrl(model.prUrl)
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                                 
                                 Label {
@@ -135,6 +183,26 @@ ApplicationWindow {
                                 
                                 RowLayout {
                                     Layout.fillWidth: true
+                                    
+                                    Label {
+                                        text: model.status || ""
+                                        font.pixelSize: 11
+                                        padding: 2
+                                        leftPadding: 6
+                                        rightPadding: 6
+                                        background: Rectangle {
+                                            radius: 3
+                                            color: {
+                                                switch(model.status) {
+                                                    case "completed": return "#2d7d46"
+                                                    case "running": return "#1a73e8"
+                                                    case "failed": return "#c62828"
+                                                    default: return palette.mid
+                                                }
+                                            }
+                                        }
+                                        color: "white"
+                                    }
                                     
                                     Label {
                                         text: model.branch || ""
@@ -179,15 +247,27 @@ ApplicationWindow {
         // Status bar
         Rectangle {
             Layout.fillWidth: true
-            height: 24
+            height: 28
             color: palette.mid
             
-            Label {
+            RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: 8
-                text: statusText
-                verticalAlignment: Text.AlignVCenter
-                opacity: 0.8
+                anchors.rightMargin: 8
+                
+                Label {
+                    text: statusText
+                    verticalAlignment: Text.AlignVCenter
+                    opacity: 0.8
+                }
+                
+                Item { Layout.fillWidth: true }
+                
+                Label {
+                    text: "Ctrl+N: New Task | Ctrl+R: Refresh"
+                    opacity: 0.5
+                    font.pixelSize: 11
+                }
             }
         }
     }
@@ -195,5 +275,32 @@ ApplicationWindow {
     // Patch dialog
     PatchDialog {
         id: patchDialog
+    }
+    
+    // Send prompt dialog
+    SendPromptDialog {
+        id: sendPromptDialog
+        onPromptSubmitted: function(prompt, envId, branch, bestOf) {
+            app.sendPrompt(prompt, envId, branch, bestOf)
+        }
+    }
+    
+    // Keyboard shortcuts
+    Shortcut {
+        sequence: "Ctrl+N"
+        onActivated: {
+            app.loadEnvironments()
+            sendPromptDialog.open()
+        }
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+R"
+        onActivated: app.loadTasks()
+    }
+    
+    Shortcut {
+        sequence: "F5"
+        onActivated: app.loadTasks()
     }
 }
