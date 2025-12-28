@@ -13,6 +13,39 @@ Dialog {
     property string patchText: ""
     property int additions: 0
     property int deletions: 0
+    property var themeColors: ({})
+    
+    // Internal colors with fallbacks
+    readonly property var colors: ({
+        background: themeColors.window || themeColors.background || "#0d0d0d",
+        paper: themeColors.alternateBase || "#1a1a1a",
+        text: themeColors.windowText || themeColors.text || "#ffffff",
+        textSecondary: themeColors.textSecondary || "#a0a0a0",
+        accent: themeColors.accent || "#10a37f",
+        success: themeColors.success || "#22c55e",
+        error: themeColors.error || "#ef4444",
+        border: themeColors.border || "#333333",
+        codeBackground: themeColors.codeBackground || "#1a1a1a"
+    })
+    
+    background: Rectangle {
+        color: colors.background
+        radius: 8
+        border.color: colors.border
+        border.width: 1
+    }
+    
+    header: Label {
+        text: dialog.title
+        font.bold: true
+        font.pixelSize: 16
+        color: colors.text
+        padding: 16
+        background: Rectangle {
+            color: colors.paper
+            radius: 8
+        }
+    }
     
     function show(patch) {
         patchText = patch
@@ -38,19 +71,19 @@ Dialog {
             
             Label {
                 text: "+" + additions
-                color: "#4caf50"
+                color: colors.success
                 font.bold: true
             }
             
             Label {
                 text: "-" + deletions
-                color: "#f44336"
+                color: colors.error
                 font.bold: true
             }
             
             Label {
                 text: patchText.split('\n').length + " lines"
-                opacity: 0.7
+                color: colors.textSecondary
             }
             
             Item { Layout.fillWidth: true }
@@ -60,6 +93,17 @@ Dialog {
                 onClicked: {
                     app.copyToClipboard(patchText)
                 }
+                background: Rectangle {
+                    color: parent.hovered ? Qt.lighter(colors.paper, 1.2) : colors.paper
+                    radius: 4
+                    border.color: colors.border
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: colors.text
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
             
             Button {
@@ -68,13 +112,24 @@ Dialog {
                     // For now just copy - could add file save dialog later
                     app.copyToClipboard(patchText)
                 }
+                background: Rectangle {
+                    color: parent.hovered ? Qt.lighter(colors.paper, 1.2) : colors.paper
+                    radius: 4
+                    border.color: colors.border
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: colors.text
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
         }
         
         // Instructions
         Label {
             text: "Apply with: git apply < patch.diff"
-            opacity: 0.7
+            color: colors.textSecondary
             font.pixelSize: 12
         }
         
@@ -95,12 +150,13 @@ Dialog {
                 textFormat: Text.PlainText
                 
                 background: Rectangle {
-                    color: "#1e1e1e"
+                    color: colors.codeBackground
                     radius: 4
+                    border.color: colors.border
+                    border.width: 1
                 }
                 
-                // Basic diff coloring via palette
-                color: "#d4d4d4"
+                color: colors.text
             }
         }
     }
