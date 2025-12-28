@@ -1,6 +1,5 @@
 pragma Singleton
 import QtQuick
-import Qt.labs.settings
 
 /**
  * LanguageContext - Internationalization / translations
@@ -12,11 +11,8 @@ QtObject {
     // Alias for component compatibility
     property string currentLanguage: language
     
-    // Current language
-    property string language: {
-        const saved = _settings.value("language", "en")
-        return languages[saved] ? saved : "en"
-    }
+    // Current language - default to English
+    property string language: "en"
     
     // Available languages
     readonly property var languageKeys: [
