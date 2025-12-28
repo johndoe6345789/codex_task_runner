@@ -3,9 +3,14 @@ import sys
 import os
 from pathlib import Path
 
+# Keep controller reference alive
+_controller = None
+
 
 def launch(session=None):
     """Launch the PyQt6 desktop UI."""
+    global _controller
+    
     try:
         from PyQt6.QtWidgets import QApplication
         from PyQt6.QtQml import QQmlApplicationEngine
@@ -21,13 +26,13 @@ def launch(session=None):
     app.setApplicationName("Codex Task Runner")
     app.setOrganizationName("codex-task-runner")
     
+    # Create controller and keep global reference
+    _controller = AppController(session)
+    
     engine = QQmlApplicationEngine()
     
-    # Create controller and keep reference
-    controller = AppController(session)
-    
     # Register before loading QML
-    engine.rootContext().setContextProperty("app", controller)
+    engine.rootContext().setContextProperty("app", _controller)
     
     # Load QML
     qml_path = Path(__file__).parent / "qml" / "Main.qml"
@@ -36,9 +41,6 @@ def launch(session=None):
     if not engine.rootObjects():
         print("Failed to load QML")
         return 1
-    
-    # Keep controller alive
-    engine.rootObjects()[0].setProperty("controller", controller)
     
     return app.exec()
 
