@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../contexts"
+import "../fakemui"
 
 /**
  * Documentation.qml - Tabbed documentation viewer

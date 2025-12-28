@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../contexts"
+import "../fakemui"
 
 /**
  * UserInfo.qml - User profile and connection status
