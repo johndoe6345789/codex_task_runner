@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 from codex_task_runner.codex_cloud import (
@@ -47,6 +49,11 @@ def make_parser() -> argparse.ArgumentParser:
     sp = sub.add_parser("run", help="Run integration: fetch tasks and process (dry-run default)")
     sp.add_argument("--dry-run", action="store_true", default=True)
     sp.add_argument("--output-dir", default=None)
+
+    sp = sub.add_parser("publish-mcp", help="Publish MCP integration doc to the wiki using credentials")
+    sp.add_argument("username", help="Wiki username (bot)")
+    sp.add_argument("password", help="Bot password")
+    sp.add_argument("--title", default="MCP Integration", help="Page title to create/edit")
 
     return p
 
@@ -104,6 +111,23 @@ def main(argv: list[str] | None = None) -> int:
         process_tasks(cfg, tasks)
         print(f"Processed {len(tasks)} tasks (dry-run={args.dry_run}).")
         return 0
+
+    if args.cmd == "publish-mcp":
+        # Call the helper script that performs the MediaWiki API publish
+        script = Path(__file__).resolve().parents[0] / 'publish_to_wiki.py'
+        try:
+            res = subprocess.run([sys.executable, str(script), args.username, args.password, args.title], check=True, capture_output=True, text=True)
+            print(res.stdout)
+            if res.stderr:
+                print(res.stderr, file=sys.stderr)
+            return 0
+        except subprocess.CalledProcessError as e:
+            print('Publish failed:', e, file=sys.stderr)
+            if e.stdout:
+                print(e.stdout)
+            if e.stderr:
+                print(e.stderr, file=sys.stderr)
+            return 1
 
     p.print_help()
     return 1
