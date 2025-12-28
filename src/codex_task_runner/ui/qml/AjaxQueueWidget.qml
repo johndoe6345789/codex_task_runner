@@ -8,18 +8,21 @@ Rectangle {
     // Properties from controller
     property var ajaxQueue: null
     property bool expanded: false
-    property var themeColors: ({
-        background: "#1a1a2e",
-        surface: "#252542",
-        primary: "#4dabf7",
-        secondary: "#69db7c",
-        accent: "#ffd43b",
-        text: "#ffffff",
-        textMuted: "#888888",
-        border: "#3d3d5c",
-        success: "#51cf66",
-        warning: "#fcc419",
-        error: "#ff6b6b"
+    property var themeColors: ({})
+    
+    // Internal colors that map from passed themeColors or use defaults
+    readonly property var colors: ({
+        background: colors.base || colors.background || "#1a1a2e",
+        surface: colors.alternateBase || colors.surface || "#252542",
+        primary: colors.highlight || colors.primary || "#4dabf7",
+        secondary: colors.accent || colors.secondary || "#69db7c",
+        accent: colors.accent || "#ffd43b",
+        text: colors.text || colors.windowText || "#ffffff",
+        textMuted: colors.textSecondary || colors.textMuted || "#888888",
+        border: colors.mid || colors.border || "#3d3d5c",
+        success: colors.success || "#51cf66",
+        warning: colors.warning || "#fcc419",
+        error: colors.error || "#ff6b6b"
     })
     
     // Auto-computed visibility
@@ -28,8 +31,8 @@ Rectangle {
     width: 320
     height: expanded ? Math.min(400, headerHeight + listView.contentHeight + 8) : headerHeight + (ajaxQueue && ajaxQueue.total > 0 ? summaryHeight : 0)
     radius: 8
-    color: themeColors.surface
-    border.color: themeColors.border
+    color: colors.surface
+    border.color: colors.border
     border.width: 1
     
     // Animation
@@ -59,7 +62,7 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: root.headerHeight
-            color: themeColors.primary
+            color: colors.primary
             radius: root.radius
             
             // Flatten bottom corners
@@ -104,7 +107,7 @@ Rectangle {
                         width: 16
                         height: 16
                         radius: 8
-                        color: themeColors.warning
+                        color: colors.warning
                         
                         Text {
                             anchors.centerIn: parent
@@ -135,7 +138,7 @@ Rectangle {
                         width: pendingText.width + 8
                         height: 18
                         radius: 9
-                        color: themeColors.warning
+                        color: colors.warning
                         
                         Text {
                             id: pendingText
@@ -153,7 +156,7 @@ Rectangle {
                         width: completedText.width + 8
                         height: 18
                         radius: 9
-                        color: themeColors.success
+                        color: colors.success
                         
                         Text {
                             id: completedText
@@ -171,7 +174,7 @@ Rectangle {
                         width: failedText.width + 8
                         height: 18
                         radius: 9
-                        color: themeColors.error
+                        color: colors.error
                         
                         Text {
                             id: failedText
@@ -241,7 +244,7 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: ajaxQueue && ajaxQueue.pending > 0 ? 3 : 0
-            color: themeColors.border
+            color: colors.border
             visible: ajaxQueue && ajaxQueue.pending > 0
             
             Behavior on Layout.preferredHeight { NumberAnimation { duration: 200 } }
@@ -251,7 +254,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 width: parent.width * (ajaxQueue ? (ajaxQueue.completed + ajaxQueue.failed) / Math.max(ajaxQueue.total, 1) : 0)
-                color: themeColors.primary
+                color: colors.primary
                 
                 Behavior on width { NumberAnimation { duration: 200 } }
             }
@@ -270,8 +273,8 @@ Rectangle {
             delegate: Rectangle {
                 width: listView.width
                 height: 48
-                color: model.status === "error" ? Qt.darker(themeColors.error, 1.5) : 
-                       (delegateMouseArea.containsMouse ? Qt.lighter(themeColors.surface, 1.2) : themeColors.surface)
+                color: model.status === "error" ? Qt.darker(colors.error, 1.5) : 
+                       (delegateMouseArea.containsMouse ? Qt.lighter(colors.surface, 1.2) : colors.surface)
                 opacity: model.status === "pending" ? 1.0 : 0.7
                 
                 MouseArea {
@@ -290,9 +293,9 @@ Rectangle {
                         text: model.status === "success" ? "✓" :
                               model.status === "error" ? "✕" : "◌"
                         font.pixelSize: 14
-                        color: model.status === "success" ? themeColors.success :
-                               model.status === "error" ? themeColors.error :
-                               themeColors.textMuted
+                        color: model.status === "success" ? colors.success :
+                               model.status === "error" ? colors.error :
+                               colors.textMuted
                         Layout.preferredWidth: 20
                         
                         // Pulse animation for pending
@@ -316,7 +319,7 @@ Rectangle {
                             Text {
                                 text: model.label
                                 font.pixelSize: 12
-                                color: themeColors.text
+                                color: colors.text
                                 elide: Text.ElideRight
                                 Layout.fillWidth: true
                                 Layout.maximumWidth: 180
@@ -328,14 +331,14 @@ Rectangle {
                                 width: progressText.width + 8
                                 height: 16
                                 radius: 8
-                                color: themeColors.border
+                                color: colors.border
                                 
                                 Text {
                                     id: progressText
                                     anchors.centerIn: parent
                                     text: model.progressCurrent + "/" + model.progressTotal
                                     font.pixelSize: 9
-                                    color: themeColors.textMuted
+                                    color: colors.textMuted
                                 }
                             }
                         }
@@ -346,14 +349,14 @@ Rectangle {
                             Text {
                                 text: model.elapsed
                                 font.pixelSize: 10
-                                color: themeColors.textMuted
+                                color: colors.textMuted
                             }
                             
                             Text {
                                 visible: model.error !== ""
                                 text: model.error
                                 font.pixelSize: 10
-                                color: themeColors.error
+                                color: colors.error
                                 elide: Text.ElideRight
                                 Layout.maximumWidth: 150
                             }
@@ -367,7 +370,7 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     height: 1
-                    color: themeColors.border
+                    color: colors.border
                 }
             }
             
@@ -377,7 +380,7 @@ Rectangle {
                 visible: listView.count === 0
                 text: "No recent requests"
                 font.pixelSize: 12
-                color: themeColors.textMuted
+                color: colors.textMuted
             }
         }
         
@@ -402,7 +405,7 @@ Rectangle {
                     return label
                 }
                 font.pixelSize: 11
-                color: themeColors.textMuted
+                color: colors.textMuted
                 elide: Text.ElideRight
             }
         }
