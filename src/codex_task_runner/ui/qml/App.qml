@@ -49,32 +49,17 @@ ApplicationWindow {
         onActivated: searchOpen = true
     }
     
-    // Fetch user info
-    function fetchUser() {
-        const xhr = new XMLHttpRequest()
-        xhr.open("GET", apiBase + "/me")
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText)
-                    if (data.success) {
-                        user = data.data
-                    }
-                }
-            }
-        }
-        xhr.send()
-    }
-    
     // Navigation
     function navigateTo(view) {
         currentView = view
-        selectedTask = null
+        selectedTaskIndex = -1
     }
     
-    function selectTask(task) {
-        selectedTask = task
+    function selectTask(index) {
+        selectedTaskIndex = index
         currentView = "taskDetail"
+        // Load the task detail via Python controller
+        app.loadTaskDetail(index)
     }
     
     // Layout: Drawer + Main Content
