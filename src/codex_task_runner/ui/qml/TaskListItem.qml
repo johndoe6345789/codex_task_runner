@@ -24,9 +24,9 @@ Rectangle {
     
     height: showNerdInfo ? 100 : 80
     radius: 8
-    color: isSelected ? "#1a3a5c" : (mouseArea.containsMouse ? themeColors.surfaceAlt : "transparent")
+    color: isSelected ? (themeColors.highlight || "#1a3a5c") : (mouseArea.containsMouse ? (themeColors.surfaceAlt || themeColors.alternateBase || "#242424") : "transparent")
     border.width: isSelected ? 1 : 0
-    border.color: themeColors.accent
+    border.color: themeColors.accent || "#10a37f"
     
     Behavior on color { ColorAnimation { duration: 150 } }
     Behavior on height { NumberAnimation { duration: 150 } }
@@ -81,7 +81,7 @@ Rectangle {
                 width: 24
                 height: 24
                 radius: 12
-                color: "#238636"
+                color: themeColors.success || "#22c55e"
                 visible: hasPr
                 
                 Text {
