@@ -206,6 +206,7 @@ Item {
                         text: taskData && taskData.created_at ? ("Created: " + taskData.created_at.substring(0, 10)) : ""
                         opacity: 0.6
                         font.pixelSize: 12
+                        color: themeColors.textSecondary || themeColors.windowText || "#a0a0a0"
                     }
                 }
             }
