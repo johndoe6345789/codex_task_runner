@@ -3,6 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
 
+/**
+ * CCard.qml - Card container component (mirrors _card.scss)
+ * Uses StyleVariables for consistent styling
+ */
 Rectangle {
     id: card
     
@@ -11,27 +15,43 @@ Rectangle {
     property bool elevated: false
     property bool hoverable: false
     property bool clickable: false
+    property string variant: "default"  // default, outlined, elevated
     
     signal clicked()
     
     default property alias cardContent: contentColumn.data
     
     color: Theme.paper
-    radius: 8
+    radius: StyleVariables.radiusMd
     border.width: 1
-    border.color: hoverable && mouseArea.containsMouse ? Theme.primary : Theme.border
+    border.color: {
+        if (hoverable && mouseArea.containsMouse) return Theme.primary
+        return variant === "outlined" ? Theme.border : Theme.border
+    }
     
     implicitHeight: contentColumn.implicitHeight
     implicitWidth: 300
     
-    Behavior on border.color { ColorAnimation { duration: 150 } }
+    Behavior on border.color { ColorAnimation { duration: StyleVariables.transitionFast } }
+    Behavior on color { ColorAnimation { duration: StyleVariables.transitionFast } }
     
-    layer.enabled: elevated
+    // Hover effect for clickable cards
+    Rectangle {
+        anchors.fill: parent
+        radius: parent.radius
+        color: (card.hoverable || card.clickable) && mouseArea.containsMouse 
+            ? StyleMixins.hoverBg(Theme.mode === "dark") 
+            : "transparent"
+        
+        Behavior on color { ColorAnimation { duration: StyleVariables.transitionFast } }
+    }
+    
+    layer.enabled: elevated || variant === "elevated"
     layer.effect: MultiEffect {
         shadowEnabled: true
-        shadowColor: "#40000000"
-        shadowBlur: 0.3
-        shadowVerticalOffset: 4
+        shadowColor: StyleVariables.shadowMd.color
+        shadowBlur: StyleVariables.shadowMd.blur
+        shadowVerticalOffset: StyleVariables.shadowMd.offset
     }
     
     MouseArea {
