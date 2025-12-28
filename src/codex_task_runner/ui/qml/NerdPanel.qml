@@ -12,17 +12,17 @@ Rectangle {
     
     // Internal colors that map from passed themeColors or use defaults
     readonly property var colors: ({
-        background: colors.base || colors.background || "#1a1a2e",
-        surface: colors.alternateBase || colors.surface || "#252542",
-        primary: colors.highlight || colors.primary || "#4dabf7",
-        secondary: colors.accent || colors.secondary || "#69db7c",
-        accent: colors.accent || "#ffd43b",
-        text: colors.text || colors.windowText || "#ffffff",
-        textMuted: colors.textSecondary || colors.textMuted || "#888888",
-        border: colors.mid || colors.border || "#3d3d5c",
-        success: colors.success || "#51cf66",
-        warning: colors.warning || "#fcc419",
-        error: colors.error || "#ff6b6b",
+        background: themeColors.base || themeColors.background || "#1a1a2e",
+        surface: themeColors.alternateBase || themeColors.surface || "#252542",
+        primary: themeColors.highlight || themeColors.primary || "#4dabf7",
+        secondary: themeColors.accent || themeColors.secondary || "#69db7c",
+        accent: themeColors.accent || "#ffd43b",
+        text: themeColors.text || themeColors.windowText || "#ffffff",
+        textMuted: themeColors.textSecondary || themeColors.textMuted || "#888888",
+        border: themeColors.mid || themeColors.border || "#3d3d5c",
+        success: themeColors.success || "#51cf66",
+        warning: themeColors.warning || "#fcc419",
+        error: themeColors.error || "#ff6b6b",
         nerd: "#00ff41"
     })
     
