@@ -38,6 +38,13 @@ CErrorState 1.0 CErrorState.qml
 # Form Components (mirrors SCSS _form.scss)
 CFormGroup 1.0 CFormGroup.qml
 CLabel 1.0 CLabel.qml
+CAutocomplete 1.0 CAutocomplete.qml
+CCheckbox 1.0 CCheckbox.qml
+CRadio 1.0 CRadio.qml
+CSwitch 1.0 CSwitch.qml
+CSelect 1.0 CSelect.qml
+CSlider 1.0 CSlider.qml
+CToggleButton 1.0 CToggleButton.qml
 
 # Typography Components (mirrors SCSS typography)
 CTitle 1.0 CTitle.qml
@@ -61,6 +68,17 @@ CBox 1.0 CBox.qml
 Spacer 1.0 Spacer.qml
 FlexRow 1.0 FlexRow.qml
 FlexCol 1.0 FlexCol.qml
+CFab 1.0 CFab.qml
+CBackdrop 1.0 CBackdrop.qml
+CSkeleton 1.0 CSkeleton.qml
+CBreadcrumbs 1.0 CBreadcrumbs.qml
+CMenu 1.0 CMenu.qml
+CPagination 1.0 CPagination.qml
+CStepper 1.0 CStepper.qml
+CImageList 1.0 CImageList.qml
+CTooltip 1.0 CTooltip.qml
+CPopover 1.0 CPopover.qml
+CRating 1.0 CRating.qml
 
 # Grid/Layout Components (mirrors SCSS _grid.scss)
 CGrid 1.0 CGrid.qml
