@@ -418,3 +418,59 @@ Body: {}
 ```
 
 This endpoint moves a task from the active/current task list to the archived list. Archived tasks can still be viewed using `task_filter=archived` or `task_filter=all` on the list endpoint.
+
+---
+
+## Task Creation (WebSocket-based)
+
+**Important:** Task creation does NOT use a REST endpoint. It uses WebSocket communication, similar to ChatGPT's conversation streaming.
+
+### WebSocket Connection
+```
+wss://ws.chatgpt.com/ws/user/{user_id}?verify={timestamp}-{signature}
+```
+
+### Initial Handshake
+The client sends a connection command with subscription topics:
+```json
+[
+  {"id": 1, "command": {"type": "connect", "presence": {"type": "presence", "state": "foreground"}}},
+  {"id": 2, "command": {"type": "subscribe", "topic_id": "conversations"}},
+  {"id": 3, "command": {"type": "subscribe", "topic_id": "wham_tasks"}}
+]
+```
+
+### Server Response
+```json
+[
+  {"id": 1, "type": "reply", "reply": {"type": "connect", "subscriptions": {}}},
+  {"id": 2, "type": "reply", "reply": {"type": "subscribe", "topic_id": "conversations", "recovered": false}},
+  {"id": 3, "type": "reply", "reply": {"type": "subscribe", "topic_id": "wham_tasks", "recovered": false}}
+]
+```
+
+### Creating a Task (Sending a Prompt)
+Task creation likely follows a pattern similar to ChatGPT messages:
+```json
+{
+  "id": <seq>,
+  "command": {
+    "type": "wham_create_task",
+    "prompt": "Your task description here",
+    "environment_id": "<env_id>",
+    "repository_id": "<repo_id>"
+  }
+}
+```
+
+**Note:** The exact payload structure needs to be captured by submitting a task in the browser with network inspection enabled. The WebSocket messages are the key to understanding the full protocol.
+
+### Implications for Programmatic Access
+To create tasks programmatically, you would need to:
+1. Establish a WebSocket connection to `wss://ws.chatgpt.com/ws/user/{user_id}`
+2. Authenticate using the verify signature (derived from session token)
+3. Subscribe to the `wham_tasks` topic
+4. Send the task creation command
+5. Listen for task status updates on the WebSocket
+
+This is significantly more complex than REST API calls and requires maintaining a persistent WebSocket connection.

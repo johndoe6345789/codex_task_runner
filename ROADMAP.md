@@ -54,6 +54,18 @@ Future development ideas for codex-task-runner.
 - [ ] **Settings dialog** — Configure API credentials, polling interval, repo defaults
 - [ ] **Keyboard navigation** — Vim-style j/k, quick-switch with number keys
 
+### Task Creation Challenge
+
+**Discovery:** Task creation uses WebSocket (`wss://ws.chatgpt.com/ws/user/{user_id}`), not REST.
+
+Options for "Send Prompt" feature:
+1. **Embedded Browser** (QWebEngineView) — Open Codex in a browser widget, let user interact naturally
+2. **WebSocket Client** — Reverse-engineer the protocol (complex, may break)
+3. **Playwright Automation** — Script browser actions (fragile, resource-heavy)
+4. **Defer** — Focus on task management (list, detail, archive, PR, patch) first
+
+**Recommended approach for v1.0:** Use embedded browser for task creation, native UI for everything else.
+
 ### UI Architecture
 ```
 src/codex_task_runner/
@@ -65,16 +77,21 @@ src/codex_task_runner/
       TaskDetail.qml  # Detail view with tabs
       PatchView.qml   # Diff viewer component
       Settings.qml    # Config dialog
+      CreateTask.qml  # Embedded browser for task creation
     models/
       task_model.py   # QAbstractListModel for tasks
       turn_model.py   # Model for task turns
     controllers/
       app_controller.py   # Main controller exposed to QML
       task_controller.py  # Task operations (archive, PR, etc.)
+    services/
+      api_service.py      # REST API calls (tasks, turns, archive, PR)
+      polling_service.py  # Background task list refresh
 ```
 
 ### Dependencies
 - PyQt6 / PySide6
+- PyQt6-WebEngine (for embedded browser)
 - PyQt6-QML
 - pygments (syntax highlighting)
 
