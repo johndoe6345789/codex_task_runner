@@ -30,6 +30,7 @@ ApplicationWindow {
             ready: "Ready", tasksCount: "tasks", rawJson: "Raw JSON", prompt: "Prompt",
             backToTasks: "Back to Tasks", loading: "Loading...", copied: "Copied!",
             currentTurn: "Current Turn", lines: "lines", connected: "Connected",
+            search: "Search tasks, code, prompts...", noResults: "No matching tasks",
         },
         "es": {
             tasks: "Tareas", newTask: "Nueva Tarea", refresh: "Actualizar", openCodex: "Abrir Codex",
@@ -40,6 +41,7 @@ ApplicationWindow {
             ready: "Listo", tasksCount: "tareas", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Volver", loading: "Cargando...", copied: "¡Copiado!",
             currentTurn: "Turno Actual", lines: "líneas", connected: "Conectado",
+            search: "Buscar tareas, código, prompts...", noResults: "Sin resultados",
         },
         "fr": {
             tasks: "Tâches", newTask: "Nouvelle Tâche", refresh: "Rafraîchir", openCodex: "Ouvrir Codex",
@@ -50,6 +52,7 @@ ApplicationWindow {
             ready: "Prêt", tasksCount: "tâches", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Retour", loading: "Chargement...", copied: "Copié!",
             currentTurn: "Tour Actuel", lines: "lignes", connected: "Connecté",
+            search: "Rechercher tâches, code, prompts...", noResults: "Aucun résultat",
         },
         "de": {
             tasks: "Aufgaben", newTask: "Neue Aufgabe", refresh: "Aktualisieren", openCodex: "Codex öffnen",
@@ -60,6 +63,7 @@ ApplicationWindow {
             ready: "Bereit", tasksCount: "Aufgaben", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Zurück", loading: "Laden...", copied: "Kopiert!",
             currentTurn: "Aktuelle Runde", lines: "Zeilen", connected: "Verbunden",
+            search: "Suche Aufgaben, Code, Prompts...", noResults: "Keine Ergebnisse",
         },
         "ja": {
             tasks: "タスク", newTask: "新規タスク", refresh: "更新", openCodex: "Codexを開く",
@@ -70,6 +74,7 @@ ApplicationWindow {
             ready: "準備完了", tasksCount: "タスク", rawJson: "JSON", prompt: "プロンプト",
             backToTasks: "戻る", loading: "読み込み中...", copied: "コピー完了!",
             currentTurn: "現在のターン", lines: "行", connected: "接続済み",
+            search: "タスク、コード、プロンプトを検索...", noResults: "結果なし",
         },
         "zh": {
             tasks: "任务", newTask: "新任务", refresh: "刷新", openCodex: "打开Codex",
@@ -80,6 +85,7 @@ ApplicationWindow {
             ready: "就绪", tasksCount: "个任务", rawJson: "JSON", prompt: "提示",
             backToTasks: "返回", loading: "加载中...", copied: "已复制!",
             currentTurn: "当前轮次", lines: "行", connected: "已连接",
+            search: "搜索任务、代码、提示...", noResults: "无结果",
         },
         "ko": {
             tasks: "작업", newTask: "새 작업", refresh: "새로고침", openCodex: "Codex 열기",
@@ -90,6 +96,7 @@ ApplicationWindow {
             ready: "준비됨", tasksCount: "개 작업", rawJson: "JSON", prompt: "프롬프트",
             backToTasks: "돌아가기", loading: "로딩 중...", copied: "복사됨!",
             currentTurn: "현재 턴", lines: "줄", connected: "연결됨",
+            search: "작업, 코드, 프롬프트 검색...", noResults: "결과 없음",
         },
         "ru": {
             tasks: "Задачи", newTask: "Новая задача", refresh: "Обновить", openCodex: "Открыть Codex",
@@ -100,6 +107,7 @@ ApplicationWindow {
             ready: "Готово", tasksCount: "задач", rawJson: "JSON", prompt: "Промпт",
             backToTasks: "Назад", loading: "Загрузка...", copied: "Скопировано!",
             currentTurn: "Текущий ход", lines: "строк", connected: "Подключено",
+            search: "Поиск задач, кода, промптов...", noResults: "Нет результатов",
         },
         "ar": {
             tasks: "المهام", newTask: "مهمة جديدة", refresh: "تحديث", openCodex: "فتح Codex",
@@ -110,6 +118,7 @@ ApplicationWindow {
             ready: "جاهز", tasksCount: "مهام", rawJson: "JSON", prompt: "طلب",
             backToTasks: "عودة", loading: "جاري التحميل...", copied: "تم النسخ!",
             currentTurn: "الدور الحالي", lines: "سطور", connected: "متصل",
+            search: "البحث في المهام، الكود، الطلبات...", noResults: "لا توجد نتائج",
         },
         "hi": {
             tasks: "कार्य", newTask: "नया कार्य", refresh: "रिफ्रेश", openCodex: "Codex खोलें",

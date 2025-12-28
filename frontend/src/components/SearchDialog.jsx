@@ -48,25 +48,45 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
   const [results, setResults] = useState({ tasks: [], code: [] })
   const [loading, setLoading] = useState(false)
   const [allTasks, setAllTasks] = useState([])
+  const [tasksFetched, setTasksFetched] = useState(false)
+  const [error, setError] = useState(null)
   
   const debouncedQuery = useDebounce(query, 300)
   
   // Fetch all tasks on open
   useEffect(() => {
-    if (open && allTasks.length === 0) {
+    if (open && !tasksFetched) {
       fetchAllTasks()
+    }
+  }, [open, tasksFetched])
+  
+  // Reset when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setQuery('')
+      setResults({ tasks: [], code: [] })
     }
   }, [open])
   
   const fetchAllTasks = async () => {
+    setLoading(true)
+    setError(null)
     try {
+      console.log('Fetching tasks from:', `${apiBase}/tasks?filter=all&limit=100`)
       const res = await fetch(`${apiBase}/tasks?filter=all&limit=100`)
       const data = await res.json()
+      console.log('Tasks response:', data)
       if (data.success) {
         setAllTasks(data.data || [])
+        setTasksFetched(true)
+      } else {
+        setError('Failed to fetch tasks')
       }
     } catch (err) {
       console.error('Failed to fetch tasks:', err)
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
   }
   
@@ -77,12 +97,17 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
       return
     }
     
-    performSearch(debouncedQuery)
+    if (allTasks.length > 0) {
+      performSearch(debouncedQuery)
+    }
   }, [debouncedQuery, allTasks])
   
   const performSearch = async (searchQuery) => {
     setLoading(true)
+    setError(null)
     const lowerQuery = searchQuery.toLowerCase()
+    
+    console.log('Searching for:', searchQuery, 'in', allTasks.length, 'tasks')
     
     // Search in tasks (title, description, prompt, repo)
     const taskResults = allTasks.filter(task => {
@@ -97,43 +122,10 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
              taskId.includes(lowerQuery)
     }).slice(0, 10)
     
-    // Search in code/patches (fetch patches for matching tasks)
-    const codeResults = []
+    console.log('Task results:', taskResults.length)
     
-    // Search for code in patches of recent tasks
-    for (const task of allTasks.slice(0, 20)) {
-      try {
-        const taskId = task.task_id || task.id
-        const res = await fetch(`${apiBase}/tasks/${taskId}/patch`)
-        const data = await res.json()
-        
-        if (data.success && data.data?.diff) {
-          const diff = data.data.diff.toLowerCase()
-          if (diff.includes(lowerQuery)) {
-            // Find matching lines
-            const lines = data.data.diff.split('\n')
-            const matchingLines = lines
-              .map((line, idx) => ({ line, idx }))
-              .filter(({ line }) => line.toLowerCase().includes(lowerQuery))
-              .slice(0, 3)
-            
-            if (matchingLines.length > 0) {
-              codeResults.push({
-                task,
-                matches: matchingLines,
-                totalMatches: lines.filter(l => l.toLowerCase().includes(lowerQuery)).length,
-              })
-            }
-          }
-        }
-      } catch (err) {
-        // Skip failed patch fetches
-      }
-      
-      if (codeResults.length >= 5) break
-    }
-    
-    setResults({ tasks: taskResults, code: codeResults })
+    // For now, skip code search to simplify - just search task metadata
+    setResults({ tasks: taskResults, code: [] })
     setLoading(false)
   }
   
@@ -205,7 +197,15 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
           </Box>
         )}
         
-        {!loading && query.length >= 2 && (
+        {error && (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography color="error">
+              Error: {error}
+            </Typography>
+          </Box>
+        )}
+        
+        {!loading && !error && query.length >= 2 && (
           <Box>
             {/* Task Results */}
             {results.tasks.length > 0 && (
@@ -323,14 +323,19 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
           </Box>
         )}
         
-        {!loading && query.length < 2 && (
+        {!loading && !error && query.length < 2 && (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography color="text.secondary">
               Type at least 2 characters to search
             </Typography>
             <Typography variant="caption" color="text.disabled" sx={{ mt: 1, display: 'block' }}>
-              Search tasks by title, description, repo, or search in code patches
+              Search tasks by title, description, repo
             </Typography>
+            {allTasks.length > 0 && (
+              <Typography variant="caption" color="text.disabled" sx={{ mt: 1, display: 'block' }}>
+                {allTasks.length} tasks loaded
+              </Typography>
+            )}
           </Box>
         )}
       </DialogContent>

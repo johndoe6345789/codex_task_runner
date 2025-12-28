@@ -317,6 +317,16 @@ class AppController(QObject):
         settings = self._load_settings()
         return settings.get("language", "en")
     
+    @pyqtSlot(str)
+    def setSearchQuery(self, query):
+        """Filter tasks by search query."""
+        self._task_model.set_search_query(query)
+        count = self._task_model.rowCount()
+        if query:
+            self._log(f"🔍 Search: '{query}' → {count} results")
+        else:
+            self._log(f"🔍 Search cleared → {count} tasks")
+    
     def _log(self, msg):
         """Add debug log entry."""
         import datetime
