@@ -33,6 +33,7 @@ import {
   Check as CheckIcon,
   Language as LanguageIcon,
   Search as SearchIcon,
+  Book as BookIcon,
 } from '@mui/icons-material'
 
 // Nerd mode context
@@ -43,6 +44,8 @@ import TaskDetail from './components/TaskDetail'
 import NewPrompt from './components/NewPrompt'
 import UserInfo from './components/UserInfo'
 import SearchDialog from './components/SearchDialog'
+import AjaxQueueWidget from './components/AjaxQueueWidget'
+import Documentation from './components/Documentation'
 import { themes, themeKeys } from './themes'
 import { languages, languageKeys } from './i18n'
 import { ThemeContext, LanguageContext } from './main'
@@ -150,6 +153,15 @@ export default function App() {
           >
             <ListItemIcon><PersonIcon /></ListItemIcon>
             <ListItemText primary={t('profile')} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            selected={currentView === 'docs'}
+            onClick={() => handleNavigation('docs')}
+          >
+            <ListItemIcon><BookIcon /></ListItemIcon>
+            <ListItemText primary={t('documentation') || 'Docs'} />
           </ListItemButton>
         </ListItem>
       </List>
@@ -297,6 +309,8 @@ export default function App() {
         return <NewPrompt onSuccess={() => handleNavigation('tasks')} apiBase={API_BASE} />
       case 'user':
         return <UserInfo user={user} apiBase={API_BASE} />
+      case 'docs':
+        return <Documentation />
       default:
         return <TaskList onTaskSelect={handleTaskSelect} apiBase={API_BASE} />
     }
@@ -327,10 +341,16 @@ export default function App() {
             {currentView === 'taskDetail' && t('taskDetail')}
             {currentView === 'newPrompt' && t('newTask')}
             {currentView === 'user' && t('profile')}
+            {currentView === 'docs' && (t('documentation') || 'Documentation')}
           </Typography>
           <Tooltip title="Search (⌘K)">
             <IconButton color="inherit" onClick={() => setSearchOpen(true)}>
               <SearchIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('documentation') || 'Documentation'}>
+            <IconButton color="inherit" onClick={() => handleNavigation('docs')}>
+              <BookIcon />
             </IconButton>
           </Tooltip>
           <IconButton color="inherit" onClick={fetchUser}>
@@ -383,6 +403,8 @@ export default function App() {
         onTaskSelect={handleTaskSelect}
         apiBase={API_BASE}
       />
+      
+      <AjaxQueueWidget />
     </Box>
     </NerdModeContext.Provider>
   )

@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material'
 import App from './App'
 import { themes, defaultTheme } from './themes'
 import { languages, defaultLanguage } from './i18n'
+import { AjaxQueueProvider } from './contexts/AjaxQueueContext'
 
 // Theme context for global access
 export const ThemeContext = createContext({
@@ -45,14 +46,16 @@ function ThemedApp() {
   }
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      <ThemeContext.Provider value={{ themeName, setThemeName }}>
-        <ThemeProvider theme={currentTheme}>
-          <CssBaseline />
-          <App />
-        </ThemeProvider>
-      </ThemeContext.Provider>
-    </LanguageContext.Provider>
+    <AjaxQueueProvider>
+      <LanguageContext.Provider value={{ language, setLanguage, t }}>
+        <ThemeContext.Provider value={{ themeName, setThemeName }}>
+          <ThemeProvider theme={currentTheme}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </ThemeContext.Provider>
+      </LanguageContext.Provider>
+    </AjaxQueueProvider>
   )
 }
 

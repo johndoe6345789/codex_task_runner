@@ -17,6 +17,7 @@ import {
   Divider,
   Paper,
   IconButton,
+  LinearProgress,
 } from '@mui/material'
 import {
   Search as SearchIcon,
@@ -26,6 +27,7 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material'
 import { LanguageContext } from '../main'
+import { useAjaxQueue } from '../contexts/AjaxQueueContext'
 
 // Debounce hook
 function useDebounce(value, delay) {
@@ -44,14 +46,17 @@ function useDebounce(value, delay) {
 
 export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
   const { t } = useContext(LanguageContext)
+  const { addRequest, updateRequest } = useAjaxQueue()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState({ tasks: [], code: [] })
   const [loading, setLoading] = useState(false)
+  const [searching, setSearching] = useState(false)
+  const [codeSearchProgress, setCodeSearchProgress] = useState(null) // { current, total }
   const [allTasks, setAllTasks] = useState([])
   const [tasksFetched, setTasksFetched] = useState(false)
   const [error, setError] = useState(null)
   
-  const debouncedQuery = useDebounce(query, 300)
+  const debouncedQuery = useDebounce(query, 400)
   
   // Fetch all tasks on open
   useEffect(() => {
@@ -71,20 +76,22 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
   const fetchAllTasks = async () => {
     setLoading(true)
     setError(null)
+    const reqId = addRequest('Fetching tasks')
     try {
-      console.log('Fetching tasks from:', `${apiBase}/tasks?filter=all&limit=100`)
       const res = await fetch(`${apiBase}/tasks?filter=all&limit=100`)
       const data = await res.json()
-      console.log('Tasks response:', data)
       if (data.success) {
         setAllTasks(data.data || [])
         setTasksFetched(true)
+        updateRequest(reqId, { status: 'success' })
       } else {
         setError('Failed to fetch tasks')
+        updateRequest(reqId, { status: 'error', error: 'Failed to fetch' })
       }
     } catch (err) {
       console.error('Failed to fetch tasks:', err)
       setError(err.message)
+      updateRequest(reqId, { status: 'error', error: err.message })
     } finally {
       setLoading(false)
     }
@@ -104,10 +111,9 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
   
   const performSearch = async (searchQuery) => {
     setLoading(true)
+    setSearching(true)
     setError(null)
     const lowerQuery = searchQuery.toLowerCase()
-    
-    console.log('Searching for:', searchQuery, 'in', allTasks.length, 'tasks')
     
     // Search in tasks (title, description, prompt, repo)
     const taskResults = allTasks.filter(task => {
@@ -122,11 +128,78 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
              taskId.includes(lowerQuery)
     }).slice(0, 10)
     
-    console.log('Task results:', taskResults.length)
-    
-    // For now, skip code search to simplify - just search task metadata
+    // Show task results immediately
     setResults({ tasks: taskResults, code: [] })
     setLoading(false)
+    
+    // Now search code in patches - queue up AJAX requests
+    const tasksWithPatches = allTasks.filter(t => 
+      t.status === 'completed' || t.status === 'pr_created'
+    ).slice(0, 20) // Limit to 20 to avoid too many requests
+    
+    if (tasksWithPatches.length === 0) {
+      setSearching(false)
+      return
+    }
+    
+    setCodeSearchProgress({ current: 0, total: tasksWithPatches.length })
+    const codeResults = []
+    
+    // Process in batches of 3 for better UX
+    const batchSize = 3
+    for (let i = 0; i < tasksWithPatches.length; i += batchSize) {
+      const batch = tasksWithPatches.slice(i, i + batchSize)
+      
+      // Process batch in parallel
+      const batchPromises = batch.map(async (task) => {
+        const taskId = task.task_id || task.id
+        const reqId = addRequest(`Searching ${task.title?.slice(0, 25) || taskId}...`, {
+          progress: { current: i + 1, total: tasksWithPatches.length },
+          group: 'codeSearch'
+        })
+        
+        try {
+          const res = await fetch(`${apiBase}/tasks/${taskId}/patch`)
+          const data = await res.json()
+          
+          if (data.success && data.data?.patch) {
+            const patch = data.data.patch
+            const lines = patch.split('\n')
+            const matches = []
+            
+            lines.forEach((line, idx) => {
+              if (line.toLowerCase().includes(lowerQuery)) {
+                matches.push({ line, idx })
+              }
+            })
+            
+            if (matches.length > 0) {
+              updateRequest(reqId, { status: 'success' })
+              return { task, matches: matches.slice(0, 3), totalMatches: matches.length }
+            }
+          }
+          updateRequest(reqId, { status: 'success' })
+          return null
+        } catch (err) {
+          updateRequest(reqId, { status: 'error', error: err.message })
+          return null
+        }
+      })
+      
+      const batchResults = await Promise.all(batchPromises)
+      const validResults = batchResults.filter(r => r !== null)
+      
+      if (validResults.length > 0) {
+        codeResults.push(...validResults)
+        // Update results progressively
+        setResults(prev => ({ ...prev, code: [...codeResults] }))
+      }
+      
+      setCodeSearchProgress({ current: Math.min(i + batchSize, tasksWithPatches.length), total: tasksWithPatches.length })
+    }
+    
+    setSearching(false)
+    setCodeSearchProgress(null)
   }
   
   const handleSelect = (task) => {
@@ -191,9 +264,25 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
           sx={{ mb: 2 }}
         />
         
-        {loading && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-            <CircularProgress size={32} />
+        {(loading || searching) && (
+          <Box sx={{ py: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+              <CircularProgress size={24} />
+              <Typography variant="body2" color="text.secondary">
+                {loading ? 'Loading tasks...' : 'Searching code...'}
+              </Typography>
+            </Box>
+            {codeSearchProgress && (
+              <Box sx={{ mt: 2 }}>
+                <LinearProgress 
+                  variant="determinate" 
+                  value={(codeSearchProgress.current / codeSearchProgress.total) * 100}
+                />
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }}>
+                  Searching patches: {codeSearchProgress.current} / {codeSearchProgress.total}
+                </Typography>
+              </Box>
+            )}
           </Box>
         )}
         
@@ -313,7 +402,7 @@ export default function SearchDialog({ open, onClose, onTaskSelect, apiBase }) {
             )}
             
             {/* No Results */}
-            {results.tasks.length === 0 && results.code.length === 0 && (
+            {!searching && results.tasks.length === 0 && results.code.length === 0 && (
               <Box sx={{ textAlign: 'center', py: 4 }}>
                 <Typography color="text.secondary">
                   No results found for "{query}"

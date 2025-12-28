@@ -129,6 +129,7 @@ ApplicationWindow {
             ready: "तैयार", tasksCount: "कार्य", rawJson: "JSON", prompt: "प्रॉम्प्ट",
             backToTasks: "वापस", loading: "लोड हो रहा है...", copied: "कॉपी किया!",
             currentTurn: "वर्तमान टर्न", lines: "पंक्तियाँ", connected: "जुड़ा हुआ",
+            search: "कार्य, कोड, प्रॉम्प्ट खोजें...", noResults: "कोई परिणाम नहीं",
         },
         "pt": {
             tasks: "Tarefas", newTask: "Nova Tarefa", refresh: "Atualizar", openCodex: "Abrir Codex",
@@ -139,6 +140,7 @@ ApplicationWindow {
             ready: "Pronto", tasksCount: "tarefas", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Voltar", loading: "Carregando...", copied: "Copiado!",
             currentTurn: "Turno Atual", lines: "linhas", connected: "Conectado",
+            search: "Buscar tarefas, código, prompts...", noResults: "Sem resultados",
         },
         "it": {
             tasks: "Attività", newTask: "Nuova Attività", refresh: "Aggiorna", openCodex: "Apri Codex",
@@ -149,6 +151,7 @@ ApplicationWindow {
             ready: "Pronto", tasksCount: "attività", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Indietro", loading: "Caricamento...", copied: "Copiato!",
             currentTurn: "Turno Corrente", lines: "righe", connected: "Connesso",
+            search: "Cerca attività, codice, prompt...", noResults: "Nessun risultato",
         },
         "nl": {
             tasks: "Taken", newTask: "Nieuwe Taak", refresh: "Vernieuwen", openCodex: "Open Codex",
@@ -159,6 +162,7 @@ ApplicationWindow {
             ready: "Gereed", tasksCount: "taken", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Terug", loading: "Laden...", copied: "Gekopieerd!",
             currentTurn: "Huidige Beurt", lines: "regels", connected: "Verbonden",
+            search: "Zoek taken, code, prompts...", noResults: "Geen resultaten",
         },
         "pl": {
             tasks: "Zadania", newTask: "Nowe Zadanie", refresh: "Odśwież", openCodex: "Otwórz Codex",
@@ -169,6 +173,7 @@ ApplicationWindow {
             ready: "Gotowe", tasksCount: "zadań", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Wróć", loading: "Ładowanie...", copied: "Skopiowano!",
             currentTurn: "Bieżąca Tura", lines: "linii", connected: "Połączono",
+            search: "Szukaj zadań, kodu, promptów...", noResults: "Brak wyników",
         },
         "sv": {
             tasks: "Uppgifter", newTask: "Ny Uppgift", refresh: "Uppdatera", openCodex: "Öppna Codex",
@@ -179,6 +184,7 @@ ApplicationWindow {
             ready: "Redo", tasksCount: "uppgifter", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Tillbaka", loading: "Laddar...", copied: "Kopierat!",
             currentTurn: "Aktuell Omgång", lines: "rader", connected: "Ansluten",
+            search: "Sök uppgifter, kod, prompts...", noResults: "Inga resultat",
         },
         "tr": {
             tasks: "Görevler", newTask: "Yeni Görev", refresh: "Yenile", openCodex: "Codex Aç",
@@ -189,6 +195,7 @@ ApplicationWindow {
             ready: "Hazır", tasksCount: "görev", rawJson: "JSON", prompt: "İstem",
             backToTasks: "Geri", loading: "Yükleniyor...", copied: "Kopyalandı!",
             currentTurn: "Mevcut Tur", lines: "satır", connected: "Bağlı",
+            search: "Görev, kod, istem ara...", noResults: "Sonuç yok",
         },
         "uk": {
             tasks: "Завдання", newTask: "Нове завдання", refresh: "Оновити", openCodex: "Відкрити Codex",
@@ -199,6 +206,7 @@ ApplicationWindow {
             ready: "Готово", tasksCount: "завдань", rawJson: "JSON", prompt: "Промпт",
             backToTasks: "Назад", loading: "Завантаження...", copied: "Скопійовано!",
             currentTurn: "Поточний хід", lines: "рядків", connected: "Підключено",
+            search: "Пошук завдань, коду, промптів...", noResults: "Немає результатів",
         },
         "vi": {
             tasks: "Nhiệm vụ", newTask: "Nhiệm vụ mới", refresh: "Làm mới", openCodex: "Mở Codex",
@@ -209,6 +217,7 @@ ApplicationWindow {
             ready: "Sẵn sàng", tasksCount: "nhiệm vụ", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "Quay lại", loading: "Đang tải...", copied: "Đã sao chép!",
             currentTurn: "Lượt hiện tại", lines: "dòng", connected: "Đã kết nối",
+            search: "Tìm nhiệm vụ, mã, prompt...", noResults: "Không có kết quả",
         },
         "th": {
             tasks: "งาน", newTask: "งานใหม่", refresh: "รีเฟรช", openCodex: "เปิด Codex",
@@ -219,6 +228,7 @@ ApplicationWindow {
             ready: "พร้อม", tasksCount: "งาน", rawJson: "JSON", prompt: "Prompt",
             backToTasks: "กลับ", loading: "กำลังโหลด...", copied: "คัดลอกแล้ว!",
             currentTurn: "เทิร์นปัจจุบัน", lines: "บรรทัด", connected: "เชื่อมต่อแล้ว",
+            search: "ค้นหางาน, โค้ด, prompt...", noResults: "ไม่พบผลลัพธ์",
         },
     })
     
@@ -877,6 +887,17 @@ ApplicationWindow {
         onPromptSubmitted: function(prompt, envId, branch, bestOf) {
             app.sendPrompt(prompt, envId, branch, bestOf)
         }
+    }
+    
+    // AJAX Queue Widget (bottom-right corner)
+    AjaxQueueWidget {
+        id: ajaxQueueWidget
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.margins: 16
+        ajaxQueue: app.ajaxQueue
+        themeColors: window.themeColors
+        z: 1000  // Above everything else
     }
     
     // Keyboard shortcuts

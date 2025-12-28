@@ -66,6 +66,19 @@ export const languages = {
       apiConnection: 'API Connection',
       connected: 'Connected',
       apiBase: 'API Base',
+      
+      // Documentation
+      documentation: 'Documentation',
+      gettingStarted: 'Getting Started',
+      apiReference: 'API Reference',
+      cliCommands: 'CLI Commands',
+      authentication: 'Authentication',
+      installation: 'Installation',
+      quickStart: 'Quick Start',
+      docsIntro: 'Codex Task Runner is a tool for managing OpenAI Codex tasks via CLI and web interface.',
+      quickStartDesc: 'Common workflows to get you started:',
+      apiDisclaimer: 'These endpoints are observed from browser network traffic. Exact schemas may vary.',
+      authWarning: 'Session cookies expire periodically. You may need to refresh your cookie from the browser.',
     },
   },
   es: {
@@ -123,6 +136,19 @@ export const languages = {
       apiConnection: 'Conexión API',
       connected: 'Conectado',
       apiBase: 'Base API',
+      
+      // Documentation
+      documentation: 'Documentación',
+      gettingStarted: 'Primeros Pasos',
+      apiReference: 'Referencia API',
+      cliCommands: 'Comandos CLI',
+      authentication: 'Autenticación',
+      installation: 'Instalación',
+      quickStart: 'Inicio Rápido',
+      docsIntro: 'Codex Task Runner es una herramienta para gestionar tareas de OpenAI Codex mediante CLI e interfaz web.',
+      quickStartDesc: 'Flujos de trabajo comunes para comenzar:',
+      apiDisclaimer: 'Estos endpoints se observaron del tráfico de red del navegador. Los esquemas exactos pueden variar.',
+      authWarning: 'Las cookies de sesión expiran periódicamente. Es posible que necesites actualizar tu cookie desde el navegador.',
     },
   },
   fr: {
@@ -180,6 +206,19 @@ export const languages = {
       apiConnection: 'Connexion API',
       connected: 'Connecté',
       apiBase: 'Base API',
+      
+      // Documentation
+      documentation: 'Documentation',
+      gettingStarted: 'Premiers Pas',
+      apiReference: 'Référence API',
+      cliCommands: 'Commandes CLI',
+      authentication: 'Authentification',
+      installation: 'Installation',
+      quickStart: 'Démarrage Rapide',
+      docsIntro: 'Codex Task Runner est un outil pour gérer les tâches OpenAI Codex via CLI et interface web.',
+      quickStartDesc: 'Flux de travail courants pour commencer:',
+      apiDisclaimer: 'Ces endpoints sont observés à partir du trafic réseau du navigateur. Les schémas exacts peuvent varier.',
+      authWarning: 'Les cookies de session expirent périodiquement. Vous devrez peut-être actualiser votre cookie depuis le navigateur.',
     },
   },
   de: {

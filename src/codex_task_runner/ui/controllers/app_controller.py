@@ -3,6 +3,8 @@ from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty, QTimer, QV
 from PyQt6.QtCore import QAbstractListModel, QModelIndex, Qt
 import json
 
+from ..services.ajax_queue import AjaxQueue, tracked_request
+
 
 class EnvironmentModel(QAbstractListModel):
     """Model for environment list."""
@@ -227,6 +229,7 @@ class AppController(QObject):
         self._session = session
         self._task_model = TaskModel(self)
         self._env_model = EnvironmentModel(self)
+        self._ajax_queue = AjaxQueue(self)
         self._current_task = None
         self._poll_timer = QTimer(self)
         self._poll_timer.timeout.connect(self._poll_tasks)
@@ -245,6 +248,10 @@ class AppController(QObject):
     @pyqtProperty(QObject, constant=True)
     def envModel(self):
         return self._env_model
+    
+    @pyqtProperty(QObject, constant=True)
+    def ajaxQueue(self):
+        return self._ajax_queue
     
     @pyqtProperty(bool, notify=nerdModeChanged)
     def nerdMode(self):
@@ -376,6 +383,8 @@ class AppController(QObject):
             self._log("❌ No session configured")
             return
         
+        request_id = self._ajax_queue.addRequest("Loading tasks", "tasks")
+        
         try:
             from ...codex.codex_tasks_list import tasks_list
             from ...etc.task_aliases import update_aliases
@@ -394,9 +403,11 @@ class AppController(QObject):
                 self.statusMessage.emit("No tasks found")
                 self._log(f"← 0 tasks ({elapsed:.0f}ms)")
             self.tasksLoaded.emit()
+            self._ajax_queue.markSuccess(request_id)
         except Exception as e:
             self.errorOccurred.emit(f"Failed to load tasks: {e}")
             self._log(f"❌ Failed: {e}")
+            self._ajax_queue.markError(request_id, str(e))
     
     @pyqtSlot(int)
     def loadTaskDetail(self, index):
@@ -407,10 +418,12 @@ class AppController(QObject):
         if not task:
             return
         
+        task_id = task.get("id")
+        request_id = self._ajax_queue.addRequest(f"Task {task_id[:8]}...", "detail")
+        
         try:
             from ...codex.codex_task_detail import task_detail
             
-            task_id = task.get("id")
             self._log(f"→ GET /wham/tasks/{task_id[:8]}...")
             start = time.time()
             detail = task_detail(self._session, task_id)
@@ -419,9 +432,11 @@ class AppController(QObject):
             self._current_task = detail
             self.taskDetailLoaded.emit(json.dumps(detail, indent=2, default=str))
             self._log(f"← Task detail ({elapsed:.0f}ms)")
+            self._ajax_queue.markSuccess(request_id)
         except Exception as e:
             self.errorOccurred.emit(f"Failed to load task: {e}")
             self._log(f"❌ Failed: {e}")
+            self._ajax_queue.markError(request_id, str(e))
     
     @pyqtSlot(int)
     def archiveTask(self, index):
@@ -430,18 +445,23 @@ class AppController(QObject):
         if not task:
             return
         
+        task_id = task.get("id")
+        request_id = self._ajax_queue.addRequest(f"Archive {task_id[:8]}...", "archive")
+        
         try:
             from ...codex.codex_archive import archive_task
             
-            task_id = task.get("id")
             result = archive_task(self._session, task_id)
             if result.get("success"):
                 self.statusMessage.emit(f"Archived task #{index + 1}")
+                self._ajax_queue.markSuccess(request_id)
                 self.loadTasks()  # Refresh
             else:
                 self.errorOccurred.emit("Archive failed")
+                self._ajax_queue.markError(request_id, "Archive failed")
         except Exception as e:
             self.errorOccurred.emit(f"Archive failed: {e}")
+            self._ajax_queue.markError(request_id, str(e))
     
     @pyqtSlot(int)
     def createPR(self, index):
@@ -450,11 +470,13 @@ class AppController(QObject):
         if not task:
             return
         
+        task_id = task.get("id")
+        request_id = self._ajax_queue.addRequest(f"Create PR {task_id[:8]}...", "pr")
+        
         try:
             from ...codex.codex_turns import get_turns
             from ...codex.codex_create_pr import create_pr_for_turn
             
-            task_id = task.get("id")
             turns_data = get_turns(self._session, task_id)
             current_turn_id = turns_data.get("current_turn_id")
             
@@ -465,10 +487,13 @@ class AppController(QObject):
                     self.statusMessage.emit(f"PR created: {pr_url}")
                 else:
                     self.statusMessage.emit("PR created")
+                self._ajax_queue.markSuccess(request_id)
             else:
                 self.errorOccurred.emit("No turn found for PR")
+                self._ajax_queue.markError(request_id, "No turn found")
         except Exception as e:
             self.errorOccurred.emit(f"PR creation failed: {e}")
+            self._ajax_queue.markError(request_id, str(e))
     
     @pyqtSlot(int)
     def extractPatch(self, index):
@@ -477,10 +502,12 @@ class AppController(QObject):
         if not task:
             return
         
+        task_id = task.get("id")
+        request_id = self._ajax_queue.addRequest(f"Patch {task_id[:8]}...", "patch")
+        
         try:
             from ...codex.codex_turns import get_turns
             
-            task_id = task.get("id")
             turns_data = get_turns(self._session, task_id)
             
             # Find diff in turns
@@ -491,11 +518,14 @@ class AppController(QObject):
                         diff = item["output_diff"].get("diff", "")
                         if diff:
                             self.patchReady.emit(diff)
+                            self._ajax_queue.markSuccess(request_id)
                             return
             
             self.errorOccurred.emit("No patch found in task")
+            self._ajax_queue.markError(request_id, "No patch found")
         except Exception as e:
             self.errorOccurred.emit(f"Patch extraction failed: {e}")
+            self._ajax_queue.markError(request_id, str(e))
     
     @pyqtSlot(bool)
     def setPolling(self, enabled):
@@ -523,6 +553,8 @@ class AppController(QObject):
             self.promptError.emit("No session configured. Set up .env file.")
             return
         
+        request_id = self._ajax_queue.addRequest("Loading environments", "envs")
+        
         try:
             from ...codex.json_get import _json_get
             
@@ -549,10 +581,13 @@ class AppController(QObject):
                 ]
                 self.environmentsLoaded.emit(env_list)
                 self.statusMessage.emit(f"Loaded {len(envs)} environments")
+                self._ajax_queue.markSuccess(request_id)
             else:
                 self.promptError.emit("No environments found. Connect a repository in Codex first.")
+                self._ajax_queue.markError(request_id, "No environments found")
         except Exception as e:
             self.promptError.emit(f"Failed to load environments: {e}")
+            self._ajax_queue.markError(request_id, str(e))
     
     @pyqtSlot(str, str, str, int)
     def sendPrompt(self, prompt, envId, branch, bestOf):
@@ -575,6 +610,8 @@ class AppController(QObject):
             self.promptError.emit("No environment selected")
             return
         
+        request_id = self._ajax_queue.addRequest("Creating task", "create")
+        
         try:
             from ...codex.codex_create_task import create_task
             
@@ -596,14 +633,17 @@ class AppController(QObject):
                 self.promptSuccess.emit(task_id)
                 self.statusMessage.emit(f"Task created: {task_id[:8]}...")
                 self._log(f"← Task created: {task_id} ({elapsed:.0f}ms)")
+                self._ajax_queue.markSuccess(request_id)
                 # Refresh task list after a short delay
                 QTimer.singleShot(2000, self.loadTasks)
             else:
                 self.promptError.emit("Failed to create task. Check authentication.")
                 self._log(f"❌ No result from create_task ({elapsed:.0f}ms)")
+                self._ajax_queue.markError(request_id, "No response")
         except Exception as e:
             self.promptError.emit(f"Failed to create task: {e}")
             self._log(f"❌ Exception: {e}")
+            self._ajax_queue.markError(request_id, str(e))
     
     @pyqtSlot(str)
     def openUrl(self, url):
