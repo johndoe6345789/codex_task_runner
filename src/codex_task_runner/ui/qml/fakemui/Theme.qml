@@ -1,17 +1,42 @@
 pragma Singleton
 import QtQuick
 
+/**
+ * Theme.qml - Unified theme system for fakemui components
+ * Combines Material-UI style properties with React app's multi-theme support
+ */
 QtObject {
     id: theme
     
     // Current theme name
     property string current: "dark"
-    property string mode: "dark" // light or dark
+    property string mode: "dark"
     
-    // Primary palette - React green accent
-    property color primary: "#10a37f"
-    property color primaryLight: "#3db896"
-    property color primaryDark: "#0d8567"
+    // Available themes list
+    readonly property var themeKeys: [
+        "system", "dark", "light", "midnight", "forest", "ocean", "sunset", "rose", "highContrast"
+    ]
+    
+    // Theme definitions - matches React themes.js
+    readonly property var themes: ({
+        system: { name: "System", mode: "dark", primary: "#10a37f", background: "#0d0d0d", paper: "#1a1a1a", surface: "#242424", text: "#ffffff", textSecondary: "#a0a0a0", border: "#333333", error: "#ef4444", warning: "#f59e0b", success: "#22c55e", info: "#3b82f6" },
+        dark: { name: "Dark", mode: "dark", primary: "#10a37f", background: "#0d0d0d", paper: "#1a1a1a", surface: "#242424", text: "#ffffff", textSecondary: "#a0a0a0", border: "#333333", error: "#ef4444", warning: "#f59e0b", success: "#22c55e", info: "#3b82f6" },
+        light: { name: "Light", mode: "light", primary: "#10a37f", background: "#ffffff", paper: "#f7f7f8", surface: "#eeeeee", text: "#1a1a1a", textSecondary: "#6e6e80", border: "#e0e0e0", error: "#d32f2f", warning: "#ed6c02", success: "#2e7d32", info: "#0288d1" },
+        midnight: { name: "Midnight", mode: "dark", primary: "#6366f1", background: "#0f172a", paper: "#1e293b", surface: "#334155", text: "#f1f5f9", textSecondary: "#94a3b8", border: "#334155", error: "#ef4444", warning: "#f59e0b", success: "#22c55e", info: "#3b82f6" },
+        forest: { name: "Forest", mode: "dark", primary: "#22c55e", background: "#0a1f0a", paper: "#14331a", surface: "#1a4d23", text: "#ecfdf5", textSecondary: "#a7f3d0", border: "#166534", error: "#ef4444", warning: "#f59e0b", success: "#22c55e", info: "#3b82f6" },
+        ocean: { name: "Ocean", mode: "dark", primary: "#0ea5e9", background: "#0c1929", paper: "#132f4c", surface: "#1e4976", text: "#e0f2fe", textSecondary: "#7dd3fc", border: "#0369a1", error: "#ef4444", warning: "#f59e0b", success: "#22c55e", info: "#0ea5e9" },
+        sunset: { name: "Sunset", mode: "dark", primary: "#f97316", background: "#1c1210", paper: "#2d1f1a", surface: "#44302a", text: "#fff7ed", textSecondary: "#fed7aa", border: "#9a3412", error: "#ef4444", warning: "#f97316", success: "#22c55e", info: "#3b82f6" },
+        rose: { name: "Rose", mode: "dark", primary: "#f43f5e", background: "#1a0f12", paper: "#2d1a1f", surface: "#44252d", text: "#fff1f2", textSecondary: "#fecdd3", border: "#be123c", error: "#f43f5e", warning: "#f59e0b", success: "#22c55e", info: "#3b82f6" },
+        highContrast: { name: "High Contrast", mode: "dark", primary: "#ffff00", background: "#000000", paper: "#111111", surface: "#222222", text: "#ffffff", textSecondary: "#eeeeee", border: "#ffffff", error: "#ff0000", warning: "#ffff00", success: "#00ff00", info: "#00ffff" }
+    })
+    
+    // Current theme object
+    readonly property var currentTheme: themes[current] || themes.dark
+    
+    // Primary palette from current theme
+    property color primary: currentTheme.primary
+    property color primaryLight: Qt.lighter(primary, 1.2)
+    property color primaryDark: Qt.darker(primary, 1.2)
     property color primaryContrastText: "#ffffff"
     
     // Secondary palette
@@ -20,28 +45,25 @@ QtObject {
     property color secondaryDark: "#6e6e80"
     property color secondaryContrastText: "#ffffff"
     
-    // Error palette
-    property color error: "#ef4444"
-    property color errorLight: "#f87171"
-    property color errorDark: "#dc2626"
+    // Status colors from current theme
+    property color error: currentTheme.error
+    property color errorLight: Qt.lighter(error, 1.2)
+    property color errorDark: Qt.darker(error, 1.2)
     property color errorContrastText: "#ffffff"
     
-    // Warning palette
-    property color warning: "#f59e0b"
-    property color warningLight: "#fbbf24"
-    property color warningDark: "#d97706"
+    property color warning: currentTheme.warning
+    property color warningLight: Qt.lighter(warning, 1.2)
+    property color warningDark: Qt.darker(warning, 1.2)
     property color warningContrastText: "#ffffff"
     
-    // Info palette
-    property color info: "#3b82f6"
-    property color infoLight: "#60a5fa"
-    property color infoDark: "#2563eb"
+    property color info: currentTheme.info
+    property color infoLight: Qt.lighter(info, 1.2)
+    property color infoDark: Qt.darker(info, 1.2)
     property color infoContrastText: "#ffffff"
     
-    // Success palette
-    property color success: "#22c55e"
-    property color successLight: "#4ade80"
-    property color successDark: "#16a34a"
+    property color success: currentTheme.success
+    property color successLight: Qt.lighter(success, 1.2)
+    property color successDark: Qt.darker(success, 1.2)
     property color successContrastText: "#ffffff"
     
     // Grey scale
@@ -56,21 +78,22 @@ QtObject {
     property color grey800: "#424242"
     property color grey900: "#212121"
     
-    // Background colors - React dark theme
-    property color background: mode === "dark" ? "#0d0d0d" : "#ffffff"
-    property color surface: mode === "dark" ? "#1a1a1a" : "#ffffff"
-    property color surfaceVariant: mode === "dark" ? "#242424" : "#f0f0f0"
-    property color card: mode === "dark" ? "#1a1a1a" : "#ffffff"
+    // Background colors from current theme
+    property color background: currentTheme.background
+    property color paper: currentTheme.paper
+    property color surface: currentTheme.surface
+    property color surfaceVariant: Qt.lighter(surface, 1.1)
+    property color card: currentTheme.paper
     
-    // Text colors
-    property color text: mode === "dark" ? "#ffffff" : "#1a1a1a"
-    property color textSecondary: mode === "dark" ? "#a0a0a0" : "#6e6e80"
-    property color textMuted: mode === "dark" ? "#666666" : "rgba(0, 0, 0, 0.38)"
+    // Text colors from current theme
+    property color text: currentTheme.text
+    property color textSecondary: currentTheme.textSecondary
+    property color textMuted: Qt.darker(textSecondary, 1.2)
     property color textDisabled: mode === "dark" ? "rgba(255, 255, 255, 0.38)" : "rgba(0, 0, 0, 0.38)"
     
-    // Divider and border
-    property color divider: mode === "dark" ? "#2a2a2a" : "rgba(0, 0, 0, 0.12)"
-    property color border: mode === "dark" ? "#333333" : "#e0e0e0"
+    // Border and divider from current theme
+    property color border: currentTheme.border
+    property color divider: Qt.darker(border, 1.1)
     
     // Action colors
     property color actionActive: mode === "dark" ? "rgba(255, 255, 255, 0.54)" : "rgba(0, 0, 0, 0.54)"
@@ -78,7 +101,7 @@ QtObject {
     property color actionSelected: mode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)"
     property color actionDisabled: mode === "dark" ? "rgba(255, 255, 255, 0.26)" : "rgba(0, 0, 0, 0.26)"
     
-    // Legacy color aliases
+    // Legacy aliases
     property alias accent: primary
     
     // Typography
