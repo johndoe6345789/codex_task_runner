@@ -26,6 +26,7 @@ import {
   ContentCopy as CopyIcon,
 } from '@mui/icons-material'
 import { NerdModeContext } from '../App'
+import MarkdownRenderer from './MarkdownRenderer'
 
 export default function TaskList({ onTaskSelect, apiBase }) {
   const { nerdMode } = useContext(NerdModeContext)
@@ -150,6 +151,19 @@ export default function TaskList({ onTaskSelect, apiBase }) {
                 <Typography variant="h6" component="div" gutterBottom noWrap>
                   {task.title || 'Untitled Task'}
                 </Typography>
+                {(task.description || task.prompt) && (
+                  <Box sx={{ 
+                    mb: 1, 
+                    maxHeight: 80, 
+                    overflow: 'hidden',
+                    '& p': { margin: 0, fontSize: '0.875rem' },
+                    '& *': { fontSize: '0.875rem' },
+                  }}>
+                    <MarkdownRenderer>
+                      {(task.description || task.prompt).slice(0, 200) + ((task.description || task.prompt).length > 200 ? '...' : '')}
+                    </MarkdownRenderer>
+                  </Box>
+                )}
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                   {task.repo || 'No repo'}
                 </Typography>

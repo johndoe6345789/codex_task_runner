@@ -26,6 +26,7 @@ import {
   GitHub as GitHubIcon,
 } from '@mui/icons-material'
 import { NerdModeContext } from '../App'
+import MarkdownRenderer from './MarkdownRenderer'
 
 export default function TaskDetail({ task, onBack, apiBase }) {
   const { nerdMode } = useContext(NerdModeContext)
@@ -203,13 +204,13 @@ export default function TaskDetail({ task, onBack, apiBase }) {
             </>
           ) : (
             <Box>
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 {detail.title || task?.title || 'No title'}
               </Typography>
-              {detail.description && (
-                <Typography variant="body2" color="text.secondary">
-                  {detail.description}
-                </Typography>
+              {(detail.description || detail.prompt) && (
+                <MarkdownRenderer>
+                  {detail.description || detail.prompt}
+                </MarkdownRenderer>
               )}
               {detail.status && (
                 <Chip label={detail.status} size="small" sx={{ mt: 1 }} />
@@ -253,6 +254,23 @@ export default function TaskDetail({ task, onBack, apiBase }) {
                     </IconButton>
                   )}
                 </Box>
+                {/* Turn content with markdown support */}
+                {turnData?.prompt && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>Prompt</Typography>
+                    <Paper sx={{ p: 2, bgcolor: 'background.default' }}>
+                      <MarkdownRenderer>{turnData.prompt}</MarkdownRenderer>
+                    </Paper>
+                  </Box>
+                )}
+                {turnData?.response && !nerdMode && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>Response</Typography>
+                    <Paper sx={{ p: 2, bgcolor: 'background.default' }}>
+                      <MarkdownRenderer>{turnData.response}</MarkdownRenderer>
+                    </Paper>
+                  </Box>
+                )}
                 {nerdMode && (
                   <Box
                     component="pre"
@@ -296,10 +314,13 @@ export default function TaskDetail({ task, onBack, apiBase }) {
                   </IconButton>
                 </Box>
               </Box>
-              {patch.pr_message && (
-                <Typography variant="body2" sx={{ mb: 2 }}>
-                  {patch.pr_message}
-                </Typography>
+              {(patch.pr_message || patch.description || patch.body) && (
+                <Box sx={{ mb: 2, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
+                  <Typography variant="subtitle2" gutterBottom color="text.secondary">
+                    Description
+                  </Typography>
+                  <MarkdownRenderer>{patch.pr_message || patch.description || patch.body}</MarkdownRenderer>
+                </Box>
               )}
               <Box
                 component="pre"
