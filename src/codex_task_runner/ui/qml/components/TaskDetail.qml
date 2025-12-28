@@ -149,7 +149,7 @@ Item {
         
         // Back button
         CButton {
-            icon: "←"
+            iconText: "←"
             text: LanguageContext.t("backToTasks")
             variant: "text"
             onClicked: back()
@@ -365,7 +365,7 @@ Item {
                                     
                                     CButton {
                                         text: LanguageContext.t("createPR")
-                                        icon: "🔗"
+                                        iconText: "🔗"
                                         variant: "contained"
                                         size: "small"
                                         onClicked: createPR(turnId)
@@ -481,13 +481,13 @@ Item {
                             Item { Layout.fillWidth: true }
                             
                             CIconButton {
-                                icon: "📋"
+                                iconText: "📋"
                                 tooltip: "Copy"
                                 onClicked: copyToClipboard(patch?.diff || "")
                             }
                             
                             CIconButton {
-                                icon: "💾"
+                                iconText: "💾"
                                 tooltip: "Download"
                                 // Download would require platform-specific code
                             }
