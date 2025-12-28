@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 from codex_task_runner.codex.codex_session import session_from_env
-from codex_task_runner.handlers import ping, poll, tasks, task, turns, create_pr, run, yolo, dedup_prs, discover, archive
+from codex_task_runner.handlers import ping, poll, tasks, task, turns, create_pr, run, yolo, dedup_prs, discover, archive, patch
 from .cli_parser import build_parser
 
 # Map command names to handler modules
@@ -19,6 +19,7 @@ _HANDLERS = {
     "dedup-prs": dedup_prs,
     "discover": discover,
     "archive": archive,
+    "patch": patch,
 }
 
 

@@ -136,6 +136,17 @@
       "args": [
         {"flags": ["task_id"], "kwargs": {"help": "Task ID to archive"}}
       ]
+    },
+    {
+      "name": "patch",
+      "help": "Extract git patch from a Codex task",
+      "handler": "codex_task_runner.handlers.patch",
+      "args": [
+        {"flags": ["task_id"], "kwargs": {"help": "Task ID"}},
+        {"flags": ["--turn-id"], "kwargs": {"help": "Specific turn ID (default: current turn)"}},
+        {"flags": ["--raw"], "kwargs": {"action": "store_true", "help": "Output raw patch only (for piping to git apply)"}},
+        {"flags": ["-o", "--output"], "kwargs": {"help": "Save patch to file"}}
+      ]
     }
   ]
 }
