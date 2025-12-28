@@ -6,7 +6,7 @@ import {
   Typography,
   Button,
   Chip,
-  CircularProgress,
+  Spinner,
   Alert,
   Divider,
   Paper,
@@ -17,17 +17,17 @@ import {
   AccordionSummary,
   AccordionDetails,
   Snackbar,
-} from '@mui/material'
-import {
-  ArrowBack as ArrowBackIcon,
-  ExpandMore as ExpandMoreIcon,
-  ContentCopy as CopyIcon,
-  Download as DownloadIcon,
-  GitHub as GitHubIcon,
-} from '@mui/icons-material'
+} from '../fakemui'
 import { NerdModeContext } from '../App'
 import MarkdownRenderer from './MarkdownRenderer'
 import Editor, { loader } from '@monaco-editor/react'
+
+// Icons as SVG components
+const ArrowBackIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+const ExpandMoreIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+const CopyIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+const DownloadIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+const GitHubIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2.16 2.16 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"/></svg>
 
 // Register diff language with proper syntax highlighting
 loader.init().then((monaco) => {
@@ -174,46 +174,46 @@ export default function TaskDetail({ task, onBack, apiBase }) {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress />
+      <Box className="loading-container">
+        <Spinner />
       </Box>
     )
   }
 
   return (
     <Box>
-      <Button startIcon={<ArrowBackIcon />} onClick={onBack} sx={{ mb: 2 }}>
+      <Button icon={<ArrowBackIcon />} onClick={onBack} className="back-button">
         Back to Tasks
       </Button>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" className="error-alert">
           {error}
         </Alert>
       )}
 
-      <Card sx={{ mb: 2 }}>
+      <Card className="task-card">
         <CardContent>
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h5">
             {task?.title || detail?.title || 'Task Detail'}
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-            <Chip label={task?.repo || 'No repo'} size="small" />
-            <Chip label={task?.base_branch || 'main'} size="small" variant="outlined" />
+          <Box className="chip-row">
+            <Chip>{task?.repo || 'No repo'}</Chip>
+            <Chip outline>{task?.base_branch || 'main'}</Chip>
             {task?.pr_numbers?.map((pr) => (
               <Chip
                 key={pr}
-                label={`PR #${pr}`}
-                size="small"
                 color="success"
                 icon={<GitHubIcon />}
-              />
+              >
+                PR #{pr}
+              </Chip>
             ))}
           </Box>
           {nerdMode && (
             <Typography 
               variant="caption" 
-              sx={{ fontFamily: 'monospace', color: 'text.disabled', display: 'block' }}
+              className="task-id mono"
             >
               ID: {taskId}
             </Typography>
@@ -221,7 +221,7 @@ export default function TaskDetail({ task, onBack, apiBase }) {
         </CardContent>
       </Card>
 
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+      <Box className="tabs-container">
         <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)}>
           <Tab label="Details" />
           <Tab label="Turns" />
@@ -230,13 +230,13 @@ export default function TaskDetail({ task, onBack, apiBase }) {
       </Box>
 
       {tabValue === 0 && detail && (
-        <Paper sx={{ p: 2 }}>
+        <Paper className="tab-panel">
           {nerdMode ? (
             <>
-              <Typography variant="subtitle2" gutterBottom>
+              <Typography variant="subtitle2">
                 Raw Task Data
               </Typography>
-              <Box sx={{ borderRadius: 1, overflow: 'hidden', height: 400 }}>
+              <Box className="editor-container">
                 <Editor
                   height="100%"
                   defaultLanguage="json"
@@ -256,7 +256,7 @@ export default function TaskDetail({ task, onBack, apiBase }) {
             </>
           ) : (
             <Box>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6">
                 {detail.title || task?.title || 'No title'}
               </Typography>
               {(detail.description || detail.prompt) && (
@@ -265,7 +265,7 @@ export default function TaskDetail({ task, onBack, apiBase }) {
                 </MarkdownRenderer>
               )}
               {detail.status && (
-                <Chip label={detail.status} size="small" sx={{ mt: 1 }} />
+                <Chip className="status-chip">{detail.status}</Chip>
               )}
             </Box>
           )}
@@ -275,56 +275,54 @@ export default function TaskDetail({ task, onBack, apiBase }) {
       {tabValue === 1 && turns && (
         <Box>
           {nerdMode && (
-            <Typography variant="subtitle2" gutterBottom sx={{ fontFamily: 'monospace' }}>
+            <Typography variant="subtitle2" className="mono">
               Current Turn: {turns.current_turn_id}
             </Typography>
           )}
           {Object.entries(turns.turn_mapping || {}).map(([turnId, turnData]) => (
             <Accordion key={turnId}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography sx={{ flexGrow: 1 }}>
+                <Typography className="turn-title">
                   {nerdMode ? `Turn: ${turnId.slice(0, 8)}...` : `Turn ${Object.keys(turns.turn_mapping || {}).indexOf(turnId) + 1}`}
                 </Typography>
                 {turnId === turns.current_turn_id && (
-                  <Chip label="Current" size="small" color="primary" sx={{ mr: 1 }} />
+                  <Chip color="primary" className="current-chip">Current</Chip>
                 )}
               </AccordionSummary>
               <AccordionDetails>
-                <Box sx={{ mb: 2 }}>
+                <Box className="turn-actions">
                   <Button
                     variant="contained"
-                    size="small"
-                    startIcon={<GitHubIcon />}
+                    icon={<GitHubIcon />}
                     onClick={() => handleCreatePR(turnId)}
-                    sx={{ mr: 1 }}
                   >
                     Create PR
                   </Button>
                   {nerdMode && (
-                    <IconButton size="small" onClick={() => copyToClipboard(turnId)}>
-                      <CopyIcon fontSize="small" />
+                    <IconButton onClick={() => copyToClipboard(turnId)}>
+                      <CopyIcon />
                     </IconButton>
                   )}
                 </Box>
                 {/* Turn content with markdown support */}
                 {turnData?.prompt && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle2" gutterBottom>Prompt</Typography>
-                    <Paper sx={{ p: 2, bgcolor: 'background.default' }}>
+                  <Box className="turn-section">
+                    <Typography variant="subtitle2">Prompt</Typography>
+                    <Paper className="turn-content">
                       <MarkdownRenderer>{turnData.prompt}</MarkdownRenderer>
                     </Paper>
                   </Box>
                 )}
                 {turnData?.response && !nerdMode && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle2" gutterBottom>Response</Typography>
-                    <Paper sx={{ p: 2, bgcolor: 'background.default' }}>
+                  <Box className="turn-section">
+                    <Typography variant="subtitle2">Response</Typography>
+                    <Paper className="turn-content">
                       <MarkdownRenderer>{turnData.response}</MarkdownRenderer>
                     </Paper>
                   </Box>
                 )}
                 {nerdMode && (
-                  <Box sx={{ borderRadius: 1, overflow: 'hidden', height: 300 }}>
+                  <Box className="editor-container small">
                     <Editor
                       height="100%"
                       defaultLanguage="json"
@@ -349,19 +347,19 @@ export default function TaskDetail({ task, onBack, apiBase }) {
       )}
 
       {tabValue === 2 && (
-        <Paper sx={{ p: 2 }}>
+        <Paper className="tab-panel">
           {patch ? (
             <>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+              <Box className="patch-header">
                 <Box>
                   <Typography variant="subtitle2">
                     {patch.pr_title || 'Git Patch'}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" className="text-secondary">
                     {patch.diff_lines} lines
                   </Typography>
                 </Box>
-                <Box>
+                <Box className="patch-actions">
                   <IconButton onClick={() => copyToClipboard(patch.diff)}>
                     <CopyIcon />
                   </IconButton>
@@ -371,14 +369,14 @@ export default function TaskDetail({ task, onBack, apiBase }) {
                 </Box>
               </Box>
               {(patch.pr_message || patch.description || patch.body) && (
-                <Box sx={{ mb: 2, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
-                  <Typography variant="subtitle2" gutterBottom color="text.secondary">
+                <Box className="patch-description">
+                  <Typography variant="subtitle2" className="text-secondary">
                     Description
                   </Typography>
                   <MarkdownRenderer>{patch.pr_message || patch.description || patch.body}</MarkdownRenderer>
                 </Box>
               )}
-              <Box sx={{ borderRadius: 1, overflow: 'hidden', height: 500 }}>
+              <Box className="editor-container large">
                 <Editor
                   height="100%"
                   defaultLanguage="gitdiff"
@@ -399,7 +397,7 @@ export default function TaskDetail({ task, onBack, apiBase }) {
           ) : patch === null ? (
             <Button onClick={fetchPatch}>Load Patch</Button>
           ) : (
-            <Typography color="text.secondary">No patch data available</Typography>
+            <Typography className="text-secondary">No patch data available</Typography>
           )}
         </Paper>
       )}

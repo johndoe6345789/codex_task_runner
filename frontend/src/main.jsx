@@ -1,10 +1,10 @@
 import React, { useState, useEffect, createContext } from 'react'
 import ReactDOM from 'react-dom/client'
-import { ThemeProvider, CssBaseline } from '@mui/material'
 import App from './App'
-import { themes, defaultTheme } from './themes'
+import { themes, defaultTheme, applyTheme } from './themes'
 import { languages, defaultLanguage } from './i18n'
 import { AjaxQueueProvider } from './contexts/AjaxQueueContext'
+import './styles/base.scss'
 
 // Theme context for global access
 export const ThemeContext = createContext({
@@ -32,13 +32,17 @@ function ThemedApp() {
 
   useEffect(() => {
     localStorage.setItem('theme', themeName)
+    applyTheme(themeName)
   }, [themeName])
 
   useEffect(() => {
     localStorage.setItem('language', language)
   }, [language])
 
-  const currentTheme = themes[themeName]?.theme || themes[defaultTheme].theme
+  // Apply initial theme
+  useEffect(() => {
+    applyTheme(themeName)
+  }, [])
 
   // Translation function
   const t = (key) => {
@@ -49,10 +53,7 @@ function ThemedApp() {
     <AjaxQueueProvider>
       <LanguageContext.Provider value={{ language, setLanguage, t }}>
         <ThemeContext.Provider value={{ themeName, setThemeName }}>
-          <ThemeProvider theme={currentTheme}>
-            <CssBaseline />
-            <App />
-          </ThemeProvider>
+          <App />
         </ThemeContext.Provider>
       </LanguageContext.Provider>
     </AjaxQueueProvider>
