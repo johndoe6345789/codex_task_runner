@@ -995,11 +995,13 @@ ApplicationWindow {
     // Patch dialog
     PatchDialog {
         id: patchDialog
+        themeColors: window.themeColors
     }
     
     // Send prompt dialog
     SendPromptDialog {
         id: sendPromptDialog
+        themeColors: window.themeColors
         onPromptSubmitted: function(prompt, envId, branch, bestOf) {
             app.sendPrompt(prompt, envId, branch, bestOf)
         }
