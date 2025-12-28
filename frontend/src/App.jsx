@@ -17,6 +17,8 @@ import {
   Switch,
   FormControlLabel,
   Tooltip,
+  Menu,
+  MenuItem,
 } from '@mui/material'
 import {
   Menu as MenuIcon,
@@ -27,6 +29,8 @@ import {
   Settings as SettingsIcon,
   Refresh as RefreshIcon,
   Code as CodeIcon,
+  Palette as PaletteIcon,
+  Check as CheckIcon,
 } from '@mui/icons-material'
 
 // Nerd mode context
@@ -36,6 +40,8 @@ import TaskList from './components/TaskList'
 import TaskDetail from './components/TaskDetail'
 import NewPrompt from './components/NewPrompt'
 import UserInfo from './components/UserInfo'
+import { themes, themeKeys } from './themes'
+import { ThemeContext } from './main'
 
 const drawerWidth = 240
 
@@ -50,6 +56,8 @@ export default function App() {
     const saved = localStorage.getItem('nerdMode')
     return saved ? JSON.parse(saved) : false
   })
+  const [themeMenuAnchor, setThemeMenuAnchor] = useState(null)
+  const { themeName, setThemeName } = useContext(ThemeContext)
 
   useEffect(() => {
     localStorage.setItem('nerdMode', JSON.stringify(nerdMode))
@@ -146,6 +154,59 @@ export default function App() {
             }
           />
         </Tooltip>
+      </Box>
+      <Box sx={{ px: 2, pb: 1 }}>
+        <ListItemButton
+          onClick={(e) => setThemeMenuAnchor(e.currentTarget)}
+          sx={{ borderRadius: 1, py: 0.5 }}
+        >
+          <ListItemIcon sx={{ minWidth: 32 }}>
+            <PaletteIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText 
+            primary={
+              <Typography variant="body2">
+                Theme: {themes[themeName]?.name || 'Dark'}
+              </Typography>
+            } 
+          />
+        </ListItemButton>
+        <Menu
+          anchorEl={themeMenuAnchor}
+          open={Boolean(themeMenuAnchor)}
+          onClose={() => setThemeMenuAnchor(null)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        >
+          {themeKeys.map((key) => (
+            <MenuItem
+              key={key}
+              selected={themeName === key}
+              onClick={() => {
+                setThemeName(key)
+                setThemeMenuAnchor(null)
+              }}
+              sx={{ minWidth: 150 }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                <Box
+                  sx={{
+                    width: 16,
+                    height: 16,
+                    borderRadius: '50%',
+                    bgcolor: themes[key].theme.palette.primary.main,
+                    border: '2px solid',
+                    borderColor: themes[key].theme.palette.background.paper,
+                  }}
+                />
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {themes[key].name}
+                </Typography>
+                {themeName === key && <CheckIcon fontSize="small" color="primary" />}
+              </Box>
+            </MenuItem>
+          ))}
+        </Menu>
       </Box>
       {user && (
         <Box sx={{ p: 2, mt: 'auto' }}>

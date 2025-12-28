@@ -1,32 +1,39 @@
-import React from 'react'
+import React, { useState, useEffect, createContext } from 'react'
 import ReactDOM from 'react-dom/client'
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material'
+import { ThemeProvider, CssBaseline } from '@mui/material'
 import App from './App'
+import { themes, defaultTheme } from './themes'
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#10a37f',
-    },
-    secondary: {
-      main: '#8e8ea0',
-    },
-    background: {
-      default: '#0d0d0d',
-      paper: '#1a1a1a',
-    },
-  },
-  typography: {
-    fontFamily: 'Roboto, sans-serif',
-  },
+// Theme context for global access
+export const ThemeContext = createContext({
+  themeName: defaultTheme,
+  setThemeName: () => {},
 })
+
+function ThemedApp() {
+  const [themeName, setThemeName] = useState(() => {
+    const saved = localStorage.getItem('theme')
+    return saved && themes[saved] ? saved : defaultTheme
+  })
+
+  useEffect(() => {
+    localStorage.setItem('theme', themeName)
+  }, [themeName])
+
+  const currentTheme = themes[themeName]?.theme || themes[defaultTheme].theme
+
+  return (
+    <ThemeContext.Provider value={{ themeName, setThemeName }}>
+      <ThemeProvider theme={currentTheme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
+    </ThemeContext.Provider>
+  )
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <ThemedApp />
   </React.StrictMode>,
 )
