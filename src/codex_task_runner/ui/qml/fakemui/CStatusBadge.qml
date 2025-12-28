@@ -6,6 +6,16 @@ Rectangle {
     property string status: "unknown" // completed, running, queued, failed, unknown
     property string text: status
     property bool showDot: true
+    property var themeColors: ({})
+    
+    // Internal colors with fallbacks
+    readonly property var colors: ({
+        success: themeColors.success || "#22c55e",
+        info: themeColors.info || "#3b82f6",
+        warning: themeColors.warning || "#f59e0b",
+        error: themeColors.error || "#ef4444",
+        neutral: themeColors.mid || "#333333"
+    })
     
     implicitHeight: 22
     implicitWidth: badgeRow.implicitWidth + 12
@@ -13,11 +23,11 @@ Rectangle {
     
     color: {
         switch(status) {
-            case "completed": return "#1b5e20"
-            case "running": return "#0d47a1"
-            case "queued": return "#e65100"
-            case "failed": return "#b71c1c"
-            default: return "#424242"
+            case "completed": return colors.success
+            case "running": return colors.info
+            case "queued": return colors.warning
+            case "failed": return colors.error
+            default: return colors.neutral
         }
     }
     
