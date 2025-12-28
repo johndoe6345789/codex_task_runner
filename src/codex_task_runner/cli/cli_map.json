@@ -128,6 +128,14 @@
         {"flags": ["--timeout"], "kwargs": {"type": "int", "default": 30, "help": "Seconds to wait for manual exploration (0 = unlimited)"}},
         {"flags": ["--headless"], "kwargs": {"action": "store_true", "help": "Run browser in headless mode"}}
       ]
+    },
+    {
+      "name": "archive",
+      "help": "Archive a Codex task",
+      "handler": "codex_task_runner.handlers.archive",
+      "args": [
+        {"flags": ["task_id"], "kwargs": {"help": "Task ID to archive"}}
+      ]
     }
   ]
 }

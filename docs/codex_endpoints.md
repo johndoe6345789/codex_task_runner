@@ -11,6 +11,7 @@ The entries below are best-effort documentation based on client fetch traces, Pl
 |--------|------|-------------|
 | GET | `/wham/tasks/list?limit=N&task_filter=current\|archived\|all` | List tasks |
 | GET | `/wham/tasks/{task_id}` | Task detail |
+| POST | `/wham/tasks/{task_id}/archive` | Archive a task |
 | GET | `/wham/tasks/{task_id}/turns` | List turns for a task |
 | GET | `/wham/tasks/{task_id}/turns/{turn_id}/pr` | Get PR status for a turn |
 | POST | `/wham/tasks/{task_id}/turns/{turn_id}/pr` | Create PR for a turn |
@@ -395,3 +396,25 @@ Body: {}
 ```
 
 This endpoint is called automatically when viewing a task in the Codex UI to update the "unread" status.
+
+## Endpoint: Archive a Task
+
+Archive a task to move it from the "current" list to "archived".
+
+```
+POST /backend-api/wham/tasks/{task_id}/archive
+Headers:
+- Authorization: Bearer <JWT_TOKEN>
+- Content-Type: application/json
+
+Body: {}
+```
+
+**Response (success):**
+```json
+{
+  "success": true
+}
+```
+
+This endpoint moves a task from the active/current task list to the archived list. Archived tasks can still be viewed using `task_filter=archived` or `task_filter=all` on the list endpoint.
