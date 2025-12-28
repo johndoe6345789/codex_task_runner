@@ -53,7 +53,7 @@ class EnvironmentModel(QAbstractListModel):
 
 
 class TaskModel(QAbstractListModel):
-    """Model for task list."""
+    """Model for task list with search/filter support."""
     
     IdRole = Qt.ItemDataRole.UserRole + 1
     TitleRole = Qt.ItemDataRole.UserRole + 2
@@ -64,10 +64,13 @@ class TaskModel(QAbstractListModel):
     AliasRole = Qt.ItemDataRole.UserRole + 7
     PrUrlRole = Qt.ItemDataRole.UserRole + 8
     HasPrRole = Qt.ItemDataRole.UserRole + 9
+    MatchInfoRole = Qt.ItemDataRole.UserRole + 10
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._tasks = []
+        self._all_tasks = []  # All tasks
+        self._tasks = []  # Filtered tasks
+        self._search_query = ""
     
     def roleNames(self):
         return {
@@ -80,6 +83,7 @@ class TaskModel(QAbstractListModel):
             self.AliasRole: b"alias",
             self.PrUrlRole: b"prUrl",
             self.HasPrRole: b"hasPr",
+            self.MatchInfoRole: b"matchInfo",
         }
     
     def rowCount(self, parent=QModelIndex()):
@@ -103,22 +107,101 @@ class TaskModel(QAbstractListModel):
         elif role == self.CreatedRole:
             return task.get("created_at", "")[:10] if task.get("created_at") else ""
         elif role == self.AliasRole:
-            return str(index.row() + 1)
+            return str(task.get("_original_index", index.row()) + 1)
         elif role == self.PrUrlRole:
             pr = task.get("pull_request") or {}
             return pr.get("html_url") or pr.get("url", "")
         elif role == self.HasPrRole:
             return bool(task.get("pull_request"))
+        elif role == self.MatchInfoRole:
+            return task.get("_match_info", "")
         return None
     
     def set_tasks(self, tasks):
+        self._all_tasks = tasks
+        # Add original index for alias display
+        for i, t in enumerate(self._all_tasks):
+            t["_original_index"] = i
+        self._apply_filter()
+    
+    def set_search_query(self, query):
+        self._search_query = query.lower().strip()
+        self._apply_filter()
+    
+    def _apply_filter(self):
         self.beginResetModel()
-        self._tasks = tasks
+        if not self._search_query:
+            self._tasks = self._all_tasks[:]
+        else:
+            self._tasks = []
+            for task in self._all_tasks:
+                match_info = self._matches_query(task)
+                if match_info:
+                    task["_match_info"] = match_info
+                    self._tasks.append(task)
         self.endResetModel()
+    
+    def _matches_query(self, task):
+        """Check if task matches search query. Returns match info or None."""
+        q = self._search_query
+        matches = []
+        
+        # Search in title
+        title = (task.get("title") or "").lower()
+        if q in title:
+            matches.append("title")
+        
+        # Search in repo name
+        repo = (task.get("repository", {}).get("full_name") or "").lower()
+        if q in repo:
+            matches.append("repo")
+        
+        # Search in branch name
+        branch = (task.get("head_branch") or "").lower()
+        if q in branch:
+            matches.append("branch")
+        
+        # Search in task ID
+        task_id = (task.get("id") or "").lower()
+        if q in task_id:
+            matches.append("id")
+        
+        # Search in prompt/instructions
+        prompt = ""
+        input_items = task.get("input_items") or []
+        for item in input_items:
+            content = item.get("content") or []
+            for c in content:
+                if c.get("text"):
+                    prompt += c.get("text", "").lower() + " "
+        if q in prompt:
+            matches.append("prompt")
+        
+        # Search in code/diff output
+        output_items = task.get("output_items") or []
+        for item in output_items:
+            content = item.get("content") or []
+            for c in content:
+                text = (c.get("text") or "").lower()
+                if q in text:
+                    matches.append("code")
+                    break
+            if "code" in matches:
+                break
+        
+        if matches:
+            return ", ".join(matches)
+        return None
     
     def get_task(self, index):
         if 0 <= index < len(self._tasks):
             return self._tasks[index]
+        return None
+    
+    def get_original_task(self, index):
+        """Get task by original index (before filtering)."""
+        if 0 <= index < len(self._all_tasks):
+            return self._all_tasks[index]
         return None
 
 

@@ -32,6 +32,7 @@ import {
   Palette as PaletteIcon,
   Check as CheckIcon,
   Language as LanguageIcon,
+  Search as SearchIcon,
 } from '@mui/icons-material'
 
 // Nerd mode context
@@ -41,6 +42,7 @@ import TaskList from './components/TaskList'
 import TaskDetail from './components/TaskDetail'
 import NewPrompt from './components/NewPrompt'
 import UserInfo from './components/UserInfo'
+import SearchDialog from './components/SearchDialog'
 import { themes, themeKeys } from './themes'
 import { languages, languageKeys } from './i18n'
 import { ThemeContext, LanguageContext } from './main'
@@ -60,8 +62,21 @@ export default function App() {
   })
   const [themeMenuAnchor, setThemeMenuAnchor] = useState(null)
   const [langMenuAnchor, setLangMenuAnchor] = useState(null)
+  const [searchOpen, setSearchOpen] = useState(false)
   const { themeName, setThemeName } = useContext(ThemeContext)
   const { language, setLanguage, t } = useContext(LanguageContext)
+
+  // Keyboard shortcut for search (Cmd/Ctrl + K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   useEffect(() => {
     localStorage.setItem('nerdMode', JSON.stringify(nerdMode))
@@ -313,6 +328,11 @@ export default function App() {
             {currentView === 'newPrompt' && t('newTask')}
             {currentView === 'user' && t('profile')}
           </Typography>
+          <Tooltip title="Search (⌘K)">
+            <IconButton color="inherit" onClick={() => setSearchOpen(true)}>
+              <SearchIcon />
+            </IconButton>
+          </Tooltip>
           <IconButton color="inherit" onClick={fetchUser}>
             <RefreshIcon />
           </IconButton>
@@ -356,6 +376,13 @@ export default function App() {
       >
         {renderContent()}
       </Box>
+      
+      <SearchDialog
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        onTaskSelect={handleTaskSelect}
+        apiBase={API_BASE}
+      />
     </Box>
     </NerdModeContext.Provider>
   )

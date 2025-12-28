@@ -616,6 +616,53 @@ ApplicationWindow {
                             }
                         }
                         
+                        // Search bar
+                        TextField {
+                            id: searchField
+                            Layout.fillWidth: true
+                            placeholderText: "🔍 " + (tr.search || "Search tasks, code, prompts...")
+                            color: themeColors.windowText
+                            
+                            background: Rectangle {
+                                color: themeColors.base
+                                border.color: searchField.activeFocus ? themeColors.accent : themeColors.mid
+                                border.width: 1
+                                radius: 4
+                            }
+                            
+                            onTextChanged: {
+                                app.setSearchQuery(text)
+                            }
+                            
+                            // Clear button
+                            Button {
+                                anchors.right: parent.right
+                                anchors.rightMargin: 4
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 24
+                                height: 24
+                                visible: searchField.text.length > 0
+                                flat: true
+                                text: "✕"
+                                
+                                onClicked: {
+                                    searchField.text = ""
+                                }
+                                
+                                contentItem: Text {
+                                    text: parent.text
+                                    color: themeColors.textMuted || themeColors.windowText
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                
+                                background: Rectangle {
+                                    color: parent.hovered ? themeColors.alternateBase : "transparent"
+                                    radius: 12
+                                }
+                            }
+                        }
+                        
                         ListView {
                             id: taskList
                             Layout.fillWidth: true
