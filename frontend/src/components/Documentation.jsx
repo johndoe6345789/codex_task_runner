@@ -228,8 +228,205 @@ pip install -e .`} />
         </Box>
       </TabPanel>
       
-      {/* API Reference Tab */}
+      {/* Using the UI Tab */}
       <TabPanel value={tabValue} index={1}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Alert severity="info" icon={<ComputerIcon />}>
+            {t('uiIntro') || 'The web interface provides a visual way to manage your Codex tasks, view diffs, and create PRs.'}
+          </Alert>
+          
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <ListIcon /> {t('taskListSection') || 'Task List'}
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              
+              <Typography variant="body2" paragraph>
+                The main view shows all your Codex tasks. Each task card displays:
+              </Typography>
+              
+              <Box component="ul" sx={{ pl: 2, '& li': { mb: 1 } }}>
+                <li><Typography variant="body2"><strong>Title</strong> — The task description or auto-generated title</Typography></li>
+                <li><Typography variant="body2"><strong>Repository</strong> — The GitHub repo the task targets</Typography></li>
+                <li><Typography variant="body2"><strong>Status</strong> — Current state (pending, running, completed, failed)</Typography></li>
+                <li><Typography variant="body2"><strong>Alias #</strong> — Short number for CLI reference (e.g., task 1, task 2)</Typography></li>
+                <li><Typography variant="body2"><strong>PR Link</strong> — Direct link to the pull request if created</Typography></li>
+              </Box>
+              
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ mt: 2 }}>
+                Filtering Tasks:
+              </Typography>
+              <Typography variant="body2" paragraph>
+                Use the <strong>Filter</strong> dropdown to switch between:
+              </Typography>
+              <Box component="ul" sx={{ pl: 2, '& li': { mb: 0.5 } }}>
+                <li><Typography variant="body2"><Chip label="Current" size="small" /> — Active tasks (default)</Typography></li>
+                <li><Typography variant="body2"><Chip label="Archived" size="small" /> — Completed/archived tasks</Typography></li>
+                <li><Typography variant="body2"><Chip label="All" size="small" /> — Everything</Typography></li>
+              </Box>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <BookIcon /> {t('taskDetailSection') || 'Task Detail View'}
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              
+              <Typography variant="body2" paragraph>
+                Click any task to see its full details. The detail view has several tabs:
+              </Typography>
+              
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography><strong>Details</strong> — Task metadata and summary</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body2">
+                    Shows the task ID, creation date, repository, branch, and status. 
+                    If a PR was created, you'll see links to it here.
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+              
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography><strong>Turns</strong> — Conversation history</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body2">
+                    View the back-and-forth between you and Codex. Each "turn" represents 
+                    either your prompt (user turn) or Codex's response (assistant turn).
+                    The current turn shows the latest code changes.
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+              
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography><strong>Patch</strong> — View the diff</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body2">
+                    See the actual code changes in unified diff format. 
+                    Click <strong>Load Patch</strong> to fetch the latest diff.
+                    Use the copy button to grab the patch for local application.
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+              
+              <Box sx={{ mt: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
+                <Typography variant="subtitle2" gutterBottom>💡 Pro Tips:</Typography>
+                <Typography variant="body2">
+                  • Click <strong>Create PR</strong> to open a pull request directly from the UI<br />
+                  • Use <strong>Archive</strong> to move completed tasks out of your current list<br />
+                  • Enable <strong>Nerd Mode</strong> to see raw JSON and task IDs
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <AddIcon /> {t('newTaskSection') || 'Creating New Tasks'}
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              
+              <Typography variant="body2" paragraph>
+                Click <strong>New Task</strong> in the sidebar to create a task:
+              </Typography>
+              
+              <Box component="ol" sx={{ pl: 2, '& li': { mb: 1 } }}>
+                <li><Typography variant="body2">Enter your prompt describing what you want Codex to do</Typography></li>
+                <li><Typography variant="body2">Optionally specify a target branch (defaults to "main")</Typography></li>
+                <li><Typography variant="body2">Set "Best Of" &gt; 1 to generate multiple solutions</Typography></li>
+                <li><Typography variant="body2">Click <strong>Create Task</strong> to submit</Typography></li>
+              </Box>
+              
+              <Alert severity="success" sx={{ mt: 2 }}>
+                <Typography variant="body2">
+                  <strong>Tip:</strong> Be specific! Include file paths, function names, or code snippets 
+                  for better results.
+                </Typography>
+              </Alert>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <SearchIcon /> {t('searchSection') || 'Search'}
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              
+              <Typography variant="body2" paragraph>
+                Press <Chip label="⌘K" size="small" sx={{ fontFamily: 'monospace' }} /> (or <Chip label="Ctrl+K" size="small" sx={{ fontFamily: 'monospace' }} />) 
+                to open the search dialog. You can search across:
+              </Typography>
+              
+              <Box component="ul" sx={{ pl: 2, '& li': { mb: 0.5 } }}>
+                <li><Typography variant="body2">Task titles</Typography></li>
+                <li><Typography variant="body2">Repository names</Typography></li>
+                <li><Typography variant="body2">Branch names</Typography></li>
+                <li><Typography variant="body2">Task IDs</Typography></li>
+              </Box>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <PaletteIcon /> {t('customizationSection') || 'Customization'}
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <PaletteIcon fontSize="small" /> Themes
+                  </Typography>
+                  <Typography variant="body2">
+                    Click the theme selector in the sidebar to choose from multiple color schemes: 
+                    Dark, Light, Solarized Dark, Monokai, Nord, and Dracula.
+                  </Typography>
+                </Box>
+                
+                <Divider />
+                
+                <Box>
+                  <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <LanguageIcon fontSize="small" /> Languages
+                  </Typography>
+                  <Typography variant="body2">
+                    The UI supports 19 languages. Click the language selector to switch.
+                    Available: English, Spanish, French, German, Japanese, Chinese, Korean, Russian, 
+                    Arabic, Hindi, Portuguese, Italian, Dutch, Polish, Swedish, Turkish, Ukrainian, 
+                    Vietnamese, and Thai.
+                  </Typography>
+                </Box>
+                
+                <Divider />
+                
+                <Box>
+                  <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CodeIcon fontSize="small" /> Nerd Mode
+                  </Typography>
+                  <Typography variant="body2">
+                    Toggle Nerd Mode to see technical details: raw JSON responses, 
+                    full task IDs, API request/response info, and debug data.
+                  </Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      </TabPanel>
+      
+      {/* API Reference Tab */}
+      <TabPanel value={tabValue} index={2}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Alert severity="warning">
             {t('apiDisclaimer') || 'These endpoints are observed from browser network traffic. Exact schemas may vary.'}
@@ -361,7 +558,7 @@ pip install -e .`} />
       </TabPanel>
       
       {/* CLI Commands Tab */}
-      <TabPanel value={tabValue} index={2}>
+      <TabPanel value={tabValue} index={3}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Card>
             <CardContent>
@@ -496,7 +693,7 @@ codex-runner run --no-merge`} />
       </TabPanel>
       
       {/* Authentication Tab */}
-      <TabPanel value={tabValue} index={3}>
+      <TabPanel value={tabValue} index={4}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Alert severity="warning">
             {t('authWarning') || 'Session cookies expire periodically. You may need to refresh your cookie from the browser.'}
