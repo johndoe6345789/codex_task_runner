@@ -8,6 +8,7 @@ Item {
     property string size: "md" // sm, md, lg
     property string variant: "default" // default, primary, ghost
     property bool loading: false
+    property string tooltip: ""
     
     signal clicked()
     
@@ -22,20 +23,20 @@ Item {
             if (!control.enabled) return "transparent"
             if (mouseArea.pressed) {
                 switch(control.variant) {
-                    case "primary": return "#1565c0"
+                    case "primary": return Qt.darker(Theme.primary, 1.2)
                     default: return "#404040"
                 }
             }
             if (mouseArea.containsMouse) {
                 switch(control.variant) {
-                    case "primary": return "#1976d2"
+                    case "primary": return Theme.primary
                     default: return "#3d3d3d"
                 }
             }
             switch(control.variant) {
-                case "primary": return "#1a73e8"
+                case "primary": return Theme.primary
                 case "ghost": return "transparent"
-                default: return "#2d2d2d"
+                default: return Theme.surface
             }
         }
         
@@ -54,7 +55,7 @@ Item {
         anchors.centerIn: parent
         text: control.icon
         font.pixelSize: control.size === "sm" ? 14 : control.size === "lg" ? 22 : 18
-        color: control.enabled ? (control.variant === "primary" ? "#ffffff" : "#cccccc") : "#666666"
+        color: control.enabled ? (control.variant === "primary" ? "#ffffff" : Theme.textSecondary) : Theme.textDisabled
         visible: !control.loading
     }
     
@@ -65,6 +66,10 @@ Item {
         cursorShape: Qt.PointingHandCursor
         onClicked: control.clicked()
     }
+    
+    ToolTip.visible: tooltip && mouseArea.containsMouse
+    ToolTip.text: tooltip
+    ToolTip.delay: 500
     
     opacity: enabled ? 1.0 : 0.5
     Behavior on opacity { NumberAnimation { duration: 150 } }
