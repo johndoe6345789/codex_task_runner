@@ -23,8 +23,10 @@ def launch(session=None):
     
     engine = QQmlApplicationEngine()
     
-    # Create and register controller
+    # Create controller and keep reference
     controller = AppController(session)
+    
+    # Register before loading QML
     engine.rootContext().setContextProperty("app", controller)
     
     # Load QML
@@ -34,6 +36,9 @@ def launch(session=None):
     if not engine.rootObjects():
         print("Failed to load QML")
         return 1
+    
+    # Keep controller alive
+    engine.rootObjects()[0].setProperty("controller", controller)
     
     return app.exec()
 
