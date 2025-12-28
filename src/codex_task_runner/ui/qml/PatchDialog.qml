@@ -50,16 +50,10 @@ Dialog {
                 id: patchArea
                 text: patchText
                 readOnly: true
-                font.family: "Monaco, Menlo, monospace"
+                font.family: "Menlo"
                 font.pixelSize: 11
                 wrapMode: Text.NoWrap
                 selectByMouse: true
-                
-                background: Rectangle {
-                    color: "#1e1e1e"
-                    radius: 4
-                }
-                
                 color: "#d4d4d4"
             }
         }
