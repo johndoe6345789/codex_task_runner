@@ -4,6 +4,14 @@ import QtQuick
 /**
  * Theme.qml - Unified theme system for fakemui components
  * Combines Material-UI style properties with React app's multi-theme support
+ * 
+ * This singleton provides themed colors while StyleVariables provides
+ * static design tokens (spacing, typography, etc.)
+ * 
+ * Usage:
+ *   Theme.primary       // Current theme's primary color
+ *   Theme.spacing(2)    // 16px (delegates to StyleVariables)
+ *   StyleVariables.spacingMd  // 16px (direct access)
  */
 QtObject {
     id: theme
@@ -11,6 +19,9 @@ QtObject {
     // Current theme name
     property string current: "dark"
     property string mode: "dark"
+    
+    // Alias to theme name for compatibility
+    property string themeName: current
     
     // Available themes list
     readonly property var themeKeys: [
