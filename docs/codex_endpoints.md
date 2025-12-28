@@ -14,6 +14,7 @@ The entries below are best-effort documentation based on client fetch traces, Pl
 | GET | `/wham/tasks/{task_id}/turns` | List turns for a task |
 | GET | `/wham/tasks/{task_id}/turns/{turn_id}/pr` | Get PR status for a turn |
 | POST | `/wham/tasks/{task_id}/turns/{turn_id}/pr` | Create PR for a turn |
+| POST | `/wham/tasks/{task_id}/turns/{turn_id}/viewed` | Mark turn as viewed |
 | GET | `/wham/usage` | Usage stats |
 | GET | `/wham/environments` | List environments |
 | GET | `/wham/environments/recent` | Recently used environments |
@@ -374,3 +375,23 @@ GET /backend-api/wham/settings/user
 ```
 
 Returns Codex-specific user settings and preferences.
+
+## Endpoint: Mark Turn as Viewed
+
+Marks a specific turn as viewed by the user (used by the UI to track read status).
+
+```
+POST /backend-api/wham/tasks/{task_id}/turns/{turn_id}/viewed
+```
+
+Example:
+```
+POST https://chatgpt.com/backend-api/wham/tasks/task_e_69502ab28bcc8331a29f727e77deb37c/turns/task_e_69502ab28bcc8331a29f727e77deb37c~assttrn_e_69502ab39f108331af3dc29e586011fd/viewed
+Headers:
+- Authorization: Bearer <JWT_TOKEN>
+- Content-Type: application/json
+
+Body: {}
+```
+
+This endpoint is called automatically when viewing a task in the Codex UI to update the "unread" status.

@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 from playwright.async_api import async_playwright
-from playwright_stealth import stealth_async
+from playwright_stealth import Stealth
 from dotenv import load_dotenv
 
 
@@ -66,7 +66,8 @@ async def discover_endpoints(output_file: str = "discovered_endpoints.json"):
         page = await context.new_page()
         
         # Apply playwright-stealth to avoid bot detection
-        await stealth_async(page)
+        stealth = Stealth(navigator_platform_override="MacIntel")
+        await stealth.apply_stealth_async(page)
         
         def log_request(request):
             url = request.url
