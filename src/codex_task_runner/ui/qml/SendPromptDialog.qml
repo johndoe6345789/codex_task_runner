@@ -12,6 +12,37 @@ Dialog {
     
     property var environments: []
     property bool sending: false
+    property var themeColors: ({})
+    
+    // Internal colors with fallbacks
+    readonly property var colors: ({
+        background: themeColors.window || themeColors.background || "#0d0d0d",
+        paper: themeColors.alternateBase || "#1a1a1a",
+        text: themeColors.windowText || themeColors.text || "#ffffff",
+        textSecondary: themeColors.textSecondary || "#a0a0a0",
+        accent: themeColors.accent || "#10a37f",
+        error: themeColors.error || "#ef4444",
+        border: themeColors.border || "#333333"
+    })
+    
+    background: Rectangle {
+        color: colors.background
+        radius: 8
+        border.color: colors.border
+        border.width: 1
+    }
+    
+    header: Label {
+        text: dialog.title
+        font.bold: true
+        font.pixelSize: 16
+        color: colors.text
+        padding: 16
+        background: Rectangle {
+            color: colors.paper
+            radius: 8
+        }
+    }
     
     signal promptSubmitted(string prompt, string envId, string branch, int bestOf)
     
@@ -56,6 +87,7 @@ Dialog {
             Label {
                 text: "Environment:"
                 Layout.alignment: Qt.AlignRight
+                color: colors.text
             }
             
             ComboBox {
@@ -63,11 +95,24 @@ Dialog {
                 Layout.fillWidth: true
                 model: []
                 enabled: !sending
+                
+                background: Rectangle {
+                    color: colors.paper
+                    radius: 4
+                    border.color: colors.border
+                }
+                contentItem: Text {
+                    leftPadding: 8
+                    text: envCombo.displayText
+                    color: colors.text
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
             
             Label {
                 text: "Branch:"
                 Layout.alignment: Qt.AlignRight
+                color: colors.text
             }
             
             TextField {
@@ -76,11 +121,20 @@ Dialog {
                 text: "main"
                 placeholderText: "main"
                 enabled: !sending
+                color: colors.text
+                placeholderTextColor: colors.textSecondary
+                
+                background: Rectangle {
+                    color: colors.paper
+                    radius: 4
+                    border.color: branchField.activeFocus ? colors.accent : colors.border
+                }
             }
             
             Label {
                 text: "Best of N:"
                 Layout.alignment: Qt.AlignRight
+                color: colors.text
             }
             
             SpinBox {
@@ -89,6 +143,20 @@ Dialog {
                 to: 5
                 value: 1
                 enabled: !sending
+                
+                background: Rectangle {
+                    color: colors.paper
+                    radius: 4
+                    border.color: colors.border
+                }
+                contentItem: TextInput {
+                    text: bestOfSpinner.textFromValue(bestOfSpinner.value, bestOfSpinner.locale)
+                    color: colors.text
+                    horizontalAlignment: Qt.AlignHCenter
+                    verticalAlignment: Qt.AlignVCenter
+                    readOnly: !bestOfSpinner.editable
+                    validator: bestOfSpinner.validator
+                }
             }
         }
         
@@ -96,6 +164,7 @@ Dialog {
         Label {
             text: "Prompt:"
             font.bold: true
+            color: colors.text
         }
         
         ScrollView {
@@ -110,6 +179,14 @@ Dialog {
                 font.pixelSize: 14
                 enabled: !sending
                 selectByMouse: true
+                color: colors.text
+                placeholderTextColor: colors.textSecondary
+                
+                background: Rectangle {
+                    color: colors.paper
+                    radius: 4
+                    border.color: promptField.activeFocus ? colors.accent : colors.border
+                }
             }
         }
         
@@ -117,7 +194,7 @@ Dialog {
         Label {
             id: errorLabel
             Layout.fillWidth: true
-            color: "#ff6b6b"
+            color: colors.error
             wrapMode: Text.Wrap
             visible: text.length > 0
         }
@@ -140,6 +217,19 @@ Dialog {
                 text: sending ? "Sending..." : "🚀 Send Prompt"
                 enabled: !sending && promptField.text.trim().length > 0 && envCombo.currentIndex >= 0
                 highlighted: true
+                
+                background: Rectangle {
+                    color: sendButton.enabled ? colors.accent : Qt.darker(colors.accent, 1.5)
+                    radius: 4
+                    opacity: sendButton.hovered ? 0.9 : 1.0
+                }
+                contentItem: Text {
+                    text: sendButton.text
+                    color: "white"
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
                 
                 onClicked: {
                     if (promptField.text.trim().length === 0) {
