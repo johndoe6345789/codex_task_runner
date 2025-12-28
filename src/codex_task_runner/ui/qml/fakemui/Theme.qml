@@ -181,31 +181,30 @@ QtObject {
     property int animNormal: transitionStandard
     property int animSlow: transitionComplex
     
-    // Z-index
+    // Z-index - delegate to StyleVariables
     property int zIndexMobileStepper: 1000
     property int zIndexFab: 1050
     property int zIndexAppBar: 1100
     property int zIndexDrawer: 1200
-    property int zIndexModal: 1300
-    property int zIndexSnackbar: 1400
-    property int zIndexTooltip: 1500
+    property int zIndexModal: StyleVariables.zModal
+    property int zIndexSnackbar: StyleVariables.zToast
+    property int zIndexTooltip: StyleVariables.zTooltip
     
-    // Breakpoints
+    // Breakpoints - delegate to StyleVariables
     property int breakpointXs: 0
-    property int breakpointSm: 600
-    property int breakpointMd: 900
-    property int breakpointLg: 1200
-    property int breakpointXl: 1536
+    property int breakpointSm: StyleVariables.breakpointSm
+    property int breakpointMd: StyleVariables.breakpointMd
+    property int breakpointLg: StyleVariables.breakpointLg
+    property int breakpointXl: StyleVariables.breakpointXl
     
-    // Status colors (utility function)
+    // Status colors (utility function) - delegate to StyleMixins
     function statusColor(status) {
-        switch(status) {
-            case "completed": return success
-            case "running": return info
-            case "queued": return warning
-            case "failed": return error
-            default: return textMuted
-        }
+        return StyleMixins.statusColor(status)
+    }
+    
+    // Status background color
+    function statusBgColor(status) {
+        return StyleMixins.statusBgColor(status)
     }
     
     // Get color by name
