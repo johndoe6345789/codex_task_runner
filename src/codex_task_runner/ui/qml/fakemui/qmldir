@@ -34,6 +34,10 @@ CBadge 1.0 CBadge.qml
 CDialog 1.0 CDialog.qml
 CIcon 1.0 CIcon.qml
 CErrorState 1.0 CErrorState.qml
+Card 1.0 CCard.qml
+Checkbox 1.0 CCheckbox.qml
+Chip 1.0 CChip.qml
+ClickAwayListener 1.0 CClickAwayListener.qml
 
 # Form Components (mirrors SCSS _form.scss)
 CFormGroup 1.0 CFormGroup.qml
@@ -92,9 +96,11 @@ CThemeProvider 1.0 CThemeProvider.qml
 CTransitions 1.0 CTransitions.qml
 CTypography 1.0 CTypography.qml
 CClassNames 1.0 CClassNames.qml
-index 1.0 index.qml
-CStyled 1.0 CStyled.qml
-CUseMediaQuery 1.0 CUseMediaQuery.qml
+CclassNames 1.0 CClassNames.qml
+Cindex 1.0 index.qml
+Cstyled 1.0 CStyled.qml
+CuseMediaQuery 1.0 CUseMediaQuery.qml
+CFormLabel 1.0 CFormLabel.qml
 
 # Utility Components (mirrors SCSS global utilities)
 CText 1.0 CText.qml
@@ -118,14 +124,24 @@ CRating 1.0 CRating.qml
 CGrid 1.0 CGrid.qml
 CGridItem 1.0 CGridItem.qml
 CContainer 1.0 CContainer.qml
+Container 1.0 CContainer.qml
 
 # Lab Components
 CLoadingButton 1.0 CLoadingButton.qml
 CTimeline 1.0 CTimeline.qml
 CTimelineItem 1.0 CTimelineItem.qml
-CTreeView 1.0 CTreeView.qml
 CMasonry 1.0 CMasonry.qml
+CTreeView 1.0 CTreeView.qml
 
+CClassNames 1.0 CClassNames.qml
+index 1.0 index.qml
+CclassNames 1.0 CClassNames.qml
+Cindex 1.0 index.qml
+Cstyled 1.0 CStyled.qml
+CuseMediaQuery 1.0 CUseMediaQuery.qml
+CFormLabel 1.0 CFormLabel.qml
+# CssBaseline alias expected by React mapping
+CssBaseline 1.0 CCssBaseline.qml
 # MUI X Components
 CDataGrid 1.0 CDataGrid.qml
 CDatePicker 1.0 CDatePicker.qml

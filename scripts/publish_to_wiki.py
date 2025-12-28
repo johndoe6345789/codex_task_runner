@@ -1,58 +1,45 @@
 #!/usr/bin/env python3
+"""Thin wrapper script that calls the package helper for publishing to MediaWiki.
+
+This file remains executable for backwards compatibility but delegates logic
+to `codex_task_runner.cli_helpers.publish_to_wiki` so the code is importable
+and testable.
+"""
+from __future__ import annotations
+
 import sys
-import requests
 from pathlib import Path
 
-API = 'http://localhost:8080/api.php'
+from codex_task_runner.cli_helpers import publish_to_wiki
 
-def fail(msg):
-    print(msg)
-    sys.exit(1)
 
-def main():
+def main() -> int:
     if len(sys.argv) < 3:
-        fail('Usage: publish_to_wiki.py USERNAME PASSWORD [PAGE_TITLE]')
+        print('Usage: publish_to_wiki.py USERNAME PASSWORD [PAGE_TITLE_or_PATH]')
+        return 2
 
     username = sys.argv[1]
     password = sys.argv[2]
-    title = sys.argv[3] if len(sys.argv) > 3 else 'MCP Integration'
-    docpath = Path(__file__).resolve().parents[1] / 'docs' / 'MCP_INTEGRATION.md'
-    if not docpath.exists():
-        fail(f'Document not found: {docpath}')
 
-    content = docpath.read_text()
+    # If a third arg is a path, pass it through as docpath; otherwise treat as title
+    docpath = None
+    title = 'MCP Integration'
+    if len(sys.argv) > 3:
+        candidate = Path(sys.argv[3])
+        if candidate.exists():
+            docpath = candidate
+        else:
+            title = sys.argv[3]
 
-    session = requests.Session()
+    try:
+        res = publish_to_wiki(username=username, password=password, title=title, docpath=docpath)
+        print('Edit result:')
+        print(res)
+        return 0
+    except Exception as e:
+        print('Publish failed:', e, file=sys.stderr)
+        return 1
 
-    # 1) Get login token
-    r = session.get(API, params={'action': 'query', 'meta': 'tokens', 'type': 'login', 'format': 'json'})
-    r.raise_for_status()
-    login_token = r.json()['query']['tokens']['logintoken']
-
-    # 2) Log in
-    r = session.post(API, data={'action': 'login', 'lgname': username, 'lgpassword': password, 'lgtoken': login_token, 'format': 'json'})
-    r.raise_for_status()
-    login_result = r.json()
-    if login_result.get('login', {}).get('result') not in ('Success', 'NeedToken'):
-        fail(f'Login failed: {login_result}')
-
-    # 3) Get CSRF token
-    r = session.get(API, params={'action': 'query', 'meta': 'tokens', 'format': 'json'})
-    r.raise_for_status()
-    csrf_token = r.json()['query']['tokens']['csrftoken']
-
-    # 4) Edit/create page
-    r = session.post(API, data={
-        'action': 'edit',
-        'title': title,
-        'text': content,
-        'token': csrf_token,
-        'format': 'json'
-    })
-    r.raise_for_status()
-    res = r.json()
-    print('Edit result:')
-    print(res)
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

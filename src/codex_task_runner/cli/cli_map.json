@@ -186,5 +186,61 @@
         {"flags": ["--debug"], "kwargs": {"action": "store_true", "help": "Enable debug mode"}}
       ]
     }
+    ,
+    {
+      "name": "convert-md",
+      "aliases": ["md-to-wiki"],
+      "help": "Convert a Markdown file to MediaWiki wikitext (.wiki)",
+      "handler": "codex_task_runner.cli_helpers.convert_md_to_wikitext",
+      "args": [
+        {"flags": ["src"], "kwargs": {"nargs": "?", "help": "Source markdown file (default: docs/MCP_SESSION_AND_APP.md)"}},
+        {"flags": ["dest"], "kwargs": {"nargs": "?", "help": "Destination .wiki file (default: src stem + .wiki)"}}
+      ]
+    },
+    {
+      "name": "publish-mcp",
+      "aliases": ["publish-wiki","publish-mw"],
+      "help": "Publish a markdown document to a MediaWiki instance (requires bot credentials)",
+      "handler": "codex_task_runner.cli_helpers.publish_to_wiki",
+      "args": [
+        {"flags": ["username"], "kwargs": {"help": "MediaWiki bot username"}},
+        {"flags": ["password"], "kwargs": {"help": "MediaWiki bot password"}},
+        {"flags": ["--title"], "kwargs": {"help": "Page title to write (default: MCP Integration)", "default": "MCP Integration"}},
+        {"flags": ["--docpath"], "kwargs": {"help": "Path to markdown document to publish (optional)"}},
+        {"flags": ["--api"], "kwargs": {"help": "MediaWiki API endpoint (default: http://localhost:8080/api.php)", "default": "http://localhost:8080/api.php"}}
+      ]
+    },
+    {
+      "name": "compute-coverage",
+      "aliases": ["coverage"],
+      "help": "Compute React→QML component coverage for fakemui",
+      "handler": "codex_task_runner.cli_helpers.compute_coverage",
+      "args": [
+        {"flags": ["--qmldir"], "kwargs": {"help": "Path to qmldir file or directory", "nargs": "?"}},
+        {"flags": ["--react-glob"], "kwargs": {"help": "Glob pattern(s) for React fake UI files", "nargs": "*", "default": []}}
+      ]
+    },
+    {
+      "name": "poll-codex",
+      "aliases": ["poll-urls"],
+      "help": "Poll a list of URLs using Codex session and save results",
+      "handler": "codex_task_runner.cli_helpers.poll_codex_urls",
+      "args": [
+        {"flags": ["--env"], "kwargs": {"help": "Path to .env file (default: .env)", "default": ".env"}},
+        {"flags": ["urls_file"], "kwargs": {"help": "File containing URLs to poll", "nargs": "?", "default": "urls.txt"}},
+        {"flags": ["--out"], "kwargs": {"help": "Output JSON file", "default": "run_poll.json"}}
+      ]
+    },
+    {
+      "name": "run-to-github",
+      "aliases": ["run-codex","run-to-gh"],
+      "help": "Fetch tasks from Codex and process them to GitHub (wrapper around run_codex_to_github)",
+      "handler": "codex_task_runner.cli_helpers.run_codex_to_github",
+      "args": [
+        {"flags": ["--env"], "kwargs": {"help": "Path to .env file (default: .env)", "default": ".env"}},
+        {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Perform a dry run (do not push or merge)"}},
+        {"flags": ["--limit"], "kwargs": {"type": "int", "default": 20, "help": "Max tasks to fetch/process"}}
+      ]
+    }
   ]
 }

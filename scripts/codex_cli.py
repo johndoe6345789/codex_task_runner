@@ -18,6 +18,7 @@ from codex_task_runner.codex_cloud import (
     save_results,
 )
 from codex_task_runner.runner import make_config, process_tasks
+from codex_task_runner.cli_helpers import publish_to_wiki, convert_md_to_wikitext
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -54,6 +55,10 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("username", help="Wiki username (bot)")
     sp.add_argument("password", help="Bot password")
     sp.add_argument("--title", default="MCP Integration", help="Page title to create/edit")
+
+    sp = sub.add_parser("convert-md", help="Convert a Markdown file to MediaWiki wikitext")
+    sp.add_argument("src", nargs='?', help="Source markdown path (default: docs/MCP_SESSION_AND_APP.md)")
+    sp.add_argument("dest", nargs='?', help="Destination .wiki path (default: same dir as source)")
 
     return p
 
@@ -113,20 +118,24 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.cmd == "publish-mcp":
-        # Call the helper script that performs the MediaWiki API publish
-        script = Path(__file__).resolve().parents[0] / 'publish_to_wiki.py'
         try:
-            res = subprocess.run([sys.executable, str(script), args.username, args.password, args.title], check=True, capture_output=True, text=True)
-            print(res.stdout)
-            if res.stderr:
-                print(res.stderr, file=sys.stderr)
+            res = publish_to_wiki(username=args.username, password=args.password, title=args.title)
+            print('Edit result:')
+            print(res)
             return 0
-        except subprocess.CalledProcessError as e:
+        except Exception as e:
             print('Publish failed:', e, file=sys.stderr)
-            if e.stdout:
-                print(e.stdout)
-            if e.stderr:
-                print(e.stderr, file=sys.stderr)
+            return 1
+
+    if args.cmd == "convert-md":
+        src = getattr(args, 'src', None)
+        dest = getattr(args, 'dest', None)
+        try:
+            out = convert_md_to_wikitext(src=src, dest=dest)
+            print('Wikitext written to', out)
+            return 0
+        except Exception as e:
+            print('Conversion failed:', e, file=sys.stderr)
             return 1
 
     p.print_help()
