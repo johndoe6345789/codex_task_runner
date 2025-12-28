@@ -2,6 +2,8 @@
 from typing import Any
 import sys
 
+from ..etc.task_aliases import resolve_alias
+
 
 def get_patch_from_task(session, task_id: str, turn_id: str | None = None) -> dict:
     """Extract the git diff patch from a task's turn output."""
@@ -50,7 +52,7 @@ def get_patch_from_task(session, task_id: str, turn_id: str | None = None) -> di
 
 def handle(args: Any, session) -> dict | str:
     """Extract git patch from a task."""
-    task_id = args.task_id
+    task_id = resolve_alias(args.task_id)
     turn_id = getattr(args, "turn_id", None)
     raw = getattr(args, "raw", False)
     output_file = getattr(args, "output", None)

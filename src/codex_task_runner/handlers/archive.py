@@ -1,10 +1,12 @@
 """Archive a Codex task."""
 from typing import Any
 
+from ..etc.task_aliases import resolve_alias
+
 
 def handle(args: Any, session) -> dict:
     """Archive a task by ID."""
-    task_id = args.task_id
+    task_id = resolve_alias(args.task_id)
     url = f"https://chatgpt.com/backend-api/wham/tasks/{task_id}/archive"
     
     resp = session.post(url, json={})

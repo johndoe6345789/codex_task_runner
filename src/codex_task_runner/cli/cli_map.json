@@ -19,6 +19,7 @@
     },
     {
       "name": "tasks",
+      "aliases": ["ls", "list"],
       "help": "List tasks from Codex Cloud",
       "handler": "codex_task_runner.handlers.tasks",
       "args": [
@@ -28,6 +29,7 @@
     },
     {
       "name": "task",
+      "aliases": ["t", "show"],
       "help": "Fetch single task detail",
       "handler": "codex_task_runner.handlers.task",
       "args": [
@@ -44,6 +46,7 @@
     },
     {
       "name": "create-pr",
+      "aliases": ["pr"],
       "help": "Create PR for a task turn (calls Codex API)",
       "handler": "codex_task_runner.handlers.create_pr",
       "args": [
@@ -64,6 +67,7 @@
     },
     {
       "name": "yolo",
+      "aliases": ["go", "auto"],
       "help": "YOLO: create PRs and merge tasks (with safeguards)",
       "handler": "codex_task_runner.handlers.yolo",
       "args": [
@@ -77,6 +81,7 @@
     },
     {
       "name": "dedup-prs",
+      "aliases": ["dedup"],
       "help": "Find and close duplicate PRs, keeping the newest",
       "handler": "codex_task_runner.handlers.dedup_prs",
       "args": [
@@ -109,6 +114,7 @@
     },
     {
       "name": "me",
+      "aliases": ["whoami"],
       "help": "Show current user info",
       "handler": "codex_task_runner.handlers.me",
       "args": []
@@ -131,6 +137,7 @@
     },
     {
       "name": "archive",
+      "aliases": ["done", "close"],
       "help": "Archive a Codex task",
       "handler": "codex_task_runner.handlers.archive",
       "args": [
@@ -139,6 +146,7 @@
     },
     {
       "name": "patch",
+      "aliases": ["diff", "p"],
       "help": "Extract git patch from a Codex task",
       "handler": "codex_task_runner.handlers.patch",
       "args": [

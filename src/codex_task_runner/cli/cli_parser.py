@@ -13,7 +13,8 @@ def build_parser(map_path: Path) -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="cmd")
     for cmd in doc.get("commands", []):
         name = cmd["name"]
-        sp = sub.add_parser(name, help=cmd.get("help"))
+        aliases = cmd.get("aliases", [])
+        sp = sub.add_parser(name, aliases=aliases, help=cmd.get("help"))
         for arg in cmd.get("args", []):
             flags = arg.get("flags", [])
             kwargs = arg.get("kwargs", {})
