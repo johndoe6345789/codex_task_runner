@@ -10,7 +10,7 @@ import "fakemui"
  * Mirrors React's App.jsx with drawer navigation and view management
  */
 ApplicationWindow {
-    id: app
+    id: appWindow
     
     visible: true
     width: 1280
@@ -20,21 +20,22 @@ ApplicationWindow {
     title: "Codex Runner"
     color: Theme.background
     
-    // API configuration
-    readonly property string apiBase: "http://localhost:8642/api"
-    
     // Current view state
     property string currentView: "tasks"
-    property var selectedTask: null
-    property var user: null
+    property int selectedTaskIndex: -1
     property bool searchOpen: false
     
     // Drawer width
     readonly property int drawerWidth: 240
     
-    // Theme context binding
+    // Connect to Python controller signals
     Component.onCompleted: {
-        fetchUser()
+        app.statusMessage.connect(onStatusMessage)
+    }
+    
+    function onStatusMessage(msg) {
+        // Could show a snackbar/toast here
+        console.log("Status:", msg)
     }
     
     // Keyboard shortcut: Cmd/Ctrl+K for search
