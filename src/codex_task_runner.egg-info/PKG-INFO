@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: codex-task-runner
+Version: 0.2.0
+Summary: Process Codex task JSON, create/merge PRs via gh.
+Requires-Python: >=3.11
+Requires-Dist: playwright
+Requires-Dist: requests
