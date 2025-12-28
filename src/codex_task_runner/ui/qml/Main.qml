@@ -2,32 +2,25 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
-import "contexts"
 import "components"
 
 /**
  * main.qml - Application entry point
- * Mirrors React's main.jsx with context providers
- * 
- * Uses singleton contexts:
- * - ThemeContext: Theme management (8 themes)
- * - LanguageContext: i18n with 19 languages
- * - NerdModeContext: Developer mode toggle
- * - AjaxQueueContext: AJAX request tracking
+ * Full-featured task manager with built-in themes and i18n
  */
 ApplicationWindow {
     id: window
     visible: true
     width: 1200
     height: 800
-    title: "Codex Task Runner" + (NerdModeContext.nerdMode ? " 🤓" : "")
+    title: "Codex Task Runner" + (nerdMode ? " 🤓" : "")
     
-    // Use context-provided theme colors
-    property var themeColors: ThemeContext.colors
-    property var tr: LanguageContext.translations
-    property string currentTheme: ThemeContext.themeName
-    property string currentLanguage: LanguageContext.currentLanguage
-    property bool nerdMode: NerdModeContext.nerdMode
+    // Theme and language state
+    property var themeColors: allThemes["dark"]
+    property var tr: allTranslations["en"]
+    property string currentTheme: "dark"
+    property string currentLanguage: "en"
+    property bool nerdMode: false
     
     color: themeColors.window
     
