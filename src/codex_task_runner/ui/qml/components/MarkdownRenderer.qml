@@ -14,9 +14,13 @@ Item {
     id: root
     
     property string content: ""
+    property string text: "" // Alias for content
     property color textColor: Theme.text
     property color codeBackground: Qt.rgba(0, 0, 0, 0.2)
     property int fontSize: 14
+    
+    // Use text if content is empty
+    readonly property string _effectiveContent: content || text
     
     implicitHeight: contentColumn.height
     implicitWidth: parent ? parent.width : 300
@@ -27,7 +31,7 @@ Item {
         spacing: 8
         
         Repeater {
-            model: parseMarkdown(content)
+            model: parseMarkdown(_effectiveContent)
             
             delegate: Loader {
                 Layout.fillWidth: true
