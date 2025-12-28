@@ -481,13 +481,13 @@ Item {
                             Item { Layout.fillWidth: true }
                             
                             CIconButton {
-                                iconText: "📋"
+                                icon: "📋"
                                 tooltip: "Copy"
                                 onClicked: copyToClipboard(patch?.diff || "")
                             }
                             
                             CIconButton {
-                                iconText: "💾"
+                                icon: "💾"
                                 tooltip: "Download"
                                 // Download would require platform-specific code
                             }
