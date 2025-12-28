@@ -910,9 +910,11 @@ ApplicationWindow {
                         
                         // Loading overlay
                         Rectangle {
-                            anchors.fill: parent
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
                             color: Qt.rgba(0, 0, 0, 0.7)
                             visible: isLoading
+                            z: 100
                             
                             Column {
                                 anchors.centerIn: parent
