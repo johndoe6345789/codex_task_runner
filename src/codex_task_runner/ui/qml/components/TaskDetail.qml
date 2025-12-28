@@ -6,128 +6,70 @@ import "../fakemui"
 
 /**
  * TaskDetail.qml - Task detail view with tabs
- * Mirrors React's TaskDetail.jsx
+ * Uses Python AppController (app) directly instead of HTTP/XHR
  */
 Item {
     id: root
     
-    property var task: null
-    property string apiBase: ""
+    property int taskIndex: -1
     signal back()
     
     // State
     property var detail: null
-    property var turns: null
-    property var patch: null
     property bool loading: true
     property string error: ""
     property int tabIndex: 0
     property string snackbarMessage: ""
     
-    readonly property string taskId: task ? (task.task_id || task.id) : ""
-    
-    onTaskChanged: {
-        if (task) {
-            fetchDetail()
-            fetchTurns()
+    onTaskIndexChanged: {
+        if (taskIndex >= 0) {
+            loading = true
+            // Controller will load detail and emit signal
         }
     }
     
-    function fetchDetail() {
-        if (!taskId) return
-        
-        const xhr = new XMLHttpRequest()
-        xhr.open("GET", apiBase + "/tasks/" + taskId)
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                const data = JSON.parse(xhr.responseText)
-                if (data.success) {
-                    detail = data.data
-                }
-            }
-        }
-        xhr.send()
+    Component.onCompleted: {
+        app.taskDetailLoaded.connect(onTaskDetailLoaded)
+        app.patchReady.connect(onPatchReady)
+        app.errorOccurred.connect(onError)
     }
     
-    function fetchTurns() {
-        if (!taskId) return
-        loading = true
-        
-        const reqId = AjaxQueueContext.addRequest("Fetching turns")
-        
-        const xhr = new XMLHttpRequest()
-        xhr.open("GET", apiBase + "/tasks/" + taskId + "/turns")
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                loading = false
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText)
-                    if (data.success) {
-                        turns = data.data
-                        AjaxQueueContext.updateRequest(reqId, { status: "success" })
-                    }
-                } else {
-                    error = "Failed to fetch turns"
-                    AjaxQueueContext.updateRequest(reqId, { status: "error", error: error })
-                }
-            }
-        }
-        xhr.send()
+    Component.onDestruction: {
+        app.taskDetailLoaded.disconnect(onTaskDetailLoaded)
+        app.patchReady.disconnect(onPatchReady)
+        app.errorOccurred.disconnect(onError)
     }
     
-    function fetchPatch() {
-        if (!taskId) return
-        
-        const reqId = AjaxQueueContext.addRequest("Fetching patch")
-        
-        const xhr = new XMLHttpRequest()
-        xhr.open("GET", apiBase + "/tasks/" + taskId + "/patch")
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText)
-                    if (data.success) {
-                        patch = data.data
-                        tabIndex = 2
-                        AjaxQueueContext.updateRequest(reqId, { status: "success" })
-                    } else {
-                        error = data.data?.error || "Failed to fetch patch"
-                        AjaxQueueContext.updateRequest(reqId, { status: "error", error: error })
-                    }
-                } else {
-                    error = "Network error"
-                    AjaxQueueContext.updateRequest(reqId, { status: "error", error: error })
-                }
-            }
+    function onTaskDetailLoaded(jsonStr) {
+        try {
+            detail = JSON.parse(jsonStr)
+        } catch (e) {
+            detail = null
         }
-        xhr.send()
+        loading = false
     }
     
-    function createPR(turnId) {
-        const reqId = AjaxQueueContext.addRequest("Creating PR")
-        
-        const xhr = new XMLHttpRequest()
-        xhr.open("POST", apiBase + "/tasks/" + taskId + "/create-pr")
-        xhr.setRequestHeader("Content-Type", "application/json")
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                const data = JSON.parse(xhr.responseText)
-                if (data.success) {
-                    showSnackbar(LanguageContext.t("prCreated"))
-                    AjaxQueueContext.updateRequest(reqId, { status: "success" })
-                    fetchDetail()
-                } else {
-                    showSnackbar(data.error || LanguageContext.t("failedCreatePR"))
-                    AjaxQueueContext.updateRequest(reqId, { status: "error", error: "Failed" })
-                }
-            }
-        }
-        xhr.send(JSON.stringify({ turn_id: turnId }))
+    function onPatchReady(diff) {
+        detail = detail || {}
+        detail.patch = { diff: diff }
+        tabIndex = 2
+    }
+    
+    function onError(msg) {
+        error = msg
+        loading = false
+    }
+    
+    function createPR() {
+        app.createPR(taskIndex)
+    }
+    
+    function extractPatch() {
+        app.extractPatch(taskIndex)
     }
     
     function copyToClipboard(text) {
-        // Note: In QML, clipboard access requires platform-specific code
-        // This is a placeholder - actual implementation would use C++ bridge
+        app.copyToClipboard(text)
         showSnackbar(LanguageContext.t("copied"))
     }
     
