@@ -6,90 +6,67 @@ import "../fakemui"
 
 /**
  * TaskList.qml - Task list component
- * Mirrors React's TaskList.jsx
+ * Uses Python AppController (app) directly instead of HTTP/XHR
  */
 Item {
     id: root
     
-    property string apiBase: ""
-    signal taskSelected(var task)
+    signal taskSelected(int index)
     
     // State
-    property var tasks: []
     property bool loading: true
     property string error: ""
     property string filter: "current"
     property int limit: 20
     
-    Component.onCompleted: fetchTasks()
+    Component.onCompleted: {
+        // Connect to Python controller signals
+        app.tasksLoaded.connect(onTasksLoaded)
+        app.errorOccurred.connect(onError)
+        // Load tasks via Python API
+        app.loadTasks()
+    }
     
-    onFilterChanged: fetchTasks()
-    onLimitChanged: fetchTasks()
+    Component.onDestruction: {
+        app.tasksLoaded.disconnect(onTasksLoaded)
+        app.errorOccurred.disconnect(onError)
+    }
     
-    function fetchTasks() {
+    function onTasksLoaded() {
+        loading = false
+        error = ""
+    }
+    
+    function onError(msg) {
+        loading = false
+        error = msg
+    }
+    
+    function refresh() {
         loading = true
         error = ""
-        
-        const reqId = AjaxQueueContext.addRequest("Fetching tasks")
-        
-        const xhr = new XMLHttpRequest()
-        xhr.open("GET", apiBase + "/tasks?filter=" + filter + "&limit=" + limit)
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                loading = false
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText)
-                    if (data.success) {
-                        tasks = data.data || []
-                        AjaxQueueContext.updateRequest(reqId, { status: "success" })
-                    } else {
-                        error = data.error || "Failed to fetch tasks"
-                        AjaxQueueContext.updateRequest(reqId, { status: "error", error: error })
-                    }
-                } else {
-                    error = "Network error: " + xhr.status
-                    AjaxQueueContext.updateRequest(reqId, { status: "error", error: error })
-                }
-            }
-        }
-        xhr.send()
+        app.loadTasks()
     }
     
-    function archiveTask(taskId) {
-        const reqId = AjaxQueueContext.addRequest("Archiving task")
-        
-        const xhr = new XMLHttpRequest()
-        xhr.open("POST", apiBase + "/tasks/" + taskId + "/archive")
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText)
-                    if (data.success) {
-                        AjaxQueueContext.updateRequest(reqId, { status: "success" })
-                        fetchTasks()
-                    } else {
-                        AjaxQueueContext.updateRequest(reqId, { status: "error", error: "Archive failed" })
-                    }
-                } else {
-                    AjaxQueueContext.updateRequest(reqId, { status: "error", error: "Network error" })
-                }
-            }
-        }
-        xhr.send()
+    function archiveTask(index) {
+        app.archiveTask(index)
     }
     
-    function getStatusColor(task) {
-        if (task.pr_numbers && task.pr_numbers.length > 0) return Theme.success
-        if (task.status === "completed") return Theme.success
-        if (task.status === "running") return Theme.warning
+    function getStatusColor(status, hasPr) {
+        if (hasPr) return Theme.success
+        if (status === "completed") return Theme.success
+        if (status === "running") return Theme.warning
         return Theme.textMuted
     }
     
-    function getStatusLabel(task) {
-        if (task.pr_numbers && task.pr_numbers.length > 0) {
-            return "PR #" + task.pr_numbers.join(", #")
+    function getStatusLabel(status, hasPr, prUrl) {
+        if (hasPr && prUrl) {
+            // Extract PR number from URL if possible
+            const match = prUrl.match(/\/pull\/(\d+)/)
+            if (match) return "PR #" + match[1]
+            return "Has PR"
         }
-        return task.status || "pending"
+        return status || "pending"
     }
     
     ColumnLayout {
