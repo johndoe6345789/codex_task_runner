@@ -304,7 +304,7 @@ Item {
                             
                             CChip {
                                 text: detail?.status || task?.status || "pending"
-                                visible: detail?.status || task?.status
+                                visible: !!(detail?.status || task?.status)
                             }
                         }
                     }
