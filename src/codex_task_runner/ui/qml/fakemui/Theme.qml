@@ -210,52 +210,33 @@ QtObject {
         }
     }
     
-    // Apply theme
-    function applyTheme(themeName) {
-        current = themeName
-        switch(themeName) {
-            case "light":
-                mode = "light"
-                break
-            case "ocean":
-                mode = "dark"
-                primary = "#4dabf7"
-                background = "#0d1b2a"
-                surface = "#1b263b"
-                surfaceVariant = "#273549"
-                card = "#1b263b"
-                break
-            case "forest":
-                mode = "dark"
-                primary = "#66bb6a"
-                secondary = "#81c784"
-                background = "#1a2f1a"
-                surface = "#1e3a1e"
-                surfaceVariant = "#254725"
-                card = "#1e3a1e"
-                break
-            default: // dark
-                mode = "dark"
-                primary = "#1976d2"
-                secondary = "#9c27b0"
-                break
+    // Set theme by name
+    function setTheme(name) {
+        if (themes[name]) {
+            current = name
+            mode = themes[name].mode
         }
     }
     
-    // Create theme with custom options
+    // Toggle between light and dark
+    function toggleMode() {
+        setTheme(mode === "dark" ? "light" : "dark")
+    }
+    
+    // Get theme info by name
+    function getTheme(name) {
+        return themes[name] || themes.dark
+    }
+    
+    // Legacy function
+    function applyTheme(themeName) {
+        setTheme(themeName)
+    }
+    
+    // Create theme with custom options (MUI compatibility)
     function createTheme(options) {
         if (options.palette) {
-            if (options.palette.mode) {
-                mode = options.palette.mode
-            }
-            if (options.palette.primary) {
-                if (options.palette.primary.main) primary = options.palette.primary.main
-                if (options.palette.primary.light) primaryLight = options.palette.primary.light
-                if (options.palette.primary.dark) primaryDark = options.palette.primary.dark
-            }
-            if (options.palette.secondary) {
-                if (options.palette.secondary.main) secondary = options.palette.secondary.main
-            }
+            if (options.palette.mode) mode = options.palette.mode
         }
         if (options.shape) {
             if (options.shape.borderRadius) shapeBorderRadius = options.shape.borderRadius
