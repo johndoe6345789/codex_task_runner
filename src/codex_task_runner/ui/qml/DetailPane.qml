@@ -28,6 +28,7 @@ Item {
                 text: taskIndex >= 0 ? "Task #" + (taskIndex + 1) : "Select a task"
                 font.bold: true
                 font.pixelSize: 18
+                color: themeColors.windowText || "#ffffff"
             }
             
             Item { Layout.fillWidth: true }
@@ -38,6 +39,19 @@ Item {
                 onClicked: root.patchClicked()
                 ToolTip.visible: hovered
                 ToolTip.text: "Extract git patch (Ctrl+P)"
+                
+                background: Rectangle {
+                    color: parent.hovered ? (themeColors.alternateBase || "#242424") : (themeColors.base || "#1a1a1a")
+                    radius: 4
+                    border.color: themeColors.border || "#333333"
+                    border.width: 1
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: themeColors.windowText || "#ffffff"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
             
             Button {
@@ -46,6 +60,17 @@ Item {
                 onClicked: root.prClicked()
                 ToolTip.visible: hovered
                 ToolTip.text: "Create pull request"
+                
+                background: Rectangle {
+                    color: parent.enabled ? (themeColors.accent || "#10a37f") : (themeColors.mid || "#333333")
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: "#ffffff"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
             
             Button {
@@ -54,6 +79,19 @@ Item {
                 onClicked: root.archiveClicked()
                 ToolTip.visible: hovered
                 ToolTip.text: "Archive this task"
+                
+                background: Rectangle {
+                    color: parent.hovered ? (themeColors.alternateBase || "#242424") : (themeColors.base || "#1a1a1a")
+                    radius: 4
+                    border.color: themeColors.border || "#333333"
+                    border.width: 1
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: themeColors.windowText || "#ffffff"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
         }
         
@@ -61,8 +99,10 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: summaryColumn.implicitHeight + 24
-            color: palette.alternateBase
+            color: themeColors.alternateBase || "#242424"
             radius: 8
+            border.color: themeColors.border || "#333333"
+            border.width: 1
             visible: taskIndex >= 0 && taskData
             
             ColumnLayout {
@@ -78,6 +118,7 @@ Item {
                     font.bold: true
                     font.pixelSize: 16
                     wrapMode: Text.Wrap
+                    color: themeColors.windowText || "#ffffff"
                 }
                 
                 // Repository & Branch
@@ -123,13 +164,13 @@ Item {
                         background: Rectangle {
                             radius: 4
                             color: {
-                                if (!taskData) return palette.mid
+                                if (!taskData) return themeColors.mid || "#333333"
                                 switch(taskData.status) {
-                                    case "completed": return "#2d7d46"
-                                    case "running": return "#1a73e8"
-                                    case "failed": return "#c62828"
-                                    case "queued": return "#f57c00"
-                                    default: return palette.mid
+                                    case "completed": return themeColors.success || "#22c55e"
+                                    case "running": return themeColors.info || "#3b82f6"
+                                    case "failed": return themeColors.error || "#ef4444"
+                                    case "queued": return themeColors.warning || "#f59e0b"
+                                    default: return themeColors.mid || "#333333"
                                 }
                             }
                         }
@@ -140,7 +181,7 @@ Item {
                     Label {
                         text: "🔀 View Pull Request"
                         visible: taskData && taskData.pull_request
-                        color: palette.highlight
+                        color: themeColors.accent || "#10a37f"
                         
                         MouseArea {
                             anchors.fill: parent
@@ -204,8 +245,10 @@ Item {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: turnsColumn.implicitHeight + 16
-                        color: palette.window
+                        color: themeColors.base || "#1a1a1a"
                         radius: 4
+                        border.color: themeColors.border || "#333333"
+                        border.width: 1
                         visible: taskData && taskData.turns && taskData.turns.length > 0
                         
                         ColumnLayout {
@@ -265,9 +308,12 @@ Item {
                     font.pixelSize: 14
                     wrapMode: Text.Wrap
                     selectByMouse: true
+                    color: themeColors.windowText || "#ffffff"
                     background: Rectangle {
-                        color: palette.window
+                        color: themeColors.base || "#1a1a1a"
                         radius: 4
+                        border.color: themeColors.border || "#333333"
+                        border.width: 1
                     }
                 }
             }
@@ -280,15 +326,17 @@ Item {
                     id: detailText
                     text: taskJson || "No task selected"
                     readOnly: true
-                    font.family: "Menlo"
+                    font.family: "SF Mono, Monaco, Consolas, monospace"
                     font.pixelSize: 12
                     wrapMode: Text.Wrap
                     selectByMouse: true
                     background: Rectangle {
-                        color: "#1e1e1e"
+                        color: themeColors.codeBackground || "#1a1a1a"
                         radius: 4
+                        border.color: themeColors.border || "#333333"
+                        border.width: 1
                     }
-                    color: "#d4d4d4"
+                    color: themeColors.codeText || "#e0e0e0"
                 }
             }
         }
@@ -304,6 +352,7 @@ Item {
                 text: "← Select a task to view details"
                 opacity: 0.5
                 font.pixelSize: 16
+                color: themeColors.windowText || "#ffffff"
             }
         }
     }
