@@ -243,8 +243,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 48
                         text: loading ? LanguageContext.t("creating") : LanguageContext.t("createNewTask")
-                        variant: "contained"
-                        color: Theme.primary
+                        variant: "primary"
                         enabled: !loading && prompt.trim() !== ""
                         onClicked: handleSubmit()
                         
