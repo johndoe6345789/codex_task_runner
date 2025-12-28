@@ -88,7 +88,7 @@ Dialog {
                 id: patchArea
                 text: patchText
                 readOnly: true
-                font.family: "Menlo, Monaco, Consolas, monospace"
+                font.family: "Menlo"
                 font.pixelSize: 12
                 wrapMode: Text.NoWrap
                 selectByMouse: true

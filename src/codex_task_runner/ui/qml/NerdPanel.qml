@@ -47,7 +47,7 @@ Rectangle {
                 font.bold: true
                 font.pixelSize: 14
                 color: themeColors.nerd
-                font.family: "Menlo, Monaco, Consolas, monospace"
+                font.family: "Menlo"
             }
             
             Item { Layout.fillWidth: true }
@@ -189,7 +189,7 @@ Rectangle {
                         TextArea {
                             id: logArea
                             readOnly: true
-                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.family: "Menlo"
                             font.pixelSize: 11
                             color: themeColors.nerd
                             selectionColor: themeColors.nerd
@@ -281,7 +281,7 @@ Rectangle {
                                     }
                                     color: themeColors.textMuted
                                     font.pixelSize: 10
-                                    font.family: "Menlo, Monaco, Consolas, monospace"
+                                    font.family: "Menlo"
                                 }
                                 
                                 Label {
@@ -295,7 +295,7 @@ Rectangle {
                                     }
                                     color: themeColors.textMuted
                                     font.pixelSize: 10
-                                    font.family: "Menlo, Monaco, Consolas, monospace"
+                                    font.family: "Menlo"
                                 }
                             }
                         }
@@ -313,7 +313,7 @@ Rectangle {
                             Layout.preferredHeight: 150
                             text: sessionInfo
                             readOnly: true
-                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.family: "Menlo"
                             font.pixelSize: 10
                             color: themeColors.primary
                             wrapMode: Text.Wrap
@@ -370,7 +370,7 @@ Rectangle {
                                         anchors.centerIn: parent
                                         text: modelData.key
                                         color: themeColors.accent
-                                        font.family: "Menlo, Monaco, Consolas, monospace"
+                                        font.family: "Menlo"
                                         font.pixelSize: 11
                                     }
                                 }
@@ -396,7 +396,7 @@ Rectangle {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 120
                             readOnly: true
-                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.family: "Menlo"
                             font.pixelSize: 10
                             color: themeColors.primary
                             text: "codex tasks          # List tasks\ncodex task <id>      # Task detail\ncodex prompt \"...\"   # Create task\ncodex patch <id>     # Extract diff\ncodex yolo           # Auto-merge all\ncodex ui             # Launch this UI"

@@ -206,7 +206,7 @@ Item {
                         }
                         Label {
                             text: taskData ? (taskData.id || "N/A") : "N/A"
-                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.family: "Menlo"
                             font.pixelSize: 10
                             color: themeColors.nerd
                             Layout.fillWidth: true
@@ -231,7 +231,7 @@ Item {
                         }
                         Label {
                             text: taskData && taskData.current_turn_id ? taskData.current_turn_id : "N/A"
-                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.family: "Menlo"
                             font.pixelSize: 10
                             color: themeColors.nerd
                             Layout.fillWidth: true
@@ -256,7 +256,7 @@ Item {
                         }
                         Label {
                             text: taskData && taskData.environment_id ? taskData.environment_id : "N/A"
-                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.family: "Menlo"
                             font.pixelSize: 10
                             color: themeColors.nerd
                             Layout.fillWidth: true
@@ -271,7 +271,7 @@ Item {
                         }
                         Label {
                             text: taskData && taskData.created_at ? taskData.created_at : "N/A"
-                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.family: "Menlo"
                             font.pixelSize: 10
                             color: themeColors.nerd
                         }
@@ -284,7 +284,7 @@ Item {
                         }
                         Label {
                             text: taskData && taskData.updated_at ? taskData.updated_at : "N/A"
-                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.family: "Menlo"
                             font.pixelSize: 10
                             color: themeColors.nerd
                         }
@@ -405,7 +405,7 @@ Item {
                     id: detailText
                     text: taskJson || "No task selected"
                     readOnly: true
-                    font.family: "Menlo, Monaco, Consolas, monospace"
+                    font.family: "Menlo"
                     font.pixelSize: 12
                     wrapMode: Text.Wrap
                     selectByMouse: true

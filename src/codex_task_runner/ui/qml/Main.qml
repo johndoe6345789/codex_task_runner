@@ -771,7 +771,7 @@ ApplicationWindow {
                                         elide: Text.ElideMiddle
                                         opacity: 0.5
                                         font.pixelSize: 9
-                                        font.family: "Menlo, Monaco, Consolas, monospace"
+                                        font.family: "Menlo"
                                         visible: nerdMode
                                         color: themeColors.accent
                                     }
