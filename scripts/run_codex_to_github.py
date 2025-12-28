@@ -1,24 +1,15 @@
 #!/usr/bin/env python3
-"""Wrapper that calls `codex_task_runner.cli_helpers.run_codex_to_github`."""
+"""Compatibility shim: delegate to package CLI.
+
+This file is a lightweight stub kept for compatibility; it forwards
+invocations to `codex_task_runner.cli.cli`.
+"""
 from __future__ import annotations
 
 import sys
-from codex_task_runner.cli_helpers import run_codex_to_github
+
+from codex_task_runner.cli.cli import main
 
 
-def main(argv: list[str] | None = None) -> int:
-    # Keep default behavior: env '.env', dry_run True
-    try:
-        n = run_codex_to_github()
-        if n == 0:
-            print('No tasks found or request failed.')
-            return 1
-        print(f'Processed {n} tasks (dry-run).')
-        return 0
-    except Exception as e:
-        print('Run failed:', e)
-        return 1
-
-
-if __name__ == '__main__':
-    raise SystemExit(main())
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))
