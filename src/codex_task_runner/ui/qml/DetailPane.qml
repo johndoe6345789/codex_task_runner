@@ -9,6 +9,20 @@ Item {
     property string taskJson: ""
     property var taskData: taskJson ? JSON.parse(taskJson) : null
     property bool nerdMode: false
+    property var themeColors: ({
+        background: "#1a1a2e",
+        surface: "#252542",
+        primary: "#4dabf7",
+        secondary: "#69db7c",
+        accent: "#ffd43b",
+        text: "#ffffff",
+        textMuted: "#888888",
+        border: "#3d3d5c",
+        success: "#51cf66",
+        warning: "#fcc419",
+        error: "#ff6b6b",
+        nerd: "#00ff41"
+    })
     
     signal archiveClicked()
     signal prClicked()
@@ -174,7 +188,7 @@ Item {
                     Rectangle {
                         Layout.fillWidth: true
                         height: 1
-                        color: "#00ff41"
+                        color: themeColors.nerd
                         opacity: 0.3
                     }
                     
@@ -188,13 +202,13 @@ Item {
                             text: "Task ID:"
                             opacity: 0.6
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                         }
                         Label {
                             text: taskData ? (taskData.id || "N/A") : "N/A"
                             font.family: "Menlo, Monaco, Consolas, monospace"
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                             Layout.fillWidth: true
                             elide: Text.ElideMiddle
                             
@@ -213,13 +227,13 @@ Item {
                             text: "Turn ID:"
                             opacity: 0.6
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                         }
                         Label {
                             text: taskData && taskData.current_turn_id ? taskData.current_turn_id : "N/A"
                             font.family: "Menlo, Monaco, Consolas, monospace"
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                             Layout.fillWidth: true
                             elide: Text.ElideMiddle
                             
@@ -238,13 +252,13 @@ Item {
                             text: "Env ID:"
                             opacity: 0.6
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                         }
                         Label {
                             text: taskData && taskData.environment_id ? taskData.environment_id : "N/A"
                             font.family: "Menlo, Monaco, Consolas, monospace"
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                             Layout.fillWidth: true
                             elide: Text.ElideMiddle
                         }
@@ -253,26 +267,26 @@ Item {
                             text: "Created:"
                             opacity: 0.6
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                         }
                         Label {
                             text: taskData && taskData.created_at ? taskData.created_at : "N/A"
                             font.family: "Menlo, Monaco, Consolas, monospace"
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                         }
                         
                         Label {
                             text: "Updated:"
                             opacity: 0.6
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                         }
                         Label {
                             text: taskData && taskData.updated_at ? taskData.updated_at : "N/A"
                             font.family: "Menlo, Monaco, Consolas, monospace"
                             font.pixelSize: 10
-                            color: "#00ff41"
+                            color: themeColors.nerd
                         }
                     }
                 }

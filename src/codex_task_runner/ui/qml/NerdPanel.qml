@@ -4,10 +4,24 @@ import QtQuick.Layouts
 
 Rectangle {
     id: root
-    color: "#1a1a2e"
+    color: themeColors.background
     
     property string sessionInfo: "{}"
     property alias logText: logArea.text
+    property var themeColors: ({
+        background: "#1a1a2e",
+        surface: "#252542",
+        primary: "#4dabf7",
+        secondary: "#69db7c",
+        accent: "#ffd43b",
+        text: "#ffffff",
+        textMuted: "#888888",
+        border: "#3d3d5c",
+        success: "#51cf66",
+        warning: "#fcc419",
+        error: "#ff6b6b",
+        nerd: "#00ff41"
+    })
     
     function appendLog(msg) {
         logArea.text = logArea.text + msg + "\n"
@@ -32,7 +46,7 @@ Rectangle {
                 text: "🤓 NERD MODE"
                 font.bold: true
                 font.pixelSize: 14
-                color: "#00ff41"
+                color: themeColors.nerd
                 font.family: "Menlo, Monaco, Consolas, monospace"
             }
             
@@ -41,7 +55,7 @@ Rectangle {
             Label {
                 text: "API Logs • Session Info • Debug"
                 opacity: 0.6
-                color: "#00ff41"
+                color: themeColors.nerd
                 font.pixelSize: 11
             }
         }
@@ -52,7 +66,7 @@ Rectangle {
             Layout.fillWidth: true
             
             background: Rectangle {
-                color: "#0f0f1a"
+                color: Qt.darker(themeColors.background, 1.2)
             }
             
             TabButton {
@@ -60,12 +74,12 @@ Rectangle {
                 font.pixelSize: 11
                 
                 background: Rectangle {
-                    color: nerdTabs.currentIndex === 0 ? "#2a2a4a" : "transparent"
+                    color: nerdTabs.currentIndex === 0 ? themeColors.surface : "transparent"
                     radius: 4
                 }
                 contentItem: Text {
                     text: parent.text
-                    color: nerdTabs.currentIndex === 0 ? "#00ff41" : "#888"
+                    color: nerdTabs.currentIndex === 0 ? themeColors.nerd : themeColors.textMuted
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -76,12 +90,12 @@ Rectangle {
                 font.pixelSize: 11
                 
                 background: Rectangle {
-                    color: nerdTabs.currentIndex === 1 ? "#2a2a4a" : "transparent"
+                    color: nerdTabs.currentIndex === 1 ? themeColors.surface : "transparent"
                     radius: 4
                 }
                 contentItem: Text {
                     text: parent.text
-                    color: nerdTabs.currentIndex === 1 ? "#00ff41" : "#888"
+                    color: nerdTabs.currentIndex === 1 ? themeColors.nerd : themeColors.textMuted
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -92,12 +106,12 @@ Rectangle {
                 font.pixelSize: 11
                 
                 background: Rectangle {
-                    color: nerdTabs.currentIndex === 2 ? "#2a2a4a" : "transparent"
+                    color: nerdTabs.currentIndex === 2 ? themeColors.surface : "transparent"
                     radius: 4
                 }
                 contentItem: Text {
                     text: parent.text
-                    color: nerdTabs.currentIndex === 2 ? "#00ff41" : "#888"
+                    color: nerdTabs.currentIndex === 2 ? themeColors.nerd : themeColors.textMuted
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -122,7 +136,7 @@ Rectangle {
                         
                         Label {
                             text: logArea.text.split('\n').length - 1 + " entries"
-                            color: "#666"
+                            color: themeColors.textMuted
                             font.pixelSize: 10
                         }
                         
@@ -139,11 +153,11 @@ Rectangle {
                             
                             contentItem: Text {
                                 text: parent.text
-                                color: "#ff6b6b"
+                                color: themeColors.error
                                 horizontalAlignment: Text.AlignHCenter
                             }
                             background: Rectangle {
-                                color: parent.hovered ? "#2a2a4a" : "transparent"
+                                color: parent.hovered ? themeColors.surface : "transparent"
                                 radius: 2
                             }
                         }
@@ -156,11 +170,11 @@ Rectangle {
                             
                             contentItem: Text {
                                 text: parent.text
-                                color: "#4dabf7"
+                                color: themeColors.primary
                                 horizontalAlignment: Text.AlignHCenter
                             }
                             background: Rectangle {
-                                color: parent.hovered ? "#2a2a4a" : "transparent"
+                                color: parent.hovered ? themeColors.surface : "transparent"
                                 radius: 2
                             }
                         }
@@ -177,14 +191,14 @@ Rectangle {
                             readOnly: true
                             font.family: "Menlo, Monaco, Consolas, monospace"
                             font.pixelSize: 11
-                            color: "#00ff41"
-                            selectionColor: "#00ff41"
-                            selectedTextColor: "#1a1a2e"
+                            color: themeColors.nerd
+                            selectionColor: themeColors.nerd
+                            selectedTextColor: themeColors.background
                             wrapMode: Text.NoWrap
                             selectByMouse: true
                             
                             background: Rectangle {
-                                color: "#0f0f1a"
+                                color: Qt.darker(themeColors.background, 1.2)
                                 radius: 4
                             }
                             
@@ -209,7 +223,7 @@ Rectangle {
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.preferredHeight: sessionCol.implicitHeight + 16
-                            color: "#0f0f1a"
+                            color: Qt.darker(themeColors.background, 1.2)
                             radius: 4
                             
                             ColumnLayout {
@@ -221,7 +235,7 @@ Rectangle {
                                 Label {
                                     text: "Session Status"
                                     font.bold: true
-                                    color: "#00ff41"
+                                    color: themeColors.nerd
                                     font.pixelSize: 12
                                 }
                                 
@@ -235,9 +249,9 @@ Rectangle {
                                         color: {
                                             try {
                                                 var info = JSON.parse(sessionInfo)
-                                                return info.has_session ? "#00ff41" : "#ff6b6b"
+                                                return info.has_session ? themeColors.success : themeColors.error
                                             } catch(e) {
-                                                return "#ff6b6b"
+                                                return themeColors.error
                                             }
                                         }
                                     }
@@ -251,7 +265,7 @@ Rectangle {
                                                 return "Unknown"
                                             }
                                         }
-                                        color: "#ccc"
+                                        color: themeColors.text
                                         font.pixelSize: 11
                                     }
                                 }
@@ -265,7 +279,7 @@ Rectangle {
                                             return "Cookie: N/A"
                                         }
                                     }
-                                    color: "#888"
+                                    color: themeColors.textMuted
                                     font.pixelSize: 10
                                     font.family: "Menlo, Monaco, Consolas, monospace"
                                 }
@@ -279,7 +293,7 @@ Rectangle {
                                             return "Base URL: N/A"
                                         }
                                     }
-                                    color: "#888"
+                                    color: themeColors.textMuted
                                     font.pixelSize: 10
                                     font.family: "Menlo, Monaco, Consolas, monospace"
                                 }
@@ -290,7 +304,7 @@ Rectangle {
                         Label {
                             text: "Raw Session Info"
                             font.bold: true
-                            color: "#00ff41"
+                            color: themeColors.nerd
                             font.pixelSize: 12
                         }
                         
@@ -301,12 +315,12 @@ Rectangle {
                             readOnly: true
                             font.family: "Menlo, Monaco, Consolas, monospace"
                             font.pixelSize: 10
-                            color: "#4dabf7"
+                            color: themeColors.primary
                             wrapMode: Text.Wrap
                             selectByMouse: true
                             
                             background: Rectangle {
-                                color: "#0f0f1a"
+                                color: Qt.darker(themeColors.background, 1.2)
                                 radius: 4
                             }
                         }
@@ -327,7 +341,7 @@ Rectangle {
                         Label {
                             text: "Keyboard Shortcuts"
                             font.bold: true
-                            color: "#00ff41"
+                            color: themeColors.nerd
                             font.pixelSize: 12
                         }
                         
@@ -336,6 +350,7 @@ Rectangle {
                                 { key: "Ctrl+N", action: "New Task" },
                                 { key: "Ctrl+R", action: "Refresh Tasks" },
                                 { key: "F5", action: "Refresh Tasks" },
+                                { key: "Ctrl+T", action: "Toggle Theme" },
                                 { key: "Ctrl+`", action: "Toggle Nerd Mode" },
                                 { key: "Ctrl+Enter", action: "Send Prompt (in dialog)" },
                                 { key: "Escape", action: "Close Dialog" },
@@ -348,13 +363,13 @@ Rectangle {
                                 Rectangle {
                                     Layout.preferredWidth: 100
                                     Layout.preferredHeight: 24
-                                    color: "#2a2a4a"
+                                    color: themeColors.surface
                                     radius: 4
                                     
                                     Label {
                                         anchors.centerIn: parent
                                         text: modelData.key
-                                        color: "#ffd43b"
+                                        color: themeColors.accent
                                         font.family: "Menlo, Monaco, Consolas, monospace"
                                         font.pixelSize: 11
                                     }
@@ -362,7 +377,7 @@ Rectangle {
                                 
                                 Label {
                                     text: modelData.action
-                                    color: "#ccc"
+                                    color: themeColors.text
                                     font.pixelSize: 11
                                 }
                             }
@@ -373,7 +388,7 @@ Rectangle {
                         Label {
                             text: "CLI Commands"
                             font.bold: true
-                            color: "#00ff41"
+                            color: themeColors.nerd
                             font.pixelSize: 12
                         }
                         
@@ -383,11 +398,11 @@ Rectangle {
                             readOnly: true
                             font.family: "Menlo, Monaco, Consolas, monospace"
                             font.pixelSize: 10
-                            color: "#4dabf7"
+                            color: themeColors.primary
                             text: "codex tasks          # List tasks\ncodex task <id>      # Task detail\ncodex prompt \"...\"   # Create task\ncodex patch <id>     # Extract diff\ncodex yolo           # Auto-merge all\ncodex ui             # Launch this UI"
                             
                             background: Rectangle {
-                                color: "#0f0f1a"
+                                color: Qt.darker(themeColors.background, 1.2)
                                 radius: 4
                             }
                         }

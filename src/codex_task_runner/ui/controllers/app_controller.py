@@ -136,6 +136,8 @@ class AppController(QObject):
     nerdModeChanged = pyqtSignal(bool)
     debugLog = pyqtSignal(str)  # debug messages for nerd mode
     sessionInfoChanged = pyqtSignal(str)  # session info JSON
+    themeChanged = pyqtSignal(str)  # theme ID
+    languageChanged = pyqtSignal(str)  # language ID
     
     def __init__(self, session=None, parent=None):
         super().__init__(parent)
@@ -149,6 +151,9 @@ class AppController(QObject):
         self._nerd_mode = False
         self._debug_logs = []
         self._start_time = None
+        self._theme = "system"
+        self._language = "en"
+        self._settings_file = self._get_settings_path()
     
     @pyqtProperty(QObject, constant=True)
     def taskModel(self):
@@ -172,6 +177,62 @@ class AppController(QObject):
             self._emit_session_info()
         else:
             self._log("Nerd mode deactivated")
+    
+    def _get_settings_path(self):
+        """Get path to settings file."""
+        from pathlib import Path
+        config_dir = Path.home() / ".config" / "codex-task-runner"
+        config_dir.mkdir(parents=True, exist_ok=True)
+        return config_dir / "settings.json"
+    
+    def _load_settings(self):
+        """Load settings from file."""
+        try:
+            if self._settings_file.exists():
+                return json.loads(self._settings_file.read_text())
+        except Exception:
+            pass
+        return {}
+    
+    def _save_settings(self, settings):
+        """Save settings to file."""
+        try:
+            self._settings_file.write_text(json.dumps(settings, indent=2))
+        except Exception as e:
+            self._log(f"Failed to save settings: {e}")
+    
+    @pyqtSlot(str)
+    def setTheme(self, themeId):
+        """Set and persist the theme."""
+        self._theme = themeId
+        settings = self._load_settings()
+        settings["theme"] = themeId
+        self._save_settings(settings)
+        self.themeChanged.emit(themeId)
+        self._log(f"🎨 Theme changed to: {themeId}")
+        self.statusMessage.emit(f"Theme: {themeId}")
+    
+    @pyqtSlot(result=str)
+    def getSavedTheme(self):
+        """Get the saved theme from settings."""
+        settings = self._load_settings()
+        return settings.get("theme", "system")
+    
+    @pyqtSlot(str)
+    def setLanguage(self, langId):
+        """Set and persist the language."""
+        self._language = langId
+        settings = self._load_settings()
+        settings["language"] = langId
+        self._save_settings(settings)
+        self.languageChanged.emit(langId)
+        self._log(f"🌐 Language changed to: {langId}")
+    
+    @pyqtSlot(result=str)
+    def getSavedLanguage(self):
+        """Get the saved language from settings."""
+        settings = self._load_settings()
+        return settings.get("language", "en")
     
     def _log(self, msg):
         """Add debug log entry."""

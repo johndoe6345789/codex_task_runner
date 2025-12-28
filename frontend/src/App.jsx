@@ -31,6 +31,7 @@ import {
   Code as CodeIcon,
   Palette as PaletteIcon,
   Check as CheckIcon,
+  Language as LanguageIcon,
 } from '@mui/icons-material'
 
 // Nerd mode context
@@ -41,7 +42,8 @@ import TaskDetail from './components/TaskDetail'
 import NewPrompt from './components/NewPrompt'
 import UserInfo from './components/UserInfo'
 import { themes, themeKeys } from './themes'
-import { ThemeContext } from './main'
+import { languages, languageKeys } from './i18n'
+import { ThemeContext, LanguageContext } from './main'
 
 const drawerWidth = 240
 
@@ -57,7 +59,9 @@ export default function App() {
     return saved ? JSON.parse(saved) : false
   })
   const [themeMenuAnchor, setThemeMenuAnchor] = useState(null)
+  const [langMenuAnchor, setLangMenuAnchor] = useState(null)
   const { themeName, setThemeName } = useContext(ThemeContext)
+  const { language, setLanguage, t } = useContext(LanguageContext)
 
   useEffect(() => {
     localStorage.setItem('nerdMode', JSON.stringify(nerdMode))
@@ -109,7 +113,7 @@ export default function App() {
             onClick={() => handleNavigation('tasks')}
           >
             <ListItemIcon><ListIcon /></ListItemIcon>
-            <ListItemText primary="Tasks" />
+            <ListItemText primary={t('tasks')} />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -118,7 +122,7 @@ export default function App() {
             onClick={() => handleNavigation('newPrompt')}
           >
             <ListItemIcon><AddIcon /></ListItemIcon>
-            <ListItemText primary="New Task" />
+            <ListItemText primary={t('newTask')} />
           </ListItemButton>
         </ListItem>
       </List>
@@ -130,7 +134,7 @@ export default function App() {
             onClick={() => handleNavigation('user')}
           >
             <ListItemIcon><PersonIcon /></ListItemIcon>
-            <ListItemText primary="Profile" />
+            <ListItemText primary={t('profile')} />
           </ListItemButton>
         </ListItem>
       </List>
@@ -149,7 +153,7 @@ export default function App() {
             label={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 <CodeIcon fontSize="small" />
-                <Typography variant="body2">Nerd Mode</Typography>
+                <Typography variant="body2">{t('nerdMode')}</Typography>
               </Box>
             }
           />
@@ -166,7 +170,7 @@ export default function App() {
           <ListItemText 
             primary={
               <Typography variant="body2">
-                Theme: {themes[themeName]?.name || 'Dark'}
+                {t('theme')}: {themes[themeName]?.name || 'Dark'}
               </Typography>
             } 
           />
@@ -203,6 +207,52 @@ export default function App() {
                   {themes[key].name}
                 </Typography>
                 {themeName === key && <CheckIcon fontSize="small" color="primary" />}
+              </Box>
+            </MenuItem>
+          ))}
+        </Menu>
+      </Box>
+      <Box sx={{ px: 2, pb: 1 }}>
+        <ListItemButton
+          onClick={(e) => setLangMenuAnchor(e.currentTarget)}
+          sx={{ borderRadius: 1, py: 0.5 }}
+        >
+          <ListItemIcon sx={{ minWidth: 32 }}>
+            <LanguageIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText 
+            primary={
+              <Typography variant="body2">
+                {t('language')}: {languages[language]?.flag} {languages[language]?.name}
+              </Typography>
+            } 
+          />
+        </ListItemButton>
+        <Menu
+          anchorEl={langMenuAnchor}
+          open={Boolean(langMenuAnchor)}
+          onClose={() => setLangMenuAnchor(null)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        >
+          {languageKeys.map((key) => (
+            <MenuItem
+              key={key}
+              selected={language === key}
+              onClick={() => {
+                setLanguage(key)
+                setLangMenuAnchor(null)
+              }}
+              sx={{ minWidth: 150 }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                <Typography variant="body2" sx={{ fontSize: '1.2em' }}>
+                  {languages[key].flag}
+                </Typography>
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {languages[key].name}
+                </Typography>
+                {language === key && <CheckIcon fontSize="small" color="primary" />}
               </Box>
             </MenuItem>
           ))}
@@ -258,10 +308,10 @@ export default function App() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            {currentView === 'tasks' && 'Tasks'}
-            {currentView === 'taskDetail' && 'Task Detail'}
-            {currentView === 'newPrompt' && 'New Task'}
-            {currentView === 'user' && 'Profile'}
+            {currentView === 'tasks' && t('tasks')}
+            {currentView === 'taskDetail' && t('taskDetail')}
+            {currentView === 'newPrompt' && t('newTask')}
+            {currentView === 'user' && t('profile')}
           </Typography>
           <IconButton color="inherit" onClick={fetchUser}>
             <RefreshIcon />

@@ -13,7 +13,219 @@ ApplicationWindow {
     property string currentTheme: "system"
     property var themeColors: getThemeColors(currentTheme)
     
+    // Language state
+    property string currentLanguage: "en"
+    property var tr: getTranslations(currentLanguage)
+    
     color: themeColors.window
+    
+    // All translations
+    readonly property var allTranslations: ({
+        "en": {
+            tasks: "Tasks", newTask: "New Task", refresh: "Refresh", openCodex: "Open Codex",
+            theme: "Theme", language: "Language", autoRefresh: "Auto-refresh", nerdMode: "Nerd Mode",
+            noTasks: "No tasks found", view: "View", getPatch: "Get Patch", archive: "Archive",
+            untitledTask: "Untitled Task", noRepo: "No repo", details: "Details", turns: "Turns",
+            patch: "Patch", createPR: "Create PR", selectTask: "Select a task to view details",
+            ready: "Ready", tasksCount: "tasks", rawJson: "Raw JSON", prompt: "Prompt",
+            backToTasks: "Back to Tasks", loading: "Loading...", copied: "Copied!",
+            currentTurn: "Current Turn", lines: "lines", connected: "Connected",
+        },
+        "es": {
+            tasks: "Tareas", newTask: "Nueva Tarea", refresh: "Actualizar", openCodex: "Abrir Codex",
+            theme: "Tema", language: "Idioma", autoRefresh: "Auto-actualizar", nerdMode: "Modo Nerd",
+            noTasks: "No se encontraron tareas", view: "Ver", getPatch: "Obtener Parche", archive: "Archivar",
+            untitledTask: "Tarea sin título", noRepo: "Sin repo", details: "Detalles", turns: "Turnos",
+            patch: "Parche", createPR: "Crear PR", selectTask: "Selecciona una tarea para ver detalles",
+            ready: "Listo", tasksCount: "tareas", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Volver", loading: "Cargando...", copied: "¡Copiado!",
+            currentTurn: "Turno Actual", lines: "líneas", connected: "Conectado",
+        },
+        "fr": {
+            tasks: "Tâches", newTask: "Nouvelle Tâche", refresh: "Rafraîchir", openCodex: "Ouvrir Codex",
+            theme: "Thème", language: "Langue", autoRefresh: "Auto-rafraîchir", nerdMode: "Mode Nerd",
+            noTasks: "Aucune tâche trouvée", view: "Voir", getPatch: "Obtenir Patch", archive: "Archiver",
+            untitledTask: "Tâche sans titre", noRepo: "Pas de repo", details: "Détails", turns: "Tours",
+            patch: "Patch", createPR: "Créer PR", selectTask: "Sélectionnez une tâche",
+            ready: "Prêt", tasksCount: "tâches", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Retour", loading: "Chargement...", copied: "Copié!",
+            currentTurn: "Tour Actuel", lines: "lignes", connected: "Connecté",
+        },
+        "de": {
+            tasks: "Aufgaben", newTask: "Neue Aufgabe", refresh: "Aktualisieren", openCodex: "Codex öffnen",
+            theme: "Thema", language: "Sprache", autoRefresh: "Auto-Aktualisieren", nerdMode: "Nerd-Modus",
+            noTasks: "Keine Aufgaben gefunden", view: "Ansehen", getPatch: "Patch holen", archive: "Archivieren",
+            untitledTask: "Unbenannte Aufgabe", noRepo: "Kein Repo", details: "Details", turns: "Runden",
+            patch: "Patch", createPR: "PR erstellen", selectTask: "Aufgabe auswählen",
+            ready: "Bereit", tasksCount: "Aufgaben", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Zurück", loading: "Laden...", copied: "Kopiert!",
+            currentTurn: "Aktuelle Runde", lines: "Zeilen", connected: "Verbunden",
+        },
+        "ja": {
+            tasks: "タスク", newTask: "新規タスク", refresh: "更新", openCodex: "Codexを開く",
+            theme: "テーマ", language: "言語", autoRefresh: "自動更新", nerdMode: "ナードモード",
+            noTasks: "タスクがありません", view: "表示", getPatch: "パッチ取得", archive: "アーカイブ",
+            untitledTask: "無題のタスク", noRepo: "リポジトリなし", details: "詳細", turns: "ターン",
+            patch: "パッチ", createPR: "PR作成", selectTask: "タスクを選択してください",
+            ready: "準備完了", tasksCount: "タスク", rawJson: "JSON", prompt: "プロンプト",
+            backToTasks: "戻る", loading: "読み込み中...", copied: "コピー完了!",
+            currentTurn: "現在のターン", lines: "行", connected: "接続済み",
+        },
+        "zh": {
+            tasks: "任务", newTask: "新任务", refresh: "刷新", openCodex: "打开Codex",
+            theme: "主题", language: "语言", autoRefresh: "自动刷新", nerdMode: "极客模式",
+            noTasks: "未找到任务", view: "查看", getPatch: "获取补丁", archive: "归档",
+            untitledTask: "无标题任务", noRepo: "无仓库", details: "详情", turns: "轮次",
+            patch: "补丁", createPR: "创建PR", selectTask: "选择任务查看详情",
+            ready: "就绪", tasksCount: "个任务", rawJson: "JSON", prompt: "提示",
+            backToTasks: "返回", loading: "加载中...", copied: "已复制!",
+            currentTurn: "当前轮次", lines: "行", connected: "已连接",
+        },
+        "ko": {
+            tasks: "작업", newTask: "새 작업", refresh: "새로고침", openCodex: "Codex 열기",
+            theme: "테마", language: "언어", autoRefresh: "자동 새로고침", nerdMode: "너드 모드",
+            noTasks: "작업 없음", view: "보기", getPatch: "패치 가져오기", archive: "보관",
+            untitledTask: "제목 없는 작업", noRepo: "저장소 없음", details: "상세", turns: "턴",
+            patch: "패치", createPR: "PR 생성", selectTask: "작업을 선택하세요",
+            ready: "준비됨", tasksCount: "개 작업", rawJson: "JSON", prompt: "프롬프트",
+            backToTasks: "돌아가기", loading: "로딩 중...", copied: "복사됨!",
+            currentTurn: "현재 턴", lines: "줄", connected: "연결됨",
+        },
+        "ru": {
+            tasks: "Задачи", newTask: "Новая задача", refresh: "Обновить", openCodex: "Открыть Codex",
+            theme: "Тема", language: "Язык", autoRefresh: "Автообновление", nerdMode: "Режим гика",
+            noTasks: "Задачи не найдены", view: "Просмотр", getPatch: "Получить патч", archive: "Архивировать",
+            untitledTask: "Без названия", noRepo: "Нет репо", details: "Детали", turns: "Ходы",
+            patch: "Патч", createPR: "Создать PR", selectTask: "Выберите задачу",
+            ready: "Готово", tasksCount: "задач", rawJson: "JSON", prompt: "Промпт",
+            backToTasks: "Назад", loading: "Загрузка...", copied: "Скопировано!",
+            currentTurn: "Текущий ход", lines: "строк", connected: "Подключено",
+        },
+        "ar": {
+            tasks: "المهام", newTask: "مهمة جديدة", refresh: "تحديث", openCodex: "فتح Codex",
+            theme: "المظهر", language: "اللغة", autoRefresh: "تحديث تلقائي", nerdMode: "وضع المطور",
+            noTasks: "لا توجد مهام", view: "عرض", getPatch: "الحصول على التصحيح", archive: "أرشفة",
+            untitledTask: "مهمة بدون عنوان", noRepo: "لا يوجد مستودع", details: "التفاصيل", turns: "الأدوار",
+            patch: "التصحيح", createPR: "إنشاء PR", selectTask: "اختر مهمة",
+            ready: "جاهز", tasksCount: "مهام", rawJson: "JSON", prompt: "طلب",
+            backToTasks: "عودة", loading: "جاري التحميل...", copied: "تم النسخ!",
+            currentTurn: "الدور الحالي", lines: "سطور", connected: "متصل",
+        },
+        "hi": {
+            tasks: "कार्य", newTask: "नया कार्य", refresh: "रिफ्रेश", openCodex: "Codex खोलें",
+            theme: "थीम", language: "भाषा", autoRefresh: "ऑटो-रिफ्रेश", nerdMode: "नर्ड मोड",
+            noTasks: "कोई कार्य नहीं", view: "देखें", getPatch: "पैच प्राप्त करें", archive: "संग्रहित करें",
+            untitledTask: "शीर्षकहीन कार्य", noRepo: "कोई रेपो नहीं", details: "विवरण", turns: "टर्न",
+            patch: "पैच", createPR: "PR बनाएं", selectTask: "कार्य चुनें",
+            ready: "तैयार", tasksCount: "कार्य", rawJson: "JSON", prompt: "प्रॉम्प्ट",
+            backToTasks: "वापस", loading: "लोड हो रहा है...", copied: "कॉपी किया!",
+            currentTurn: "वर्तमान टर्न", lines: "पंक्तियाँ", connected: "जुड़ा हुआ",
+        },
+        "pt": {
+            tasks: "Tarefas", newTask: "Nova Tarefa", refresh: "Atualizar", openCodex: "Abrir Codex",
+            theme: "Tema", language: "Idioma", autoRefresh: "Atualização automática", nerdMode: "Modo Nerd",
+            noTasks: "Nenhuma tarefa encontrada", view: "Ver", getPatch: "Obter Patch", archive: "Arquivar",
+            untitledTask: "Tarefa sem título", noRepo: "Sem repo", details: "Detalhes", turns: "Turnos",
+            patch: "Patch", createPR: "Criar PR", selectTask: "Selecione uma tarefa",
+            ready: "Pronto", tasksCount: "tarefas", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Voltar", loading: "Carregando...", copied: "Copiado!",
+            currentTurn: "Turno Atual", lines: "linhas", connected: "Conectado",
+        },
+        "it": {
+            tasks: "Attività", newTask: "Nuova Attività", refresh: "Aggiorna", openCodex: "Apri Codex",
+            theme: "Tema", language: "Lingua", autoRefresh: "Aggiornamento auto", nerdMode: "Modalità Nerd",
+            noTasks: "Nessuna attività trovata", view: "Visualizza", getPatch: "Ottieni Patch", archive: "Archivia",
+            untitledTask: "Attività senza titolo", noRepo: "Nessun repo", details: "Dettagli", turns: "Turni",
+            patch: "Patch", createPR: "Crea PR", selectTask: "Seleziona un\'attività",
+            ready: "Pronto", tasksCount: "attività", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Indietro", loading: "Caricamento...", copied: "Copiato!",
+            currentTurn: "Turno Corrente", lines: "righe", connected: "Connesso",
+        },
+        "nl": {
+            tasks: "Taken", newTask: "Nieuwe Taak", refresh: "Vernieuwen", openCodex: "Open Codex",
+            theme: "Thema", language: "Taal", autoRefresh: "Auto-vernieuwen", nerdMode: "Nerd Modus",
+            noTasks: "Geen taken gevonden", view: "Bekijken", getPatch: "Patch Ophalen", archive: "Archiveren",
+            untitledTask: "Naamloze Taak", noRepo: "Geen repo", details: "Details", turns: "Beurten",
+            patch: "Patch", createPR: "Maak PR", selectTask: "Selecteer een taak",
+            ready: "Gereed", tasksCount: "taken", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Terug", loading: "Laden...", copied: "Gekopieerd!",
+            currentTurn: "Huidige Beurt", lines: "regels", connected: "Verbonden",
+        },
+        "pl": {
+            tasks: "Zadania", newTask: "Nowe Zadanie", refresh: "Odśwież", openCodex: "Otwórz Codex",
+            theme: "Motyw", language: "Język", autoRefresh: "Auto-odświeżanie", nerdMode: "Tryb Nerd",
+            noTasks: "Nie znaleziono zadań", view: "Zobacz", getPatch: "Pobierz Łatkę", archive: "Archiwizuj",
+            untitledTask: "Zadanie bez tytułu", noRepo: "Brak repo", details: "Szczegóły", turns: "Tury",
+            patch: "Łatka", createPR: "Utwórz PR", selectTask: "Wybierz zadanie",
+            ready: "Gotowe", tasksCount: "zadań", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Wróć", loading: "Ładowanie...", copied: "Skopiowano!",
+            currentTurn: "Bieżąca Tura", lines: "linii", connected: "Połączono",
+        },
+        "sv": {
+            tasks: "Uppgifter", newTask: "Ny Uppgift", refresh: "Uppdatera", openCodex: "Öppna Codex",
+            theme: "Tema", language: "Språk", autoRefresh: "Auto-uppdatera", nerdMode: "Nördläge",
+            noTasks: "Inga uppgifter hittades", view: "Visa", getPatch: "Hämta Patch", archive: "Arkivera",
+            untitledTask: "Namnlös Uppgift", noRepo: "Inget repo", details: "Detaljer", turns: "Omgångar",
+            patch: "Patch", createPR: "Skapa PR", selectTask: "Välj en uppgift",
+            ready: "Redo", tasksCount: "uppgifter", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Tillbaka", loading: "Laddar...", copied: "Kopierat!",
+            currentTurn: "Aktuell Omgång", lines: "rader", connected: "Ansluten",
+        },
+        "tr": {
+            tasks: "Görevler", newTask: "Yeni Görev", refresh: "Yenile", openCodex: "Codex Aç",
+            theme: "Tema", language: "Dil", autoRefresh: "Otomatik yenile", nerdMode: "Geek Modu",
+            noTasks: "Görev bulunamadı", view: "Görüntüle", getPatch: "Yama Al", archive: "Arşivle",
+            untitledTask: "Başlıksız Görev", noRepo: "Repo yok", details: "Detaylar", turns: "Turlar",
+            patch: "Yama", createPR: "PR Oluştur", selectTask: "Görev seçin",
+            ready: "Hazır", tasksCount: "görev", rawJson: "JSON", prompt: "İstem",
+            backToTasks: "Geri", loading: "Yükleniyor...", copied: "Kopyalandı!",
+            currentTurn: "Mevcut Tur", lines: "satır", connected: "Bağlı",
+        },
+        "uk": {
+            tasks: "Завдання", newTask: "Нове завдання", refresh: "Оновити", openCodex: "Відкрити Codex",
+            theme: "Тема", language: "Мова", autoRefresh: "Автооновлення", nerdMode: "Режим гіка",
+            noTasks: "Завдання не знайдено", view: "Переглянути", getPatch: "Отримати патч", archive: "Архівувати",
+            untitledTask: "Без назви", noRepo: "Немає репо", details: "Деталі", turns: "Ходи",
+            patch: "Патч", createPR: "Створити PR", selectTask: "Оберіть завдання",
+            ready: "Готово", tasksCount: "завдань", rawJson: "JSON", prompt: "Промпт",
+            backToTasks: "Назад", loading: "Завантаження...", copied: "Скопійовано!",
+            currentTurn: "Поточний хід", lines: "рядків", connected: "Підключено",
+        },
+        "vi": {
+            tasks: "Nhiệm vụ", newTask: "Nhiệm vụ mới", refresh: "Làm mới", openCodex: "Mở Codex",
+            theme: "Giao diện", language: "Ngôn ngữ", autoRefresh: "Tự động làm mới", nerdMode: "Chế độ Nerd",
+            noTasks: "Không có nhiệm vụ", view: "Xem", getPatch: "Lấy Patch", archive: "Lưu trữ",
+            untitledTask: "Chưa đặt tên", noRepo: "Không có repo", details: "Chi tiết", turns: "Lượt",
+            patch: "Patch", createPR: "Tạo PR", selectTask: "Chọn nhiệm vụ",
+            ready: "Sẵn sàng", tasksCount: "nhiệm vụ", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "Quay lại", loading: "Đang tải...", copied: "Đã sao chép!",
+            currentTurn: "Lượt hiện tại", lines: "dòng", connected: "Đã kết nối",
+        },
+        "th": {
+            tasks: "งาน", newTask: "งานใหม่", refresh: "รีเฟรช", openCodex: "เปิด Codex",
+            theme: "ธีม", language: "ภาษา", autoRefresh: "รีเฟรชอัตโนมัติ", nerdMode: "โหมดเนิร์ด",
+            noTasks: "ไม่พบงาน", view: "ดู", getPatch: "รับ Patch", archive: "เก็บถาวร",
+            untitledTask: "งานไม่มีชื่อ", noRepo: "ไม่มี repo", details: "รายละเอียด", turns: "เทิร์น",
+            patch: "Patch", createPR: "สร้าง PR", selectTask: "เลือกงาน",
+            ready: "พร้อม", tasksCount: "งาน", rawJson: "JSON", prompt: "Prompt",
+            backToTasks: "กลับ", loading: "กำลังโหลด...", copied: "คัดลอกแล้ว!",
+            currentTurn: "เทิร์นปัจจุบัน", lines: "บรรทัด", connected: "เชื่อมต่อแล้ว",
+        },
+    })
+    
+    function getTranslations(langId) {
+        return allTranslations[langId] || allTranslations["en"]
+    }
+    
+    function getLanguageFlag(langId) {
+        var flags = {
+            "en": "🇺🇸", "es": "🇪🇸", "fr": "🇫🇷", "de": "🇩🇪", "ja": "🇯🇵",
+            "zh": "🇨🇳", "ko": "🇰🇷", "ru": "🇷🇺", "ar": "🇸🇦", "hi": "🇮🇳",
+            "pt": "🇧🇷", "it": "🇮🇹", "nl": "🇳🇱", "pl": "🇵🇱", "sv": "🇸🇪",
+            "tr": "🇹🇷", "uk": "🇺🇦", "vi": "🇻🇳", "th": "🇹🇭"
+        }
+        return flags[langId] || "🌐"
+    }
     
     // Theme definitions
     readonly property var allThemes: ({
@@ -168,6 +380,10 @@ ApplicationWindow {
             currentTheme = themeId
             themeColors = getThemeColors(themeId)
         }
+        function onLanguageChanged(langId) {
+            currentLanguage = langId
+            tr = getTranslations(langId)
+        }
     }
     
     Component.onCompleted: {
@@ -177,6 +393,12 @@ ApplicationWindow {
         if (saved) {
             currentTheme = saved
             themeColors = getThemeColors(saved)
+        }
+        // Load saved language
+        var savedLang = app.getSavedLanguage()
+        if (savedLang) {
+            currentLanguage = savedLang
+            tr = getTranslations(savedLang)
         }
     }
     
@@ -198,7 +420,7 @@ ApplicationWindow {
                 spacing: 8
                 
                 ToolButton {
-                    text: "↻ Refresh"
+                    text: "↻ " + tr.refresh
                     onClicked: app.loadTasks()
                     
                     contentItem: Text {
@@ -212,14 +434,14 @@ ApplicationWindow {
                 ToolSeparator {}
                 
                 ToolButton {
-                    text: "✨ New Task"
+                    text: "✨ " + tr.newTask
                     highlighted: true
                     onClicked: {
                         app.loadEnvironments()
                         sendPromptDialog.open()
                     }
                     ToolTip.visible: hovered
-                    ToolTip.text: "Create a new Codex task with a prompt"
+                    ToolTip.text: tr.newTask
                     
                     background: Rectangle {
                         color: themeColors.accent
@@ -234,10 +456,10 @@ ApplicationWindow {
                 }
                 
                 ToolButton {
-                    text: "🌐 Open Codex"
+                    text: "🌐 " + tr.openCodex
                     onClicked: app.openCodexBrowser()
                     ToolTip.visible: hovered
-                    ToolTip.text: "Open Codex web interface"
+                    ToolTip.text: tr.openCodex
                     
                     contentItem: Text {
                         text: parent.text
@@ -249,16 +471,47 @@ ApplicationWindow {
                 
                 Item { Layout.fillWidth: true }
                 
-                // Theme selector button
+                // Language selector button
                 ToolButton {
-                    id: themeButton
-                    text: getThemeIcon(currentTheme) + " Theme"
-                    onClicked: themeSelector.open()
+                    id: languageButton
+                    text: getLanguageFlag(currentLanguage)
+                    onClicked: languageSelector.open()
                     ToolTip.visible: hovered
-                    ToolTip.text: "Change theme (Ctrl+T)"
+                    ToolTip.text: tr.language
                     
                     contentItem: Text {
                         text: parent.text
+                        font.pixelSize: 16
+                        color: themeColors.windowText
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    LanguageSelector {
+                        id: languageSelector
+                        x: -width + parent.width
+                        y: parent.height + 4
+                        currentLanguage: window.currentLanguage
+                        
+                        onLanguageSelected: function(langId) {
+                            window.currentLanguage = langId
+                            window.tr = getTranslations(langId)
+                            app.setLanguage(langId)
+                        }
+                    }
+                }
+                
+                // Theme selector button
+                ToolButton {
+                    id: themeButton
+                    text: getThemeIcon(currentTheme)
+                    onClicked: themeSelector.open()
+                    ToolTip.visible: hovered
+                    ToolTip.text: tr.theme + " (Ctrl+T)"
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 16
                         color: themeColors.windowText
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -282,7 +535,7 @@ ApplicationWindow {
                 
                 Switch {
                     id: autoRefresh
-                    text: "Auto-refresh"
+                    text: tr.autoRefresh
                     onCheckedChanged: app.setPolling(checked)
                     
                     contentItem: Text {
@@ -297,12 +550,12 @@ ApplicationWindow {
                 
                 ToolButton {
                     id: nerdModeButton
-                    text: nerdMode ? "🤓 Nerd" : "🤓"
+                    text: nerdMode ? "🤓 " + tr.nerdMode : "🤓"
                     checkable: true
                     checked: nerdMode
                     onCheckedChanged: app.setNerdMode(checked)
                     ToolTip.visible: hovered
-                    ToolTip.text: "Toggle Nerd Mode (Ctrl+`)"
+                    ToolTip.text: tr.nerdMode + " (Ctrl+`)"
                     
                     background: Rectangle {
                         color: nerdMode ? themeColors.codeBackground : "transparent"
@@ -347,7 +600,7 @@ ApplicationWindow {
                             Layout.fillWidth: true
                             
                             Label {
-                                text: "Tasks"
+                                text: tr.tasks
                                 font.bold: true
                                 font.pixelSize: 16
                                 color: themeColors.windowText
@@ -356,7 +609,7 @@ ApplicationWindow {
                             Item { Layout.fillWidth: true }
                             
                             Label {
-                                text: taskList.count + " tasks"
+                                text: taskList.count + " " + tr.tasksCount
                                 opacity: 0.6
                                 font.pixelSize: 12
                                 color: themeColors.windowText
