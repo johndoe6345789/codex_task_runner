@@ -393,7 +393,6 @@ ApplicationWindow {
     
     // Status bar message
     property string statusText: "Ready"
-    property bool nerdMode: false
     property bool isLoading: false
     
     Connections {
