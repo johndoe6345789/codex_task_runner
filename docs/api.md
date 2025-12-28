@@ -4,6 +4,12 @@ This file summarizes the main public modules and functions.
 
 ## Handlers (`src/codex_task_runner/handlers/`)
 
+### `prompt.py`
+- `handle(args, session) -> dict`: Create new Codex task from prompt
+  - Sends prompt to Codex API via `POST /wham/tasks`
+  - Auto-detects environment if not specified
+  - Returns created task details
+
 ### `yolo.py`
 - `handle(args, session) -> dict`: Full automation mode
   - Fetches tasks from Codex API
@@ -32,6 +38,10 @@ This file summarizes the main public modules and functions.
 
 ### `codex_create_pr.py`
 - `create_pr_for_turn(session, task_id, turn_id) -> dict`: Create PR via Codex API
+
+### `codex_create_task.py`
+- `create_task(session, prompt, env_id, branch, best_of) -> dict`: Create new task via Codex API
+- `get_default_environment(session) -> str | None`: Get most recently used environment ID
 
 ### `json_get.py` / `json_post.py`
 - HTTP helpers with debug logging

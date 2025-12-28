@@ -4,6 +4,7 @@ CLI tool for automating Codex Cloud tasks: fetch tasks, create PRs via Codex API
 
 ## Features
 
+- **prompt**: Send a prompt to Codex to create a new task (aliases: `send`, `new`)
 - **yolo mode**: Full automation - creates PRs for tasks without them, then merges all
 - **run**: Process tasks from Codex API with merge options
 - **ping**: Test Codex API connectivity
@@ -120,6 +121,26 @@ codex-task-runner run --yolo             # Auto-merge without prompts
 codex-task-runner run --dry-run          # Show what would happen
 codex-task-runner run --require-checks   # Only merge if CI passes
 ```
+
+### prompt - Create New Tasks
+
+Send prompts directly to Codex to create new tasks:
+
+```bash
+codex-runner prompt "Add dark mode toggle to settings"  # Create task with prompt
+codex-runner prompt "Fix login bug" --branch develop    # Target specific branch
+codex-runner prompt "Refactor API" --env-id <id>        # Use specific environment
+codex-runner prompt "Add tests" --best-of 3             # Generate multiple responses
+
+# Aliases
+codex-runner send "Add feature X"
+codex-runner new "Implement Y"
+```
+
+Options:
+- `--env-id`: Environment ID (defaults to most recently used)
+- `--branch`: Target branch (default: main)
+- `--best-of`: Number of responses to generate (default: 1)
 
 ### Other Commands
 

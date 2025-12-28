@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Codex - HTML Selectors Reference</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --fg: #c9d1d9;
+            --accent: #58a6ff;
+            --accent-muted: #388bfd;
+            --border: #30363d;
+            --card-bg: #161b22;
+            --success: #3fb950;
+            --warning: #d29922;
+            --code-bg: #1f2428;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.6;
+            margin: 0;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 {
+            color: var(--fg);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            color: #8b949e;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        .section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .section h2 {
+            margin-top: 0;
+            border: none;
+            font-size: 1.3rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--code-bg);
+            font-weight: 600;
+        }
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+        pre {
+            background: var(--code-bg);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+        pre code {
+            padding: 0;
+            background: none;
+        }
+        .selector {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            color: var(--accent);
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.1rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .tag-stable { background: var(--success); color: #000; }
+        .tag-fragile { background: var(--warning); color: #000; }
+        .tag-recommended { background: var(--accent); color: #000; }
+        .note {
+            background: #1a2332;
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .note-warning {
+            border-left-color: var(--warning);
+            background: #2d2a1f;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .toc {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .toc h3 {
+            margin: 0 0 0.5rem 0;
+            border: none;
+            font-size: 1rem;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        .toc li {
+            margin: 0.3rem 0;
+        }
+        .example-box {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .example-header {
+            background: var(--border);
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 6px 6px 0 0;
+        }
+        .example-body {
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 ChatGPT Codex - HTML Selectors Reference</h1>
+        <p class="subtitle">Documented selectors for browser automation (Playwright, Puppeteer, Selenium)</p>
+
+        <nav class="toc">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#prompt-input">Prompt Input</a></li>
+                <li><a href="#submit-button">Submit Button</a></li>
+                <li><a href="#task-list">Task List</a></li>
+                <li><a href="#task-detail">Task Detail View</a></li>
+                <li><a href="#navigation">Navigation Elements</a></li>
+                <li><a href="#modals">Modals &amp; Dialogs</a></li>
+                <li><a href="#playwright">Playwright Examples</a></li>
+            </ul>
+        </nav>
+
+        <section class="section" id="overview">
+            <h2>📋 Overview</h2>
+            <p>
+                The ChatGPT Codex UI (<code>https://chatgpt.com/codex/</code>) uses React with dynamically generated class names.
+                This means CSS class selectors are <strong>fragile</strong> and will break between deployments.
+            </p>
+            <div class="note note-warning">
+                <strong>⚠️ Warning:</strong> Prefer selectors in this order of stability:
+                <ol>
+                    <li><code>aria-label</code> - Most stable (accessibility attributes rarely change)</li>
+                    <li><code>data-testid</code> - Stable when present (intended for testing)</li>
+                    <li><code>name</code> attribute - Fairly stable for form elements</li>
+                    <li>Semantic element combinations - e.g. <code>button:has-text("Submit")</code></li>
+                    <li>CSS classes - <strong>Avoid!</strong> Generated names like <code>.css-1a2b3c</code> change frequently</li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="section" id="prompt-input">
+            <h2>💬 Prompt Input</h2>
+            <p>The main text input for entering Codex task prompts.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Selector</th>
+                        <th>Type</th>
+                        <th>Stability</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code class="selector">.ProseMirror</code></td>
+                        <td>class</td>
+                        <td><span class="tag tag-recommended">Recommended</span></td>
+                        <td>The visible contenteditable editor. ProseMirror is the library name, unlikely to change.</td>
+                    </tr>
+                    <tr>
+                        <td><code class="selector">[contenteditable="true"]</code></td>
+                        <td>attr</td>
+                        <td><span class="tag tag-stable">Stable</span></td>
+                        <td>Generic but reliable. May match multiple elements.</td>
+                    </tr>
+                    <tr>
+                        <td><code class="selector">textarea[name="prompt-textarea"]</code></td>
+                        <td>name</td>
+                        <td><span class="tag tag-stable">Stable</span></td>
+                        <td>Hidden textarea that syncs with ProseMirror. May not be visible.</td>
+                    </tr>
+                    <tr>
+                        <td><code class="selector">#prompt-textarea</code></td>
+                        <td>id</td>
+                        <td><span class="tag tag-stable">Stable</span></td>
+                        <td>Hidden textarea by ID.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-box">
+                <div class="example-header">Playwright - Type in prompt</div>
+                <div class="example-body">
+<pre><code>// Best approach - use ProseMirror editor directly
+const editor = page.locator('.ProseMirror');
+await editor.click();
+await page.keyboard.type('Add unit tests for the auth module');
+
+// Alternative - fill hidden textarea
+await page.fill('textarea[name="prompt-textarea"]', 'Your prompt here');</code></pre>
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>💡 Tip:</strong> ProseMirror is a contenteditable div, not a real textarea.
+                Use <code>keyboard.type()</code> instead of <code>fill()</code> for more reliable input.
+            </div>
+        </section>
+
+        <section class="section" id="submit-button">
+            <h2>🚀 Submit Button</h2>
+            <p>The button to submit a prompt and create a new task.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Selector</th>
+                        <th>Type</th>
+                        <th>Stability</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code class="selector">button[aria-label="Submit"]</code></td>
+                        <td>aria</td>
+                        <td><span class="tag tag-recommended">Recommended</span></td>
+                        <td>Most reliable - accessibility labels are stable.</td>
+                    </tr>
+                    <tr>
+                        <td><code class="selector">button[data-testid="send-button"]</code></td>
+                        <td>testid</td>
+                        <td><span class="tag tag-stable">Stable</span></td>
+                        <td>Test ID if present. Check current page.</td>
+                    </tr>
+                    <tr>
+                        <td><code class="selector">button:has(svg)</code></td>
+                        <td>structure</td>
+                        <td><span class="tag tag-fragile">Fragile</span></td>
+                        <td>The submit button contains an arrow SVG icon.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-box">
+                <div class="example-header">Playwright - Submit prompt</div>
+                <div class="example-body">
+<pre><code>// Click submit button
+await page.click('button[aria-label="Submit"]');
+
+// Alternative: press Enter in the editor
+await page.keyboard.press('Enter');
+
+// Or Ctrl+Enter for explicit submit
+await page.keyboard.press('Control+Enter');</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="task-list">
+            <h2>📝 Task List</h2>
+            <p>The sidebar/main area showing list of tasks.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Selector</th>
+                        <th>Type</th>
+                        <th>Stability</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code class="selector">a[href^="/codex/tasks/"]</code></td>
+                        <td>href</td>
+                        <td><span class="tag tag-recommended">Recommended</span></td>
+                        <td>Links to individual tasks. The href pattern is stable.</td>
+                    </tr>
+                    <tr>
+                        <td><code class="selector">[data-testid="task-item"]</code></td>
+                        <td>testid</td>
+                        <td><span class="tag tag-stable">Stable</span></td>
+                        <td>Individual task item if testid present.</td>
+                    </tr>
+                    <tr>
+                        <td><code class="selector">nav a[href="/codex/"]</code></td>
+                        <td>href</td>
+                        <td><span class="tag tag-stable">Stable</span></td>
+                        <td>Link back to task list from detail view.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-box">
+                <div class="example-header">Playwright - Get task list</div>
+                <div class="example-body">
+<pre><code>// Get all task links
+const taskLinks = await page.locator('a[href^="/codex/tasks/"]').all();
+
+// Extract task IDs
+for (const link of taskLinks) {
+    const href = await link.getAttribute('href');
+    const taskId = href.split('/tasks/')[1];
+    const title = await link.textContent();
+    console.log(`${taskId}: ${title}`);
+}
+
+// Click on first task
+await page.click('a[href^="/codex/tasks/"]:first-child');</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="task-detail">
+            <h2>🔍 Task Detail View</h2>
+            <p>Elements visible when viewing a specific task.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Selector</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Create PR button</td>
+                        <td><code class="selector">button:has-text("Create PR")</code></td>
+                        <td>Creates pull request for current turn.</td>
+                    </tr>
+                    <tr>
+                        <td>Archive button</td>
+                        <td><code class="selector">button[aria-label="Archive"]</code></td>
+                        <td>Archives the task.</td>
+                    </tr>
+                    <tr>
+                        <td>Code diff</td>
+                        <td><code class="selector">pre code</code></td>
+                        <td>Code blocks in the diff view.</td>
+                    </tr>
+                    <tr>
+                        <td>File tree</td>
+                        <td><code class="selector">[role="tree"]</code></td>
+                        <td>File change tree structure.</td>
+                    </tr>
+                    <tr>
+                        <td>File item</td>
+                        <td><code class="selector">[role="treeitem"]</code></td>
+                        <td>Individual file in change tree.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="navigation">
+            <h2>🧭 Navigation Elements</h2>
+            <p>Top-level navigation and UI chrome.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Selector</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>New Task button</td>
+                        <td><code class="selector">button:has-text("New task")</code></td>
+                        <td>Opens new task composer.</td>
+                    </tr>
+                    <tr>
+                        <td>Sidebar toggle</td>
+                        <td><code class="selector">button[aria-label="Toggle sidebar"]</code></td>
+                        <td>Opens/closes task sidebar.</td>
+                    </tr>
+                    <tr>
+                        <td>User menu</td>
+                        <td><code class="selector">button[aria-label="User menu"]</code></td>
+                        <td>Account dropdown.</td>
+                    </tr>
+                    <tr>
+                        <td>Settings link</td>
+                        <td><code class="selector">a[href="/codex/settings"]</code></td>
+                        <td>Link to settings page.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="modals">
+            <h2>🪟 Modals &amp; Dialogs</h2>
+            <p>Popup dialogs and modal windows.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Selector</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Modal overlay</td>
+                        <td><code class="selector">[role="dialog"]</code></td>
+                        <td>Generic modal container.</td>
+                    </tr>
+                    <tr>
+                        <td>Modal close</td>
+                        <td><code class="selector">button[aria-label="Close"]</code></td>
+                        <td>Close button in modals.</td>
+                    </tr>
+                    <tr>
+                        <td>Confirm button</td>
+                        <td><code class="selector">[role="dialog"] button:has-text("Confirm")</code></td>
+                        <td>Confirmation button in dialogs.</td>
+                    </tr>
+                    <tr>
+                        <td>Cancel button</td>
+                        <td><code class="selector">[role="dialog"] button:has-text("Cancel")</code></td>
+                        <td>Cancel button in dialogs.</td>
+                    </tr>
+                    <tr>
+                        <td>Environment picker</td>
+                        <td><code class="selector">[role="listbox"]</code></td>
+                        <td>Dropdown for selecting environment/repo.</td>
+                    </tr>
+                    <tr>
+                        <td>Environment option</td>
+                        <td><code class="selector">[role="option"]</code></td>
+                        <td>Individual environment option.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="playwright">
+            <h2>🎭 Complete Playwright Examples</h2>
+
+            <div class="example-box">
+                <div class="example-header">Full task creation flow</div>
+                <div class="example-body">
+<pre><code>import { chromium } from 'playwright';
+
+async function createCodexTask(prompt: string) {
+    const browser = await chromium.launch({ headless: false });
+    const context = await browser.newContext();
+    
+    // Load cookies from your session
+    await context.addCookies(yourCookies);
+    
+    const page = await context.newPage();
+    await page.goto('https://chatgpt.com/codex/');
+    
+    // Wait for editor to load
+    await page.waitForSelector('.ProseMirror');
+    
+    // Type the prompt
+    const editor = page.locator('.ProseMirror');
+    await editor.click();
+    await page.keyboard.type(prompt);
+    
+    // Submit
+    await page.click('button[aria-label="Submit"]');
+    
+    // Wait for task to appear
+    await page.waitForSelector('a[href^="/codex/tasks/"]');
+    
+    // Get the new task link
+    const taskLink = await page.locator('a[href^="/codex/tasks/"]').first();
+    const taskUrl = await taskLink.getAttribute('href');
+    const taskId = taskUrl?.split('/tasks/')[1];
+    
+    console.log(`Created task: ${taskId}`);
+    
+    await browser.close();
+    return taskId;
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <div class="example-header">Intercept API requests</div>
+                <div class="example-body">
+<pre><code>// Route interception to capture task creation request
+await page.route('**/backend-api/wham/tasks', async (route) => {
+    const request = route.request();
+    
+    if (request.method() === 'POST') {
+        const postData = request.postDataJSON();
+        console.log('Task creation payload:', postData);
+        
+        // Continue with original request
+        await route.continue();
+    } else {
+        await route.continue();
+    }
+});
+
+// Or capture response
+page.on('response', async (response) => {
+    if (response.url().includes('/wham/tasks') && 
+        response.request().method() === 'POST') {
+        const body = await response.json();
+        console.log('Created task:', body);
+    }
+});</code></pre>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <div class="example-header">Wait for task completion</div>
+                <div class="example-body">
+<pre><code>// Wait for task to show "completed" state
+await page.waitForFunction(() => {
+    const status = document.querySelector('[data-status]');
+    return status?.getAttribute('data-status') === 'completed';
+}, { timeout: 120000 });
+
+// Or poll the API directly
+async function waitForTaskComplete(taskId: string) {
+    while (true) {
+        const resp = await fetch(
+            `https://chatgpt.com/backend-api/wham/tasks/${taskId}`,
+            { headers: { 'Authorization': `Bearer ${token}` }}
+        );
+        const task = await resp.json();
+        
+        if (task.status === 'completed') {
+            return task;
+        }
+        await new Promise(r => setTimeout(r, 5000));
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🔗 API Endpoints Reference</h2>
+            <p>For complete API documentation, see: <a href="codex_endpoints.md">codex_endpoints.md</a></p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/backend-api/wham/tasks</code></td>
+                        <td>POST</td>
+                        <td>Create new task (send prompt)</td>
+                    </tr>
+                    <tr>
+                        <td><code>/backend-api/wham/tasks/list</code></td>
+                        <td>GET</td>
+                        <td>List tasks</td>
+                    </tr>
+                    <tr>
+                        <td><code>/backend-api/wham/tasks/{id}</code></td>
+                        <td>GET</td>
+                        <td>Get task detail</td>
+                    </tr>
+                    <tr>
+                        <td><code>/backend-api/wham/tasks/{id}/turns</code></td>
+                        <td>GET</td>
+                        <td>Get task turns</td>
+                    </tr>
+                    <tr>
+                        <td><code>/backend-api/wham/tasks/{id}/turns/{turn}/pr</code></td>
+                        <td>POST</td>
+                        <td>Create PR for turn</td>
+                    </tr>
+                    <tr>
+                        <td><code>/backend-api/wham/environments/recent</code></td>
+                        <td>GET</td>
+                        <td>Get recent environments</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: #8b949e; text-align: center;">
+            <p>Generated for <strong>codex-task-runner</strong> • Last updated: December 2025</p>
+            <p>
+                <a href="https://github.com/sandover/obi">GitHub</a> •
+                <a href="api.md">API Docs</a> •
+                <a href="codex_endpoints.md">Endpoints</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

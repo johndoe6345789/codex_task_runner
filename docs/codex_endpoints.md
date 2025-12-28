@@ -10,6 +10,7 @@ The entries below are best-effort documentation based on client fetch traces, Pl
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/wham/tasks/list?limit=N&task_filter=current\|archived\|all` | List tasks |
+| POST | `/wham/tasks` | Create new task (send prompt) |
 | GET | `/wham/tasks/{task_id}` | Task detail |
 | POST | `/wham/tasks/{task_id}/archive` | Archive a task |
 | GET | `/wham/tasks/{task_id}/turns` | List turns for a task |
@@ -421,56 +422,107 @@ This endpoint moves a task from the active/current task list to the archived lis
 
 ---
 
-## Task Creation (WebSocket-based)
+## Task Creation (REST API)
 
-**Important:** Task creation does NOT use a REST endpoint. It uses WebSocket communication, similar to ChatGPT's conversation streaming.
+**Endpoint:** `POST /backend-api/wham/tasks`
+
+Create a new Codex task by sending a prompt. This is a standard REST endpoint (not WebSocket).
+
+### Request
+
+```
+POST https://chatgpt.com/backend-api/wham/tasks
+Headers:
+  Authorization: Bearer <JWT_TOKEN>
+  Content-Type: application/json
+```
+
+### Request Body
+
+```json
+{
+  "new_task": {
+    "environment_id": "<environment_id>",
+    "branch": "main",
+    "run_environment_in_qa_mode": false
+  },
+  "metadata": {
+    "best_of_n": 1
+  },
+  "input_items": [
+    {
+      "type": "message",
+      "role": "user",
+      "content": [
+        {
+          "content_type": "text",
+          "text": "Your prompt/task description here"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Parameters
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `new_task.environment_id` | string | Environment ID (hex string, get from `/wham/environments/recent`) |
+| `new_task.branch` | string | Target branch name (default: "main") |
+| `new_task.run_environment_in_qa_mode` | boolean | QA mode flag (default: false) |
+| `metadata.best_of_n` | integer | Number of responses to generate (default: 1) |
+| `input_items[].type` | string | Item type, always "message" |
+| `input_items[].role` | string | Message role, always "user" |
+| `input_items[].content[].content_type` | string | Content type, always "text" |
+| `input_items[].content[].text` | string | The actual prompt text |
+
+### Response
+
+Returns the created task object with task ID and initial status.
+
+```json
+{
+  "id": "task_e_<hex_id>",
+  "status": "pending",
+  "created_at": "2025-12-28T...",
+  ...
+}
+```
+
+### Example: CLI Usage
+
+```bash
+# Create a task with default settings
+codex-runner prompt "Add unit tests for the auth module"
+
+# Create a task targeting a specific branch
+codex-runner prompt "Fix the login bug" --branch develop
+
+# Create a task with specific environment
+codex-runner prompt "Refactor API client" --env-id 694b56fd84d08191af35e8b619ad9ed0
+
+# Generate multiple responses
+codex-runner prompt "Implement caching" --best-of 3
+```
+
+---
+
+## WebSocket for Real-time Updates (Optional)
+
+While task creation uses REST, real-time status updates can be received via WebSocket:
 
 ### WebSocket Connection
 ```
 wss://ws.chatgpt.com/ws/user/{user_id}?verify={timestamp}-{signature}
 ```
 
-### Initial Handshake
-The client sends a connection command with subscription topics:
+### Subscribe to Task Updates
 ```json
 [
   {"id": 1, "command": {"type": "connect", "presence": {"type": "presence", "state": "foreground"}}},
-  {"id": 2, "command": {"type": "subscribe", "topic_id": "conversations"}},
-  {"id": 3, "command": {"type": "subscribe", "topic_id": "wham_tasks"}}
+  {"id": 2, "command": {"type": "subscribe", "topic_id": "wham_tasks"}}
 ]
 ```
 
-### Server Response
-```json
-[
-  {"id": 1, "type": "reply", "reply": {"type": "connect", "subscriptions": {}}},
-  {"id": 2, "type": "reply", "reply": {"type": "subscribe", "topic_id": "conversations", "recovered": false}},
-  {"id": 3, "type": "reply", "reply": {"type": "subscribe", "topic_id": "wham_tasks", "recovered": false}}
-]
-```
-
-### Creating a Task (Sending a Prompt)
-Task creation likely follows a pattern similar to ChatGPT messages:
-```json
-{
-  "id": <seq>,
-  "command": {
-    "type": "wham_create_task",
-    "prompt": "Your task description here",
-    "environment_id": "<env_id>",
-    "repository_id": "<repo_id>"
-  }
-}
-```
-
-**Note:** The exact payload structure needs to be captured by submitting a task in the browser with network inspection enabled. The WebSocket messages are the key to understanding the full protocol.
-
-### Implications for Programmatic Access
-To create tasks programmatically, you would need to:
-1. Establish a WebSocket connection to `wss://ws.chatgpt.com/ws/user/{user_id}`
-2. Authenticate using the verify signature (derived from session token)
-3. Subscribe to the `wham_tasks` topic
-4. Send the task creation command
-5. Listen for task status updates on the WebSocket
-
-This is significantly more complex than REST API calls and requires maintaining a persistent WebSocket connection.
+This allows receiving push notifications when task status changes (processing → completed, etc.) rather than polling the REST API.
