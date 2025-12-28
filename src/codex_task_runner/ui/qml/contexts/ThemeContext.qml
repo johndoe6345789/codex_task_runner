@@ -8,11 +8,11 @@ import QtQuick
 QtObject {
     id: themeContext
     
-    // Current theme name
-    property string themeName: {
-        const saved = _settings.value("theme", "dark")
-        return themes[saved] ? saved : "dark"
-    }
+    // Current theme name - default to dark
+    property string themeName: "dark"
+    
+    // Alias for Main.qml compatibility
+    property var colors: current
     
     // Available theme keys
     readonly property var themeKeys: [
