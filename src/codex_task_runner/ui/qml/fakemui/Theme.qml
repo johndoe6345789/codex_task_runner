@@ -115,13 +115,13 @@ QtObject {
     // Legacy aliases (binding, not alias - can't alias same-object properties)
     property color accent: primary
     
-    // Typography
-    property int fontSizeXs: 10
-    property int fontSizeSm: 12
-    property int fontSizeMd: 14
-    property int fontSizeLg: 16
-    property int fontSizeXl: 20
-    property int fontSizeXxl: 24
+    // Typography - delegate to StyleVariables for consistency
+    property int fontSizeXs: StyleVariables.fontSizeXs
+    property int fontSizeSm: StyleVariables.fontSizeSm
+    property int fontSizeMd: StyleVariables.fontSizeMd
+    property int fontSizeLg: StyleVariables.fontSizeLg
+    property int fontSizeXl: StyleVariables.fontSizeXl
+    property int fontSizeXxl: StyleVariables.fontSize2xl
     property int fontSizeH1: 96
     property int fontSizeH2: 60
     property int fontSizeH3: 48
@@ -129,52 +129,52 @@ QtObject {
     property int fontSizeH5: 24
     property int fontSizeH6: 20
     
-    property int fontWeightLight: 300
-    property int fontWeightRegular: 400
-    property int fontWeightMedium: 500
-    property int fontWeightBold: 700
+    property int fontWeightLight: StyleVariables.fontWeightLight
+    property int fontWeightRegular: StyleVariables.fontWeightRegular
+    property int fontWeightMedium: StyleVariables.fontWeightMedium
+    property int fontWeightBold: StyleVariables.fontWeightBold
     
-    property string fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
-    property string fontFamilyMono: "Menlo, Monaco, Consolas, monospace"
+    property string fontFamily: StyleVariables.fontFamily
+    property string fontFamilyMono: StyleVariables.fontMono
     
-    // Spacing (8px base unit)
-    property int spacingUnit: 8
-    property int spacingXs: 4
-    property int spacingSm: 8
-    property int spacingMd: 12
-    property int spacingLg: 16
-    property int spacingXl: 24
-    property int spacingXxl: 32
+    // Spacing - delegate to StyleVariables for consistency
+    property int spacingUnit: StyleVariables.spacingSm
+    property int spacingXs: StyleVariables.spacingXs
+    property int spacingSm: StyleVariables.spacingSm
+    property int spacingMd: StyleVariables.spacingMd
+    property int spacingLg: StyleVariables.spacingLg
+    property int spacingXl: StyleVariables.spacingXl
+    property int spacingXxl: StyleVariables.spacingXxl
     
-    // Spacing function
+    // Spacing function - delegate to StyleVariables
     function spacing(factor) {
-        return spacingUnit * factor
+        return StyleVariables.spacing(factor)
     }
     
-    // Border radius
-    property int radiusSm: 4
-    property int radiusMd: 8
-    property int radiusLg: 12
-    property int radiusXl: 16
-    property int radiusFull: 9999
-    property int shapeBorderRadius: 4
+    // Border radius - delegate to StyleVariables
+    property int radiusSm: StyleVariables.radiusSm
+    property int radiusMd: StyleVariables.radiusMd
+    property int radiusLg: StyleVariables.radiusLg
+    property int radiusXl: StyleVariables.radiusXl
+    property int radiusFull: StyleVariables.radiusFull
+    property int shapeBorderRadius: StyleVariables.radiusSm
     
-    // Shadows
+    // Shadows - use StyleVariables shadow definitions
     property color shadowColor: "#000000"
     property var shadows: [
         "none",
-        "0px 2px 1px -1px rgba(0,0,0,0.2)",
-        "0px 3px 1px -2px rgba(0,0,0,0.2)",
-        "0px 3px 3px -2px rgba(0,0,0,0.2)",
-        "0px 2px 4px -1px rgba(0,0,0,0.2)"
+        StyleVariables.shadowSm,
+        StyleVariables.shadowMd,
+        StyleVariables.shadowLg,
+        StyleVariables.shadowXl
     ]
     
-    // Transitions
-    property int transitionShortest: 150
+    // Transitions - delegate to StyleVariables
+    property int transitionShortest: StyleVariables.transitionFast
     property int transitionShorter: 200
-    property int transitionShort: 250
+    property int transitionShort: StyleVariables.transitionNormal
     property int transitionStandard: 300
-    property int transitionComplex: 375
+    property int transitionComplex: StyleVariables.transitionSlow
     
     // Animation (legacy bindings)
     property int animFast: transitionShortest
