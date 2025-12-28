@@ -1,32 +1,25 @@
 import React, { useState, useEffect, useContext } from 'react'
-import {
-  Box,
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Button,
-  Chip,
-  Grid,
-  CircularProgress,
-  Alert,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  IconButton,
-  Tooltip,
-} from '@mui/material'
-import {
-  Refresh as RefreshIcon,
-  OpenInNew as OpenInNewIcon,
-  Archive as ArchiveIcon,
-  Code as CodeIcon,
-  ContentCopy as CopyIcon,
-} from '@mui/icons-material'
 import { NerdModeContext } from '../App'
 import MarkdownRenderer from './MarkdownRenderer'
+import './TaskList.scss'
+
+const Icons = {
+  Refresh: () => (
+    <svg className="icon" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+    </svg>
+  ),
+  Code: () => (
+    <svg className="icon icon--sm" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+    </svg>
+  ),
+  Archive: () => (
+    <svg className="icon icon--sm" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
+    </svg>
+  ),
+}
 
 export default function TaskList({ onTaskSelect, apiBase }) {
   const { nerdMode } = useContext(NerdModeContext)
@@ -74,7 +67,7 @@ export default function TaskList({ onTaskSelect, apiBase }) {
     if (task.pr_numbers && task.pr_numbers.length > 0) return 'success'
     if (task.status === 'completed') return 'success'
     if (task.status === 'running') return 'warning'
-    return 'default'
+    return ''
   }
 
   const getStatusLabel = (task) => {
@@ -86,140 +79,102 @@ export default function TaskList({ onTaskSelect, apiBase }) {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress />
-      </Box>
+      <div className="task-list__loading">
+        <div className="spinner spinner--lg" />
+      </div>
     )
   }
 
   return (
-    <Box>
-      <Box sx={{ mb: 3, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-        <FormControl size="small" sx={{ minWidth: 120 }}>
-          <InputLabel>Filter</InputLabel>
-          <Select value={filter} label="Filter" onChange={(e) => setFilter(e.target.value)}>
-            <MenuItem value="current">Current</MenuItem>
-            <MenuItem value="archived">Archived</MenuItem>
-            <MenuItem value="all">All</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 80 }}>
-          <InputLabel>Limit</InputLabel>
-          <Select value={limit} label="Limit" onChange={(e) => setLimit(e.target.value)}>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={20}>20</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
-            <MenuItem value={100}>100</MenuItem>
-          </Select>
-        </FormControl>
-        <IconButton onClick={fetchTasks} color="primary">
-          <RefreshIcon />
-        </IconButton>
-        <Typography variant="body2" color="text.secondary">
-          {tasks.length} tasks
-        </Typography>
-      </Box>
+    <div className="task-list">
+      <div className="task-list__toolbar">
+        <div className="form-group">
+          <select
+            className="select"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="current">Current</option>
+            <option value="archived">Archived</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <select
+            className="select"
+            value={limit}
+            onChange={(e) => setLimit(Number(e.target.value))}
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+        <button className="icon-btn" onClick={fetchTasks} title="Refresh">
+          <Icons.Refresh />
+        </button>
+        <span className="task-list__count">{tasks.length} tasks</span>
+      </div>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
+      {error && <div className="alert alert--error mb-md">{error}</div>}
 
-      <Grid container spacing={2}>
+      <div className="task-list__grid">
         {tasks.map((task) => (
-          <Grid item xs={12} md={6} lg={4} key={task.task_id || task.id}>
-            <Card
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                '&:hover': { bgcolor: 'action.hover' },
-              }}
-            >
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Chip
-                    label={getStatusLabel(task)}
-                    size="small"
-                    color={getStatusColor(task)}
-                  />
-                  {task._alias && (
-                    <Chip label={`#${task._alias}`} size="small" variant="outlined" />
-                  )}
-                </Box>
-                <Typography variant="h6" component="div" gutterBottom noWrap>
-                  {task.title || 'Untitled Task'}
-                </Typography>
-                {(task.description || task.prompt) && (
-                  <Box sx={{ 
-                    mb: 1, 
-                    maxHeight: 80, 
-                    overflow: 'hidden',
-                    '& p': { margin: 0, fontSize: '0.875rem' },
-                    '& *': { fontSize: '0.875rem' },
-                  }}>
-                    <MarkdownRenderer>
-                      {(task.description || task.prompt).slice(0, 200) + ((task.description || task.prompt).length > 200 ? '...' : '')}
-                    </MarkdownRenderer>
-                  </Box>
+          <div className="card task-card" key={task.task_id || task.id}>
+            <div className="card__content" style={{ flex: 1 }}>
+              <div className="task-card__header">
+                <span className={`chip chip--${getStatusColor(task)}`}>
+                  {getStatusLabel(task)}
+                </span>
+                {task._alias && (
+                  <span className="chip chip--outlined">#{task._alias}</span>
                 )}
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  {task.repo || 'No repo'}
-                </Typography>
-                {nerdMode && (
-                  <Box sx={{ mt: 1 }}>
-                    <Typography 
-                      variant="caption" 
-                      sx={{ 
-                        fontFamily: 'monospace', 
-                        color: 'text.disabled',
-                        display: 'block',
-                        fontSize: '0.65rem',
-                        wordBreak: 'break-all'
-                      }}
-                    >
-                      {task.task_id || task.id}
-                    </Typography>
-                  </Box>
-                )}
-                {!nerdMode && (
-                  <Typography variant="caption" color="text.secondary">
-                    {task.base_branch || 'main'}
-                  </Typography>
-                )}
-              </CardContent>
-              <CardActions>
-                <Button size="small" onClick={() => onTaskSelect(task)}>
-                  View
-                </Button>
-                <Tooltip title="Get Patch">
-                  <IconButton
-                    size="small"
-                    onClick={() => window.open(`${apiBase}/tasks/${task.task_id || task.id}/patch`, '_blank')}
-                  >
-                    <CodeIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Archive">
-                  <IconButton
-                    size="small"
-                    onClick={() => handleArchive(task.task_id || task.id)}
-                  >
-                    <ArchiveIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </CardActions>
-            </Card>
-          </Grid>
+              </div>
+              <h3 className="task-card__title">{task.title || 'Untitled Task'}</h3>
+              {(task.description || task.prompt) && (
+                <div className="task-card__description">
+                  <MarkdownRenderer>
+                    {(task.description || task.prompt).slice(0, 200)}
+                    {(task.description || task.prompt).length > 200 ? '...' : ''}
+                  </MarkdownRenderer>
+                </div>
+              )}
+              <p className="task-card__repo">{task.repo || 'No repo'}</p>
+              {nerdMode ? (
+                <p className="task-card__id">{task.task_id || task.id}</p>
+              ) : (
+                <span className="task-card__branch">{task.base_branch || 'main'}</span>
+              )}
+            </div>
+            <div className="card__actions">
+              <button className="btn btn--sm btn--secondary" onClick={() => onTaskSelect(task)}>
+                View
+              </button>
+              <button
+                className="icon-btn icon-btn--sm"
+                onClick={() => window.open(`${apiBase}/tasks/${task.task_id || task.id}/patch`, '_blank')}
+                title="Get Patch"
+              >
+                <Icons.Code />
+              </button>
+              <button
+                className="icon-btn icon-btn--sm"
+                onClick={() => handleArchive(task.task_id || task.id)}
+                title="Archive"
+              >
+                <Icons.Archive />
+              </button>
+            </div>
+          </div>
         ))}
-      </Grid>
+      </div>
 
       {tasks.length === 0 && !loading && (
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Typography color="text.secondary">No tasks found</Typography>
-        </Box>
+        <div className="task-list__empty">
+          <p>No tasks found</p>
+        </div>
       )}
-    </Box>
+    </div>
   )
 }

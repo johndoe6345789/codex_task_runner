@@ -1,37 +1,49 @@
 import React, { useState } from 'react'
-import {
-  Box,
-  Paper,
-  Typography,
-  IconButton,
-  Collapse,
-  LinearProgress,
-  Chip,
-  Tooltip,
-  Fade,
-  Badge,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-} from '@mui/material'
-import {
-  CloudSync as CloudSyncIcon,
-  CheckCircle as CheckCircleIcon,
-  Error as ErrorIcon,
-  HourglassEmpty as PendingIcon,
-  ExpandMore as ExpandMoreIcon,
-  ExpandLess as ExpandLessIcon,
-  Close as CloseIcon,
-  Refresh as RefreshIcon,
-} from '@mui/icons-material'
 import { useAjaxQueue } from '../contexts/AjaxQueueContext'
+import './AjaxQueueWidget.scss'
+
+// Simple inline SVG icons
+const CloudSyncIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4s1.79-4 4-4h.71C7.37 7.69 9.48 6 12 6c3.04 0 5.5 2.46 5.5 5.5v.5H19c1.66 0 3 1.34 3 3s-1.34 3-3 3z"/>
+    <path d="M12 10l-3 3h2v4h2v-4h2z"/>
+  </svg>
+)
+const CheckIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+  </svg>
+)
+const ErrorIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+  </svg>
+)
+const PendingIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6zm10 14.5V20H8v-3.5l4-4 4 4zm-4-5l-4-4V4h8v3.5l-4 4z"/>
+  </svg>
+)
+const ExpandMoreIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+  </svg>
+)
+const ExpandLessIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/>
+  </svg>
+)
+const CloseIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+  </svg>
+)
 
 export default function AjaxQueueWidget() {
   const { queue, pending, completed, failed, isVisible, setIsVisible, clearQueue } = useAjaxQueue()
   const [expanded, setExpanded] = useState(false)
   
-  // Don't render if not visible and no pending requests
   if (!isVisible && pending === 0) return null
   
   const total = pending + completed + failed
@@ -40,11 +52,11 @@ export default function AjaxQueueWidget() {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'success':
-        return <CheckCircleIcon fontSize="small" color="success" />
+        return <span className="list-item-icon list-item-icon--success"><CheckIcon /></span>
       case 'error':
-        return <ErrorIcon fontSize="small" color="error" />
+        return <span className="list-item-icon list-item-icon--error"><ErrorIcon /></span>
       default:
-        return <PendingIcon fontSize="small" color="action" sx={{ animation: 'pulse 1s infinite' }} />
+        return <span className="list-item-icon list-item-icon--pending"><PendingIcon /></span>
     }
   }
   
@@ -55,185 +67,88 @@ export default function AjaxQueueWidget() {
   }
   
   return (
-    <Fade in={isVisible || pending > 0}>
-      <Paper
-        elevation={6}
-        sx={{
-          position: 'fixed',
-          bottom: 16,
-          right: 16,
-          minWidth: 280,
-          maxWidth: 400,
-          zIndex: 1300,
-          overflow: 'hidden',
-          borderRadius: 2,
-        }}
-      >
-        {/* Header */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            p: 1.5,
-            bgcolor: 'primary.dark',
-            color: 'primary.contrastText',
-            cursor: 'pointer',
-          }}
-          onClick={() => setExpanded(!expanded)}
+    <div className="panel panel--fixed-br ajax-queue">
+      {/* Header */}
+      <div className="panel-header panel-header--clickable" onClick={() => setExpanded(!expanded)}>
+        <div className={`ajax-queue-icon ${pending > 0 ? 'ajax-queue-icon--spinning' : ''}`}>
+          <CloudSyncIcon />
+          {pending > 0 && <span className="badge badge--warning">{pending > 99 ? '99+' : pending}</span>}
+        </div>
+        <span className="panel-title">AJAX Queue</span>
+        <div className="ajax-queue-stats">
+          {pending > 0 && <span className="ajax-queue-stat ajax-queue-stat--pending">{pending}</span>}
+          {completed > 0 && <span className="ajax-queue-stat ajax-queue-stat--success">{completed}</span>}
+          {failed > 0 && <span className="ajax-queue-stat ajax-queue-stat--error">{failed}</span>}
+        </div>
+        <button
+          className="icon-btn icon-btn--sm"
+          onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}
         >
-          <Badge badgeContent={pending} color="warning" max={99}>
-            <CloudSyncIcon 
-              sx={{ 
-                animation: pending > 0 ? 'spin 2s linear infinite' : 'none',
-                '@keyframes spin': {
-                  '0%': { transform: 'rotate(0deg)' },
-                  '100%': { transform: 'rotate(360deg)' },
-                },
-              }} 
-            />
-          </Badge>
-          <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
-            AJAX Queue
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 0.5, mr: 1 }}>
-            {pending > 0 && (
-              <Chip 
-                label={pending} 
-                size="small" 
-                color="warning" 
-                sx={{ height: 20, '& .MuiChip-label': { px: 0.75 } }}
-              />
-            )}
-            {completed > 0 && (
-              <Chip 
-                label={completed} 
-                size="small" 
-                color="success" 
-                sx={{ height: 20, '& .MuiChip-label': { px: 0.75 } }}
-              />
-            )}
-            {failed > 0 && (
-              <Chip 
-                label={failed} 
-                size="small" 
-                color="error" 
-                sx={{ height: 20, '& .MuiChip-label': { px: 0.75 } }}
-              />
-            )}
-          </Box>
-          <IconButton 
-            size="small" 
-            sx={{ color: 'inherit' }}
-            onClick={(e) => {
-              e.stopPropagation()
-              setExpanded(!expanded)
-            }}
-          >
-            {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
-          <IconButton 
-            size="small" 
-            sx={{ color: 'inherit' }}
-            onClick={(e) => {
-              e.stopPropagation()
-              if (pending === 0) {
-                clearQueue()
-                setIsVisible(false)
-              }
-            }}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        </Box>
-        
-        {/* Progress bar */}
-        {pending > 0 && (
-          <LinearProgress 
-            variant="determinate" 
-            value={progress}
-            sx={{ height: 3 }}
-          />
-        )}
-        
-        {/* Expanded queue list */}
-        <Collapse in={expanded}>
-          <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
-            <List dense sx={{ py: 0 }}>
-              {queue.slice().reverse().map((request) => (
-                <ListItem
-                  key={request.id}
-                  sx={{
-                    borderBottom: '1px solid',
-                    borderColor: 'divider',
-                    opacity: request.status === 'pending' ? 1 : 0.7,
-                    bgcolor: request.status === 'error' ? 'error.dark' : 'transparent',
-                    '&:hover': { bgcolor: 'action.hover' },
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 32 }}>
-                    {getStatusIcon(request.status)}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" noWrap sx={{ maxWidth: 180 }}>
-                          {request.label}
-                        </Typography>
-                        {request.progress && (
-                          <Chip
-                            label={`${request.progress.current}/${request.progress.total}`}
-                            size="small"
-                            variant="outlined"
-                            sx={{ height: 18, '& .MuiChip-label': { px: 0.5, fontSize: '0.65rem' } }}
-                          />
-                        )}
-                      </Box>
-                    }
-                    secondary={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="caption" color="text.secondary">
-                          {getElapsedTime(request.startTime, request.endTime)}
-                        </Typography>
-                        {request.error && (
-                          <Typography variant="caption" color="error" noWrap sx={{ maxWidth: 150 }}>
-                            {request.error}
-                          </Typography>
-                        )}
-                      </Box>
-                    }
-                  />
-                </ListItem>
-              ))}
-            </List>
-            {queue.length === 0 && (
-              <Box sx={{ p: 2, textAlign: 'center' }}>
-                <Typography variant="caption" color="text.secondary">
-                  No recent requests
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        </Collapse>
-        
-        {/* Summary when collapsed */}
-        {!expanded && queue.length > 0 && (
-          <Box sx={{ px: 2, py: 1 }}>
-            <Typography variant="caption" color="text.secondary" noWrap>
-              {queue[queue.length - 1]?.label || 'Processing...'}
-              {pending > 1 && ` (+${pending - 1} more)`}
-            </Typography>
-          </Box>
-        )}
-        
-        {/* Add keyframes for pulse animation */}
-        <style>{`
-          @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-          }
-        `}</style>
-      </Paper>
-    </Fade>
+          {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </button>
+        <button
+          className="icon-btn icon-btn--sm"
+          onClick={(e) => {
+            e.stopPropagation()
+            if (pending === 0) {
+              clearQueue()
+              setIsVisible(false)
+            }
+          }}
+        >
+          <CloseIcon />
+        </button>
+      </div>
+      
+      {/* Progress bar */}
+      {pending > 0 && (
+        <div className="progress progress--thin">
+          <div className="progress__bar" style={{ width: `${progress}%` }} />
+        </div>
+      )}
+      
+      {/* Expanded queue list */}
+      {expanded && (
+        <div className="panel-body">
+          {queue.slice().reverse().map((request) => (
+            <div
+              key={request.id}
+              className={`list-item ${request.status === 'error' ? 'list-item--error' : ''} ${request.status !== 'pending' ? 'list-item--muted' : ''}`}
+            >
+              {getStatusIcon(request.status)}
+              <div className="list-item-content">
+                <div className="ajax-queue-item-label list-item-primary">
+                  {request.label}
+                  {request.progress && (
+                    <span className="ajax-queue-item-progress">
+                      {request.progress.current}/{request.progress.total}
+                    </span>
+                  )}
+                </div>
+                <div className="list-item-secondary">
+                  <span>{getElapsedTime(request.startTime, request.endTime)}</span>
+                  {request.error && (
+                    <span className="ajax-queue-item-error" title={request.error}>
+                      {' · '}{request.error}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          {queue.length === 0 && (
+            <div className="ajax-queue-empty">No recent requests</div>
+          )}
+        </div>
+      )}
+      
+      {/* Summary when collapsed */}
+      {!expanded && queue.length > 0 && (
+        <div className="panel-footer ajax-queue-summary">
+          {queue[queue.length - 1]?.label || 'Processing...'}
+          {pending > 1 && ` (+${pending - 1} more)`}
+        </div>
+      )}
+    </div>
   )
 }
