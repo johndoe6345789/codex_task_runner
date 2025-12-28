@@ -218,14 +218,54 @@ Item {
             Layout.fillWidth: true
             visible: taskIndex >= 0
             
+            background: Rectangle {
+                color: themeColors.base || "#1a1a1a"
+                border.color: themeColors.border || "#333333"
+                border.width: 1
+                radius: 4
+            }
+            
             TabButton {
                 text: "📝 Details"
+                background: Rectangle {
+                    color: tabBar.currentIndex === 0 ? (themeColors.alternateBase || "#242424") : "transparent"
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: tabBar.currentIndex === 0 ? (themeColors.accent || "#10a37f") : (themeColors.textSecondary || "#a0a0a0")
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 13
+                }
             }
             TabButton {
                 text: "💬 Prompt"
+                background: Rectangle {
+                    color: tabBar.currentIndex === 1 ? (themeColors.alternateBase || "#242424") : "transparent"
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: tabBar.currentIndex === 1 ? (themeColors.accent || "#10a37f") : (themeColors.textSecondary || "#a0a0a0")
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 13
+                }
             }
             TabButton {
                 text: "🔧 Raw JSON"
+                background: Rectangle {
+                    color: tabBar.currentIndex === 2 ? (themeColors.alternateBase || "#242424") : "transparent"
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: tabBar.currentIndex === 2 ? (themeColors.accent || "#10a37f") : (themeColors.textSecondary || "#a0a0a0")
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 13
+                }
             }
         }
         
