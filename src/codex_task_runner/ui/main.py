@@ -63,8 +63,8 @@ def launch(session=None):
     engine.addImportPath(str(qml_dir / "components"))
     engine.addImportPath(str(qml_dir / "contexts"))
     
-    # Load QML - Main.qml is the full-featured entry point
-    qml_path = qml_dir / "Main.qml"
+    # Load QML - App.qml is the full-featured entry point
+    qml_path = qml_dir / "App.qml"
     engine.load(QUrl.fromLocalFile(str(qml_path)))
     
     if not engine.rootObjects():

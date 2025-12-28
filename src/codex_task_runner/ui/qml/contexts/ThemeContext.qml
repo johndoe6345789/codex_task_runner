@@ -3,7 +3,7 @@ import QtQuick
 
 /**
  * ThemeContext - Theme management with multiple presets
- * Mirrors React's themes.js with 8 themes
+ * Mirrors React's themes.js with 9 themes
  */
 QtObject {
     id: themeContext
@@ -11,16 +11,34 @@ QtObject {
     // Current theme name - default to dark
     property string themeName: "dark"
     
-    // Alias for Main.qml compatibility
+    // Alias for compatibility
     property var colors: current
     
     // Available theme keys
     readonly property var themeKeys: [
-        "dark", "light", "midnight", "forest", "ocean", "sunset", "rose", "highContrast"
+        "system", "dark", "light", "midnight", "forest", "ocean", "sunset", "rose", "highContrast"
     ]
     
     // Theme definitions - mirrors React themes.js
     readonly property var themes: ({
+        system: {
+            name: "System",
+            mode: "dark",
+            primary: "#10a37f",
+            secondary: "#8e8ea0",
+            background: "#0d0d0d",
+            paper: "#1a1a1a",
+            surface: "#242424",
+            text: "#ffffff",
+            textSecondary: "#a0a0a0",
+            textMuted: "#666666",
+            border: "#333333",
+            divider: "#2a2a2a",
+            error: "#ef4444",
+            warning: "#f59e0b",
+            success: "#22c55e",
+            info: "#3b82f6"
+        },
         dark: {
             name: "Dark",
             mode: "dark",
@@ -28,12 +46,16 @@ QtObject {
             secondary: "#8e8ea0",
             background: "#0d0d0d",
             paper: "#1a1a1a",
+            surface: "#242424",
             text: "#ffffff",
             textSecondary: "#a0a0a0",
-            error: "#f44336",
-            warning: "#ff9800",
-            success: "#4caf50",
-            info: "#2196f3"
+            textMuted: "#666666",
+            border: "#333333",
+            divider: "#2a2a2a",
+            error: "#ef4444",
+            warning: "#f59e0b",
+            success: "#22c55e",
+            info: "#3b82f6"
         },
         light: {
             name: "Light",
@@ -42,8 +64,12 @@ QtObject {
             secondary: "#6e6e80",
             background: "#ffffff",
             paper: "#f7f7f8",
+            surface: "#eeeeee",
             text: "#1a1a1a",
             textSecondary: "#6e6e80",
+            textMuted: "#999999",
+            border: "#e0e0e0",
+            divider: "#eeeeee",
             error: "#d32f2f",
             warning: "#ed6c02",
             success: "#2e7d32",
@@ -56,8 +82,12 @@ QtObject {
             secondary: "#a5b4fc",
             background: "#0f172a",
             paper: "#1e293b",
+            surface: "#334155",
             text: "#f1f5f9",
             textSecondary: "#94a3b8",
+            textMuted: "#64748b",
+            border: "#334155",
+            divider: "#1e293b",
             error: "#ef4444",
             warning: "#f59e0b",
             success: "#22c55e",
@@ -70,8 +100,12 @@ QtObject {
             secondary: "#86efac",
             background: "#0a1f0a",
             paper: "#14331a",
+            surface: "#1a4d23",
             text: "#ecfdf5",
             textSecondary: "#a7f3d0",
+            textMuted: "#6ee7b7",
+            border: "#166534",
+            divider: "#14532d",
             error: "#ef4444",
             warning: "#f59e0b",
             success: "#22c55e",
@@ -84,8 +118,12 @@ QtObject {
             secondary: "#7dd3fc",
             background: "#0c1929",
             paper: "#132f4c",
+            surface: "#1e4976",
             text: "#e0f2fe",
             textSecondary: "#7dd3fc",
+            textMuted: "#38bdf8",
+            border: "#0369a1",
+            divider: "#075985",
             error: "#ef4444",
             warning: "#f59e0b",
             success: "#22c55e",
@@ -98,8 +136,12 @@ QtObject {
             secondary: "#fdba74",
             background: "#1c1210",
             paper: "#2d1f1a",
+            surface: "#44302a",
             text: "#fff7ed",
             textSecondary: "#fed7aa",
+            textMuted: "#fdba74",
+            border: "#9a3412",
+            divider: "#7c2d12",
             error: "#ef4444",
             warning: "#f97316",
             success: "#22c55e",
@@ -112,8 +154,12 @@ QtObject {
             secondary: "#fda4af",
             background: "#1a0f12",
             paper: "#2d1a1f",
+            surface: "#44252d",
             text: "#fff1f2",
             textSecondary: "#fecdd3",
+            textMuted: "#fda4af",
+            border: "#be123c",
+            divider: "#9f1239",
             error: "#f43f5e",
             warning: "#f59e0b",
             success: "#22c55e",
@@ -126,8 +172,12 @@ QtObject {
             secondary: "#00ffff",
             background: "#000000",
             paper: "#111111",
+            surface: "#222222",
             text: "#ffffff",
             textSecondary: "#eeeeee",
+            textMuted: "#cccccc",
+            border: "#ffffff",
+            divider: "#444444",
             error: "#ff0000",
             warning: "#ffff00",
             success: "#00ff00",
@@ -142,8 +192,12 @@ QtObject {
     readonly property color secondary: current.secondary
     readonly property color background: current.background
     readonly property color paper: current.paper
+    readonly property color surface: current.surface || current.paper
     readonly property color text: current.text
     readonly property color textSecondary: current.textSecondary
+    readonly property color textMuted: current.textMuted || current.textSecondary
+    readonly property color border: current.border || "#333333"
+    readonly property color divider: current.divider || current.border
     readonly property color error: current.error
     readonly property color warning: current.warning
     readonly property color success: current.success

@@ -8,40 +8,40 @@ QtObject {
     property string current: "dark"
     property string mode: "dark" // light or dark
     
-    // Primary palette
-    property color primary: "#1976d2"
-    property color primaryLight: "#42a5f5"
-    property color primaryDark: "#1565c0"
+    // Primary palette - React green accent
+    property color primary: "#10a37f"
+    property color primaryLight: "#3db896"
+    property color primaryDark: "#0d8567"
     property color primaryContrastText: "#ffffff"
     
     // Secondary palette
-    property color secondary: "#9c27b0"
-    property color secondaryLight: "#ba68c8"
-    property color secondaryDark: "#7b1fa2"
+    property color secondary: "#8e8ea0"
+    property color secondaryLight: "#a8a8b6"
+    property color secondaryDark: "#6e6e80"
     property color secondaryContrastText: "#ffffff"
     
     // Error palette
-    property color error: "#d32f2f"
-    property color errorLight: "#ef5350"
-    property color errorDark: "#c62828"
+    property color error: "#ef4444"
+    property color errorLight: "#f87171"
+    property color errorDark: "#dc2626"
     property color errorContrastText: "#ffffff"
     
     // Warning palette
-    property color warning: "#ed6c02"
-    property color warningLight: "#ff9800"
-    property color warningDark: "#e65100"
+    property color warning: "#f59e0b"
+    property color warningLight: "#fbbf24"
+    property color warningDark: "#d97706"
     property color warningContrastText: "#ffffff"
     
     // Info palette
-    property color info: "#0288d1"
-    property color infoLight: "#03a9f4"
-    property color infoDark: "#01579b"
+    property color info: "#3b82f6"
+    property color infoLight: "#60a5fa"
+    property color infoDark: "#2563eb"
     property color infoContrastText: "#ffffff"
     
     // Success palette
-    property color success: "#2e7d32"
-    property color successLight: "#4caf50"
-    property color successDark: "#1b5e20"
+    property color success: "#22c55e"
+    property color successLight: "#4ade80"
+    property color successDark: "#16a34a"
     property color successContrastText: "#ffffff"
     
     // Grey scale
@@ -56,21 +56,21 @@ QtObject {
     property color grey800: "#424242"
     property color grey900: "#212121"
     
-    // Background colors
-    property color background: mode === "dark" ? "#121212" : "#ffffff"
-    property color surface: mode === "dark" ? "#1e1e1e" : "#ffffff"
-    property color surfaceVariant: mode === "dark" ? "#2d2d2d" : "#f0f0f0"
-    property color card: mode === "dark" ? "#252525" : "#ffffff"
+    // Background colors - React dark theme
+    property color background: mode === "dark" ? "#0d0d0d" : "#ffffff"
+    property color surface: mode === "dark" ? "#1a1a1a" : "#ffffff"
+    property color surfaceVariant: mode === "dark" ? "#242424" : "#f0f0f0"
+    property color card: mode === "dark" ? "#1a1a1a" : "#ffffff"
     
     // Text colors
-    property color text: mode === "dark" ? "#ffffff" : "rgba(0, 0, 0, 0.87)"
-    property color textSecondary: mode === "dark" ? "#b0b0b0" : "rgba(0, 0, 0, 0.6)"
+    property color text: mode === "dark" ? "#ffffff" : "#1a1a1a"
+    property color textSecondary: mode === "dark" ? "#a0a0a0" : "#6e6e80"
     property color textMuted: mode === "dark" ? "#666666" : "rgba(0, 0, 0, 0.38)"
     property color textDisabled: mode === "dark" ? "rgba(255, 255, 255, 0.38)" : "rgba(0, 0, 0, 0.38)"
     
     // Divider and border
-    property color divider: mode === "dark" ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.12)"
-    property color border: mode === "dark" ? "#3d3d3d" : "#e0e0e0"
+    property color divider: mode === "dark" ? "#2a2a2a" : "rgba(0, 0, 0, 0.12)"
+    property color border: mode === "dark" ? "#333333" : "#e0e0e0"
     
     // Action colors
     property color actionActive: mode === "dark" ? "rgba(255, 255, 255, 0.54)" : "rgba(0, 0, 0, 0.54)"
