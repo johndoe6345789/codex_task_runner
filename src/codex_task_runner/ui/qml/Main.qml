@@ -911,7 +911,7 @@ ApplicationWindow {
                         // Loading overlay
                         Rectangle {
                             anchors.fill: parent
-                            color: "#CC1e1e1e"
+                            color: Qt.rgba(0, 0, 0, 0.7)
                             visible: isLoading
                             
                             Column {
