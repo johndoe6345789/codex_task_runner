@@ -170,8 +170,8 @@ ApplicationWindow {
                     interactive: false
                     
                     model: ListModel {
-                        ListElement { viewId: "user"; icon: "👤"; labelKey: "profile" }
-                        ListElement { viewId: "docs"; icon: "📖"; labelKey: "documentation" }
+                        ListElement { viewId: "user"; emoji: "👤"; labelKey: "profile" }
+                        ListElement { viewId: "docs"; emoji: "📖"; labelKey: "documentation" }
                     }
                     
                     delegate: ItemDelegate {
@@ -183,7 +183,7 @@ ApplicationWindow {
                             spacing: 16
                             
                             Text {
-                                text: icon
+                                text: emoji
                                 font.pixelSize: 20
                                 color: Theme.text
                                 Layout.leftMargin: 16
