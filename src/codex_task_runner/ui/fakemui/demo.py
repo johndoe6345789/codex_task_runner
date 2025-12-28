@@ -5,6 +5,7 @@ Run with: python -m codex_task_runner.ui.fakemui.demo
 """
 
 import sys
+from datetime import date, datetime
 from PyQt6.QtWidgets import QApplication, QMainWindow, QScrollArea, QWidget
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
@@ -32,6 +33,14 @@ from . import (
     # Atoms
     Title, Subtitle, Text, Section, EmptyState, LoadingState,
     ErrorState, Panel, StatBadge,
+    # Lab Components
+    LoadingButton, Timeline, TimelineItem, TimelineSeparator,
+    TimelineConnector, TimelineContent, TimelineDot, TimelineOppositeContent,
+    TreeView, TreeItem, Masonry,
+    # MUI X Components
+    DataGrid, DataGridColumn, DatePicker, TimePicker, DateTimePicker,
+    # Theming
+    create_theme, use_theme, styled,
 )
 from .stylesheet import get_stylesheet
 
@@ -66,6 +75,8 @@ class DemoWindow(QMainWindow):
         self._add_surface_section(content)
         self._add_navigation_section(content)
         self._add_layout_section(content)
+        self._add_lab_section(content)
+        self._add_x_section(content)
         
         scroll.setWidget(content)
         self.setCentralWidget(scroll)
@@ -359,9 +370,154 @@ class DemoWindow(QMainWindow):
         section.add_content(row)
         
         parent.add_widget(section)
-
-
-def main():
+    
+    def _add_lab_section(self, parent: Container):
+        """Add lab components demonstration."""
+        section = Section(title="Lab Components")
+        
+        # LoadingButton
+        section.add_content(Text("Loading Buttons:"))
+        row = Stack(direction='row', spacing=2)
+        
+        btn1 = LoadingButton("Submit", loading=False, color='primary')
+        row.add_widget(btn1)
+        
+        btn2 = LoadingButton("Loading...", loading=True, color='primary')
+        row.add_widget(btn2)
+        
+        btn3 = LoadingButton("Outlined", loading=True, variant='outlined', color='secondary')
+        row.add_widget(btn3)
+        
+        section.add_content(row)
+        
+        # Timeline
+        section.add_content(Text("Timeline:"))
+        timeline = Timeline()
+        
+        # Item 1
+        item1 = TimelineItem()
+        opp1 = TimelineOppositeContent()
+        opp1.set_text("9:30 am")
+        item1.set_opposite_content(opp1)
+        
+        sep1 = TimelineSeparator()
+        sep1.add_widget(TimelineDot(color='primary'))
+        sep1.add_widget(TimelineConnector())
+        item1.set_separator(sep1)
+        
+        cont1 = TimelineContent()
+        cont1.set_text("Eat breakfast")
+        item1.set_content(cont1)
+        timeline.add_item(item1)
+        
+        # Item 2
+        item2 = TimelineItem()
+        opp2 = TimelineOppositeContent()
+        opp2.set_text("10:00 am")
+        item2.set_opposite_content(opp2)
+        
+        sep2 = TimelineSeparator()
+        sep2.add_widget(TimelineDot(color='success'))
+        sep2.add_widget(TimelineConnector())
+        item2.set_separator(sep2)
+        
+        cont2 = TimelineContent()
+        cont2.set_text("Code review")
+        item2.set_content(cont2)
+        timeline.add_item(item2)
+        
+        # Item 3
+        item3 = TimelineItem()
+        opp3 = TimelineOppositeContent()
+        opp3.set_text("12:00 pm")
+        item3.set_opposite_content(opp3)
+        
+        sep3 = TimelineSeparator()
+        sep3.add_widget(TimelineDot(color='error', variant='outlined'))
+        item3.set_separator(sep3)
+        
+        cont3 = TimelineContent()
+        cont3.set_text("Lunch meeting")
+        item3.set_content(cont3)
+        timeline.add_item(item3)
+        
+        section.add_content(timeline)
+        
+        # TreeView
+        section.add_content(Text("TreeView:"))
+        tree = TreeView()
+        tree.add_node("1", "📁 Documents")
+        tree.add_node("1.1", "📄 Report.pdf", parent_id="1")
+        tree.add_node("1.2", "📄 Notes.txt", parent_id="1")
+        tree.add_node("2", "📁 Images")
+        tree.add_node("2.1", "🖼️ Photo.jpg", parent_id="2")
+        tree.add_node("2.2", "🖼️ Logo.png", parent_id="2")
+        tree.add_node("3", "📁 Projects")
+        tree.add_node("3.1", "📁 Project A", parent_id="3")
+        tree.add_node("3.1.1", "📄 main.py", parent_id="3.1")
+        tree.setMaximumHeight(200)
+        section.add_content(tree)
+        
+        parent.add_widget(section)
+        parent.add_widget(Divider())
+    
+    def _add_x_section(self, parent: Container):
+        """Add MUI X components demonstration."""
+        section = Section(title="MUI X Components")
+        
+        # DataGrid
+        section.add_content(Text("DataGrid:"))
+        
+        columns = [
+            DataGridColumn("id", "ID", width=60),
+            DataGridColumn("name", "Name", flex=1),
+            DataGridColumn("email", "Email", flex=1.5),
+            DataGridColumn("role", "Role"),
+        ]
+        
+        rows = [
+            {"id": 1, "name": "John Doe", "email": "john@example.com", "role": "Admin"},
+            {"id": 2, "name": "Jane Smith", "email": "jane@example.com", "role": "User"},
+            {"id": 3, "name": "Bob Wilson", "email": "bob@example.com", "role": "Editor"},
+            {"id": 4, "name": "Alice Brown", "email": "alice@example.com", "role": "User"},
+            {"id": 5, "name": "Charlie Davis", "email": "charlie@example.com", "role": "Viewer"},
+        ]
+        
+        grid = DataGrid(
+            rows=rows,
+            columns=columns,
+            page_size=5,
+            checkbox_selection=True,
+            density='standard'
+        )
+        grid.setMaximumHeight(300)
+        section.add_content(grid)
+        
+        # DatePicker
+        section.add_content(Text("Date & Time Pickers:"))
+        row2 = Stack(direction='row', spacing=4)
+        
+        date_picker = DatePicker(
+            label="Select Date",
+            value=date.today(),
+            clearable=True
+        )
+        row2.add_widget(date_picker)
+        
+        time_picker = TimePicker(
+            label="Select Time"
+        )
+        row2.add_widget(time_picker)
+        
+        datetime_picker = DateTimePicker(
+            label="Date & Time",
+            value=datetime.now()
+        )
+        row2.add_widget(datetime_picker)
+        
+        section.add_content(row2)
+        
+        parent.add_widget(section)
     """Run the demo application."""
     app = QApplication(sys.argv)
     app.setStyleSheet(get_stylesheet('light'))
