@@ -459,7 +459,6 @@ ApplicationWindow {
                     
                     // User Info View
                     UserInfo {
-                        user: app.user
                         apiBase: app.apiBase
                     }
                     
