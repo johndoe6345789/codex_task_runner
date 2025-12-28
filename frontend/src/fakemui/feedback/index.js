@@ -1,4 +1,4 @@
-export { Alert } from './Alert'
+export { Alert, AlertTitle } from './Alert'
 export { Backdrop } from './Backdrop'
 export { Spinner, CircularProgress } from './Spinner'
 export { LinearProgress, Progress } from './Progress'

@@ -20,6 +20,12 @@ export {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
+  Autocomplete,
+  Rating,
+  ButtonBase,
+  InputBase,
+  FilledInput,
+  OutlinedInput,
 } from './inputs'
 
 // 2. DATA DISPLAY - Visual presentation of information
@@ -44,6 +50,8 @@ export {
   TableRow,
   TableCell,
   TableContainer,
+  TablePagination,
+  TableSortLabel,
   Tooltip,
   Typography,
 } from './data-display'
@@ -51,6 +59,7 @@ export {
 // 3. FEEDBACK - Communicating status and results
 export {
   Alert,
+  AlertTitle,
   Backdrop,
   Spinner,
   CircularProgress,
@@ -88,11 +97,19 @@ export {
   Tabs,
   Tab,
   Pagination,
+  PaginationItem,
   Stepper,
   Step,
   StepLabel,
+  StepButton,
+  StepContent,
+  StepConnector,
+  StepIcon,
   BottomNavigation,
   BottomNavigationAction,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
 } from './navigation'
 
 // 6. LAYOUT - Page and component structure
@@ -118,6 +135,7 @@ export {
   DialogContent,
   DialogActions,
   Popover,
+  Popper,
   Collapse,
   Fade,
   Grow,
@@ -125,6 +143,16 @@ export {
   Zoom,
   ClickAwayListener,
   Portal,
+  CssBaseline,
+  ScopedCssBaseline,
+  NoSsr,
+  TextareaAutosize,
+  useMediaQuery,
+  useMediaQueryUp,
+  useMediaQueryDown,
+  useMediaQueryBetween,
+  GlobalStyles,
+  classNames,
 } from './utils'
 
 // 8. ADDITIONAL ATOMS
@@ -145,3 +173,43 @@ export {
   Panel,
   AutoGrid,
 } from './atoms'
+
+// 9. LAB - Experimental components
+export {
+  LoadingButton,
+  Masonry,
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineOppositeContent,
+  TreeView,
+  TreeItem,
+} from './lab'
+
+// 10. MUI X - Advanced data components
+export {
+  DataGrid,
+  DataGridPro,
+  DataGridPremium,
+  DatePicker,
+  TimePicker,
+  DateTimePicker,
+  DesktopDatePicker,
+  MobileDatePicker,
+  StaticDatePicker,
+  CalendarPicker,
+  ClockPicker,
+} from './x'
+
+// 11. THEMING - Theme and styling APIs
+export {
+  ThemeProvider,
+  createTheme,
+  useTheme,
+  defaultTheme,
+  styled,
+  processSxProp,
+} from './theming'
