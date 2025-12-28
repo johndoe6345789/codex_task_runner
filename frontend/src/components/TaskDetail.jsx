@@ -27,6 +27,7 @@ import {
 } from '@mui/icons-material'
 import { NerdModeContext } from '../App'
 import MarkdownRenderer from './MarkdownRenderer'
+import Editor from '@monaco-editor/react'
 
 export default function TaskDetail({ task, onBack, apiBase }) {
   const { nerdMode } = useContext(NerdModeContext)
@@ -188,18 +189,22 @@ export default function TaskDetail({ task, onBack, apiBase }) {
               <Typography variant="subtitle2" gutterBottom>
                 Raw Task Data
               </Typography>
-              <Box
-                component="pre"
-                sx={{
-                  bgcolor: 'background.default',
-                  p: 2,
-                  borderRadius: 1,
-                  overflow: 'auto',
-                  maxHeight: 400,
-                  fontSize: '0.75rem',
-                }}
-              >
-                {JSON.stringify(detail, null, 2)}
+              <Box sx={{ borderRadius: 1, overflow: 'hidden', height: 400 }}>
+                <Editor
+                  height="100%"
+                  defaultLanguage="json"
+                  value={JSON.stringify(detail, null, 2)}
+                  theme="vs-dark"
+                  options={{
+                    readOnly: true,
+                    minimap: { enabled: false },
+                    fontSize: 12,
+                    lineNumbers: 'on',
+                    scrollBeyondLastLine: false,
+                    wordWrap: 'on',
+                    automaticLayout: true,
+                  }}
+                />
               </Box>
             </>
           ) : (
@@ -272,18 +277,22 @@ export default function TaskDetail({ task, onBack, apiBase }) {
                   </Box>
                 )}
                 {nerdMode && (
-                  <Box
-                    component="pre"
-                    sx={{
-                      bgcolor: 'background.default',
-                      p: 2,
-                      borderRadius: 1,
-                      overflow: 'auto',
-                      maxHeight: 300,
-                      fontSize: '0.75rem',
-                    }}
-                  >
-                    {JSON.stringify(turnData, null, 2)}
+                  <Box sx={{ borderRadius: 1, overflow: 'hidden', height: 300 }}>
+                    <Editor
+                      height="100%"
+                      defaultLanguage="json"
+                      value={JSON.stringify(turnData, null, 2)}
+                      theme="vs-dark"
+                      options={{
+                        readOnly: true,
+                        minimap: { enabled: false },
+                        fontSize: 12,
+                        lineNumbers: 'on',
+                        scrollBeyondLastLine: false,
+                        wordWrap: 'on',
+                        automaticLayout: true,
+                      }}
+                    />
                   </Box>
                 )}
               </AccordionDetails>
@@ -322,19 +331,22 @@ export default function TaskDetail({ task, onBack, apiBase }) {
                   <MarkdownRenderer>{patch.pr_message || patch.description || patch.body}</MarkdownRenderer>
                 </Box>
               )}
-              <Box
-                component="pre"
-                sx={{
-                  bgcolor: '#1e1e1e',
-                  p: 2,
-                  borderRadius: 1,
-                  overflow: 'auto',
-                  maxHeight: 500,
-                  fontSize: '0.7rem',
-                  fontFamily: 'monospace',
-                }}
-              >
-                {patch.diff || 'No diff available'}
+              <Box sx={{ borderRadius: 1, overflow: 'hidden', height: 500 }}>
+                <Editor
+                  height="100%"
+                  defaultLanguage="diff"
+                  value={patch.diff || 'No diff available'}
+                  theme="vs-dark"
+                  options={{
+                    readOnly: true,
+                    minimap: { enabled: true },
+                    fontSize: 12,
+                    lineNumbers: 'on',
+                    scrollBeyondLastLine: false,
+                    wordWrap: 'on',
+                    automaticLayout: true,
+                  }}
+                />
               </Box>
             </>
           ) : patch === null ? (
