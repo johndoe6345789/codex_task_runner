@@ -14,14 +14,19 @@ Rectangle {
     property alias content: contentLoader.sourceComponent
     property alias headerContent: headerLoader.sourceComponent
     
+    // When true, don't add internal padding - let child manage it
+    property bool noPadding: false
+    
     signal clicked()
     
-    color: "#1e1e1e"
-    radius: 12
-    border.width: 1
-    border.color: hoverable && mouseArea.containsMouse ? "#4dabf7" : "#2d2d2d"
+    default property alias cardContent: contentColumn.data
     
-    implicitHeight: mainColumn.implicitHeight
+    color: Theme.paper
+    radius: 8
+    border.width: 1
+    border.color: hoverable && mouseArea.containsMouse ? Theme.primary : Theme.border
+    
+    implicitHeight: contentColumn.implicitHeight + (noPadding ? 0 : 0)
     implicitWidth: 300
     
     Behavior on border.color { ColorAnimation { duration: 150 } }
@@ -42,49 +47,10 @@ Rectangle {
         onClicked: if (card.clickable) card.clicked()
     }
     
+    // Simple content column - children are placed here
     ColumnLayout {
-        id: mainColumn
+        id: contentColumn
         anchors.fill: parent
-        anchors.margins: 16
-        spacing: 12
-        
-        // Header
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 4
-            visible: card.title || headerLoader.item
-            
-            RowLayout {
-                Layout.fillWidth: true
-                
-                Text {
-                    Layout.fillWidth: true
-                    text: card.title
-                    font.pixelSize: 16
-                    font.weight: Font.DemiBold
-                    color: "#ffffff"
-                    visible: card.title
-                }
-                
-                Loader {
-                    id: headerLoader
-                }
-            }
-            
-            Text {
-                Layout.fillWidth: true
-                text: card.subtitle
-                font.pixelSize: 12
-                color: "#888888"
-                visible: card.subtitle
-            }
-        }
-        
-        // Content
-        Loader {
-            id: contentLoader
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
+        spacing: 0
     }
 }
