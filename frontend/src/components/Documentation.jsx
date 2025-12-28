@@ -40,7 +40,7 @@ const LanguageIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill=
 
 function TabPanel({ children, value, index }) {
   return (
-    <Box role="tabpanel" hidden={value !== index} sx={{ py: 2 }}>
+    <Box role="tabpanel" hidden={value !== index} className="tab-panel">
       {value === index && children}
     </Box>
   )
@@ -56,38 +56,18 @@ function CodeBlock({ code, language = 'bash' }) {
   }
   
   return (
-    <Paper
-      sx={{
-        p: 2,
-        bgcolor: 'grey.900',
-        borderRadius: 1,
-        position: 'relative',
-        fontFamily: 'monospace',
-        overflow: 'auto',
-      }}
-    >
+    <Paper className="code-block">
       <Tooltip title={copied ? 'Copied!' : 'Copy'}>
         <IconButton
-          size="small"
+          className="copy-button"
           onClick={handleCopy}
-          sx={{ position: 'absolute', top: 8, right: 8, color: 'grey.400' }}
         >
-          {copied ? <CheckIcon fontSize="small" /> : <CopyIcon fontSize="small" />}
+          {copied ? <CheckIcon /> : <CopyIcon />}
         </IconButton>
       </Tooltip>
-      <Typography
-        component="pre"
-        sx={{
-          m: 0,
-          color: 'grey.100',
-          fontSize: '0.85rem',
-          lineHeight: 1.6,
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-        }}
-      >
+      <pre className="code-content">
         {code}
-      </Typography>
+      </pre>
     </Paper>
   )
 }
@@ -101,22 +81,17 @@ function EndpointRow({ method, path, description }) {
   }
   
   return (
-    <TableRow hover>
-      <TableCell>
-        <Chip
-          label={method}
-          size="small"
-          color={methodColors[method] || 'default'}
-          sx={{ fontFamily: 'monospace', fontWeight: 'bold' }}
-        />
-      </TableCell>
-      <TableCell>
-        <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-          {path}
-        </Typography>
-      </TableCell>
-      <TableCell>{description}</TableCell>
-    </TableRow>
+    <tr className="endpoint-row">
+      <td>
+        <Chip color={methodColors[method] || 'default'} className="method-chip">
+          {method}
+        </Chip>
+      </td>
+      <td>
+        <code className="endpoint-path">{path}</code>
+      </td>
+      <td>{description}</td>
+    </tr>
   )
 }
 
@@ -125,24 +100,21 @@ export default function Documentation() {
   const { t } = useContext(LanguageContext)
   
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Box className="documentation">
+      <Typography variant="h4" className="doc-title">
         <BookIcon /> {t('documentation') || 'Documentation'}
       </Typography>
       
-      <Paper sx={{ mb: 3 }}>
+      <Paper className="doc-tabs-container">
         <Tabs
           value={tabValue}
           onChange={(e, v) => setTabValue(v)}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{ borderBottom: 1, borderColor: 'divider' }}
         >
-          <Tab icon={<TerminalIcon />} label={t('gettingStarted') || 'Getting Started'} iconPosition="start" />
-          <Tab icon={<ComputerIcon />} label={t('usingTheUI') || 'Using the UI'} iconPosition="start" />
-          <Tab icon={<ApiIcon />} label={t('apiReference') || 'API Reference'} iconPosition="start" />
-          <Tab icon={<CodeIcon />} label={t('cliCommands') || 'CLI Commands'} iconPosition="start" />
-          <Tab icon={<KeyIcon />} label={t('authentication') || 'Authentication'} iconPosition="start" />
+          <Tab icon={<TerminalIcon />} label={t('gettingStarted') || 'Getting Started'} />
+          <Tab icon={<ComputerIcon />} label={t('usingTheUI') || 'Using the UI'} />
+          <Tab icon={<ApiIcon />} label={t('apiReference') || 'API Reference'} />
+          <Tab icon={<CodeIcon />} label={t('cliCommands') || 'CLI Commands'} />
+          <Tab icon={<KeyIcon />} label={t('authentication') || 'Authentication'} />
         </Tabs>
       </Paper>
       

@@ -5,6 +5,7 @@ import { themes, defaultTheme, applyTheme } from './themes'
 import { languages, defaultLanguage } from './i18n'
 import { AjaxQueueProvider } from './contexts/AjaxQueueContext'
 import './styles/base.scss'
+import './styles/components.scss'
 
 // Theme context for global access
 export const ThemeContext = createContext({
