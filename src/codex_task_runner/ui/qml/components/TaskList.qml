@@ -203,7 +203,8 @@ Item {
                         required property bool hasPr
                         
                         ColumnLayout {
-                            anchors.fill: parent
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
                             spacing: 0
                             
                             // Card content area

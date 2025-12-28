@@ -115,10 +115,13 @@ Item {
         // Task card header
         CCard {
             Layout.fillWidth: true
+            Layout.preferredHeight: headerContent.implicitHeight + 32
             
             ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 16
+                id: headerContent
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.margins: 16
                 spacing: 12
                 
                 Text {
@@ -209,10 +212,13 @@ Item {
                 
                 CCard {
                     width: parent.width
+                    implicitHeight: detailContent.implicitHeight + 32
                     
                     ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 16
+                        id: detailContent
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.margins: 16
                         spacing: 12
                         
                         // Nerd mode: raw JSON
@@ -260,8 +266,10 @@ Item {
             // Patch tab
             CCard {
                 ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 16
+                    id: patchContent
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 16
                     spacing: 12
                     
                     // Patch loaded

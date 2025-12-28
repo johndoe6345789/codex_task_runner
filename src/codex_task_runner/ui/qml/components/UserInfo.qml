@@ -76,10 +76,13 @@ Item {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 600
                 Layout.alignment: Qt.AlignHCenter
+                Layout.preferredHeight: contentCol1.implicitHeight + 48
                 
                 ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 24
+                    id: contentCol1
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 24
                     spacing: 16
                     
                     Text {
@@ -150,11 +153,14 @@ Item {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 600
                 Layout.alignment: Qt.AlignHCenter
+                Layout.preferredHeight: contentCol2.implicitHeight + 48
                 visible: NerdModeContext.nerdMode
                 
                 ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 24
+                    id: contentCol2
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 24
                     spacing: 16
                     
                     Text {
@@ -221,11 +227,14 @@ Item {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 600
                 Layout.alignment: Qt.AlignHCenter
+                Layout.preferredHeight: contentCol3.implicitHeight + 48
                 visible: NerdModeContext.nerdMode
                 
                 ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 24
+                    id: contentCol3
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 24
                     spacing: 16
                     
                     RowLayout {
@@ -278,11 +287,14 @@ Item {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 600
                 Layout.alignment: Qt.AlignHCenter
+                Layout.preferredHeight: contentCol4.implicitHeight + 48
                 visible: connectionStatus === "disconnected"
                 
                 ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 24
+                    id: contentCol4
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 24
                     spacing: 16
                     
                     Text {

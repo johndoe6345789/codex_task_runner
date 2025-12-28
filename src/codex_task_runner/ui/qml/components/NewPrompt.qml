@@ -95,10 +95,13 @@ Item {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 600
                 Layout.alignment: Qt.AlignHCenter
+                Layout.preferredHeight: formContent.implicitHeight + 48
                 
                 ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 24
+                    id: formContent
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 24
                     spacing: 16
                     
                     // Title
@@ -321,10 +324,13 @@ Item {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 600
                 Layout.alignment: Qt.AlignHCenter
+                Layout.preferredHeight: tipsContent.implicitHeight + 48
                 
                 ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 24
+                    id: tipsContent
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 24
                     spacing: 12
                     
                     Text {
