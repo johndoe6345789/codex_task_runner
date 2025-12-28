@@ -21,6 +21,131 @@ Item {
         { key: "authentication", title: LanguageContext.t("authentication") }
     ]
     
+    // Inline component for documentation content
+    component DocContent: ScrollView {
+        id: docScroll
+        property var content: []
+        clip: true
+        
+        ColumnLayout {
+            width: docScroll.width - 32
+            x: 16
+            y: 16
+            spacing: 12
+            
+            Repeater {
+                model: content
+                
+                delegate: Loader {
+                    Layout.fillWidth: true
+                    sourceComponent: {
+                        switch (modelData.type) {
+                            case "h1": return h1Comp
+                            case "h2": return h2Comp
+                            case "p": return pComp
+                            case "code": return codeComp
+                            case "ul": return ulComp
+                            default: return null
+                        }
+                    }
+                    
+                    property var itemData: modelData
+                }
+            }
+            
+            Item { Layout.preferredHeight: 32 }
+        }
+    }
+    
+    // H1 Component
+    Component {
+        id: h1Comp
+        Text {
+            text: itemData.text || ""
+            font.pixelSize: 28
+            font.bold: true
+            color: Theme.text
+            wrapMode: Text.WordWrap
+        }
+    }
+    
+    // H2 Component
+    Component {
+        id: h2Comp
+        Column {
+            spacing: 8
+            Item { height: 8 }
+            Text {
+                text: itemData.text || ""
+                font.pixelSize: 20
+                font.bold: true
+                color: Theme.text
+                wrapMode: Text.WordWrap
+            }
+        }
+    }
+    
+    // Paragraph Component
+    Component {
+        id: pComp
+        Text {
+            text: itemData.text || ""
+            font.pixelSize: 14
+            color: Theme.textSecondary
+            wrapMode: Text.WordWrap
+            lineHeight: 1.5
+        }
+    }
+    
+    // Code Block Component
+    Component {
+        id: codeComp
+        Rectangle {
+            width: parent.width
+            height: codeText.height + 24
+            color: Qt.rgba(0, 0, 0, 0.2)
+            radius: 4
+            
+            Text {
+                id: codeText
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 12
+                text: itemData.text || ""
+                font.pixelSize: 13
+                font.family: "Courier New"
+                color: Theme.text
+                wrapMode: Text.WrapAnywhere
+            }
+        }
+    }
+    
+    // Unordered List Component
+    Component {
+        id: ulComp
+        Column {
+            spacing: 8
+            Repeater {
+                model: itemData.items || []
+                Row {
+                    spacing: 8
+                    Text {
+                        text: "•"
+                        font.pixelSize: 14
+                        color: Theme.primary
+                    }
+                    Text {
+                        text: modelData
+                        font.pixelSize: 14
+                        color: Theme.textSecondary
+                        wrapMode: Text.WordWrap
+                    }
+                }
+            }
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
