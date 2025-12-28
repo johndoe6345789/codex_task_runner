@@ -622,6 +622,7 @@ ApplicationWindow {
                         x: -width + parent.width
                         y: parent.height + 4
                         currentTheme: window.currentTheme
+                        themeColors: window.themeColors
                         
                         onThemeSelected: function(themeId) {
                             window.currentTheme = themeId
