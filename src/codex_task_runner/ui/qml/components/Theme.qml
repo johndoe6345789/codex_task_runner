@@ -39,7 +39,7 @@ QtObject {
     property int fontSizeXxl: 24
     
     property string fontFamily: "SF Pro Display, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
-    property string fontFamilyMono: "SF Mono, Menlo, Monaco, Consolas, monospace"
+    property string fontFamilyMono: "Menlo"
     
     // Spacing
     property int spacingXs: 4

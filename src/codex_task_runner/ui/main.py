@@ -18,6 +18,9 @@ def launch(session=None):
         # Disable threaded rendering which can cause issues on macOS
         os.environ.setdefault('QSG_RHI_BACKEND', 'metal')
     
+    # Force Basic style to allow full customization
+    os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Basic'
+    
     try:
         from PyQt6.QtWidgets import QApplication
         from PyQt6.QtQml import QQmlApplicationEngine
@@ -53,8 +56,12 @@ def launch(session=None):
     # Register before loading QML
     engine.rootContext().setContextProperty("app", _controller)
     
-    # Load QML
-    qml_path = Path(__file__).parent / "qml" / "Main.qml"
+    # Add QML import path for components
+    qml_dir = Path(__file__).parent / "qml"
+    engine.addImportPath(str(qml_dir))
+    
+    # Load QML - use the new UI
+    qml_path = qml_dir / "MainNew.qml"
     engine.load(QUrl.fromLocalFile(str(qml_path)))
     
     if not engine.rootObjects():
