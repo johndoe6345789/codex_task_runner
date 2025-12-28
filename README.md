@@ -7,10 +7,27 @@ CLI tool for automating Codex Cloud tasks: fetch tasks, create PRs via Codex API
 - **yolo mode**: Full automation - creates PRs for tasks without them, then merges all
 - **run**: Process tasks from Codex API with merge options
 - **ping**: Test Codex API connectivity
-- **tasks**: List tasks from Codex Cloud
-- **task**: Get details for a specific task
+- **tasks**: List tasks from Codex Cloud (aliases: `ls`, `list`)
+- **task**: Get details for a specific task (aliases: `t`, `show`)
 - **turns**: Get conversation turns for a task
+- **patch**: Extract git-apply patch from a task (aliases: `diff`, `p`)
+- **archive**: Archive/close a completed task (aliases: `done`, `close`)
+- **discover**: Discover API endpoints via browser interception
 - **poll**: Poll multiple endpoints
+
+## Task Aliases
+
+Avoid typing long task IDs! Run `ls` first to populate aliases:
+
+```bash
+codex-runner ls              # Lists tasks with aliases: 1, 2, 3...
+codex-runner t 1             # Show task #1 detail
+codex-runner p 1             # Get patch for task #1
+codex-runner done 1          # Archive task #1
+codex-runner diff 1 --raw | git apply  # Apply patch directly
+```
+
+Aliases are stored in `~/.codex-task-cache.json` and refresh each time you run `ls`.
 
 ## Requirements
 
@@ -19,6 +36,7 @@ CLI tool for automating Codex Cloud tasks: fetch tasks, create PRs via Codex API
   - `gh auth login`
   - `gh auth status`
 - `.env` file with Codex session cookies (see `env.template`)
+- For `discover` command: Playwright (`pip install playwright playwright-stealth && playwright install chromium`)
 
 ## Install
 
@@ -33,8 +51,17 @@ python -m pip install -e .
 Full automation (create PRs + merge all tasks):
 
 ```bash
-codex-task-runner yolo
-codex-task-runner yolo -v  # verbose - shows HTTP traffic
+codex-runner yolo
+codex-runner yolo -v  # verbose - shows HTTP traffic
+```
+
+Quick workflow with aliases:
+
+```bash
+codex-runner ls           # List tasks → get aliases 1,2,3...
+codex-runner t 1          # Check task #1 detail
+codex-runner p 1 --raw | git apply  # Apply patch locally
+codex-runner done 1       # Archive when done
 ```
 
 ## Commands
@@ -97,11 +124,22 @@ codex-task-runner run --require-checks   # Only merge if CI passes
 ### Other Commands
 
 ```bash
-codex-task-runner ping              # Test API connectivity
-codex-task-runner tasks             # List all tasks
-codex-task-runner task <task_id>    # Get task details
-codex-task-runner turns <task_id>   # Get task turns
+codex-runner ping                    # Test API connectivity
+codex-runner tasks                   # List all tasks (alias: ls)
+codex-runner task <id>               # Get task details (alias: t)
+codex-runner turns <id>              # Get task turns
+codex-runner patch <id>              # Get git patch (alias: p, diff)
+codex-runner patch <id> -o out.patch # Save patch to file
+codex-runner patch <id> --raw        # Raw patch for piping
+codex-runner archive <id>            # Archive task (alias: done, close)
+codex-runner discover                # Discover API endpoints (browser)
+codex-runner me                      # Current user info (alias: whoami)
+codex-runner usage                   # Codex usage stats
+codex-runner repos                   # List connected GitHub repos
+codex-runner envs                    # List Codex environments
 ```
+
+**Note:** `<id>` can be a full task ID or a short alias (1, 2, 3...) from `ls`.
 
 ## Logging
 
