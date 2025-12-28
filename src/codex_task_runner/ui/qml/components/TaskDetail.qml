@@ -122,7 +122,7 @@ Item {
                 spacing: 12
                 
                 Text {
-                    text: task?.title || detail?.title || LanguageContext.t("taskDetail")
+                    text: detail?.title || LanguageContext.t("taskDetail")
                     font.pixelSize: 20
                     font.bold: true
                     color: Theme.text
@@ -132,30 +132,45 @@ Item {
                     spacing: 8
                     
                     CChip {
-                        text: task?.repo || LanguageContext.t("noRepo")
+                        text: detail?.repository?.full_name || detail?.repo || LanguageContext.t("noRepo")
                     }
                     
                     CChip {
-                        text: task?.base_branch || "main"
+                        text: detail?.head_branch || detail?.base_branch || "main"
                         variant: "outlined"
                     }
                     
-                    Repeater {
-                        model: task?.pr_numbers || []
-                        
-                        CChip {
-                            text: "PR #" + modelData
-                            color: Theme.success
-                        }
+                    CChip {
+                        text: detail?.status || "pending"
+                        color: detail?.status === "completed" ? Theme.success : Theme.textMuted
                     }
                 }
                 
                 Text {
-                    visible: NerdModeContext.nerdMode
-                    text: "ID: " + taskId
+                    visible: NerdModeContext.nerdMode && detail
+                    text: "ID: " + (detail?.id || detail?.task_id || "")
                     font.pixelSize: 12
                     font.family: "monospace"
                     color: Theme.textMuted
+                }
+                
+                // Action buttons
+                RowLayout {
+                    spacing: 8
+                    
+                    CButton {
+                        text: LanguageContext.t("createPR")
+                        iconText: "🔗"
+                        variant: "contained"
+                        onClicked: createPR()
+                    }
+                    
+                    CButton {
+                        text: LanguageContext.t("getPatch")
+                        iconText: "📝"
+                        variant: "outlined"
+                        onClicked: extractPatch()
+                    }
                 }
             }
         }
@@ -177,14 +192,8 @@ Item {
             }
             
             TabButton {
-                text: LanguageContext.t("turns")
-                width: implicitWidth
-            }
-            
-            TabButton {
                 text: LanguageContext.t("patch")
                 width: implicitWidth
-                onClicked: if (!patch) fetchPatch()
             }
         }
         
@@ -231,7 +240,7 @@ Item {
                             spacing: 12
                             
                             Text {
-                                text: detail?.title || task?.title || ""
+                                text: detail?.title || ""
                                 font.pixelSize: 18
                                 font.bold: true
                                 color: Theme.text
@@ -241,144 +250,7 @@ Item {
                             
                             MarkdownRenderer {
                                 Layout.fillWidth: true
-                                text: detail?.description || detail?.prompt || task?.description || task?.prompt || ""
-                            }
-                            
-                            CChip {
-                                text: detail?.status || task?.status || "pending"
-                                visible: !!(detail?.status || task?.status)
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // Turns tab
-            ScrollView {
-                clip: true
-                
-                ColumnLayout {
-                    width: parent.width
-                    spacing: 8
-                    
-                    Text {
-                        visible: NerdModeContext.nerdMode && turns
-                        text: LanguageContext.t("currentTurn") + ": " + (turns?.current_turn_id || "")
-                        font.family: "monospace"
-                        font.pixelSize: 12
-                        color: Theme.textMuted
-                    }
-                    
-                    Repeater {
-                        model: turns ? Object.keys(turns.turn_mapping || {}) : []
-                        
-                        delegate: CCard {
-                            Layout.fillWidth: true
-                            
-                            property string turnId: modelData
-                            property var turnData: turns?.turn_mapping[modelData]
-                            property bool isCurrent: turnId === turns?.current_turn_id
-                            property bool expanded: false
-                            
-                            ColumnLayout {
-                                anchors.fill: parent
-                                anchors.margins: 16
-                                spacing: 8
-                                
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    
-                                    Text {
-                                        text: NerdModeContext.nerdMode ? 
-                                              "Turn: " + turnId.substring(0, 8) + "..." :
-                                              "Turn " + (index + 1)
-                                        font.pixelSize: 14
-                                        font.bold: true
-                                        color: Theme.text
-                                    }
-                                    
-                                    CChip {
-                                        text: "Current"
-                                        color: Theme.primary
-                                        visible: isCurrent
-                                    }
-                                    
-                                    Item { Layout.fillWidth: true }
-                                    
-                                    CButton {
-                                        text: LanguageContext.t("createPR")
-                                        iconText: "🔗"
-                                        variant: "contained"
-                                        size: "small"
-                                        onClicked: createPR(turnId)
-                                    }
-                                    
-                                    CIconButton {
-                                        icon: expanded ? "▼" : "▶"
-                                        onClicked: expanded = !expanded
-                                    }
-                                }
-                                
-                                // Expanded content
-                                ColumnLayout {
-                                    visible: expanded
-                                    Layout.fillWidth: true
-                                    spacing: 8
-                                    
-                                    // Prompt
-                                    ColumnLayout {
-                                        visible: turnData?.prompt
-                                        Layout.fillWidth: true
-                                        
-                                        Text {
-                                            text: "Prompt"
-                                            font.pixelSize: 12
-                                            font.bold: true
-                                            color: Theme.textSecondary
-                                        }
-                                        
-                                        MarkdownRenderer {
-                                            Layout.fillWidth: true
-                                            text: turnData?.prompt || ""
-                                        }
-                                    }
-                                    
-                                    // Response (normal mode)
-                                    ColumnLayout {
-                                        visible: turnData?.response && !NerdModeContext.nerdMode
-                                        Layout.fillWidth: true
-                                        
-                                        Text {
-                                            text: "Response"
-                                            font.pixelSize: 12
-                                            font.bold: true
-                                            color: Theme.textSecondary
-                                        }
-                                        
-                                        MarkdownRenderer {
-                                            Layout.fillWidth: true
-                                            text: turnData?.response || ""
-                                        }
-                                    }
-                                    
-                                    // Raw JSON (nerd mode)
-                                    TextArea {
-                                        visible: NerdModeContext.nerdMode
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 200
-                                        text: turnData ? JSON.stringify(turnData, null, 2) : ""
-                                        font.family: "monospace"
-                                        font.pixelSize: 11
-                                        color: Theme.text
-                                        readOnly: true
-                                        wrapMode: Text.Wrap
-                                        
-                                        background: Rectangle {
-                                            color: Theme.surface
-                                            radius: 4
-                                        }
-                                    }
-                                }
+                                text: detail?.description || detail?.prompt || ""
                             }
                         }
                     }
@@ -394,7 +266,7 @@ Item {
                     
                     // Patch loaded
                     ColumnLayout {
-                        visible: patch !== null
+                        visible: detail?.patch !== undefined
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         spacing: 12
@@ -403,21 +275,11 @@ Item {
                         RowLayout {
                             Layout.fillWidth: true
                             
-                            ColumnLayout {
-                                spacing: 4
-                                
-                                Text {
-                                    text: patch?.pr_title || "Git Patch"
-                                    font.pixelSize: 14
-                                    font.bold: true
-                                    color: Theme.text
-                                }
-                                
-                                Text {
-                                    text: (patch?.diff_lines || 0) + " " + LanguageContext.t("lines")
-                                    font.pixelSize: 12
-                                    color: Theme.textSecondary
-                                }
+                            Text {
+                                text: "Git Patch"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: Theme.text
                             }
                             
                             Item { Layout.fillWidth: true }
@@ -425,21 +287,8 @@ Item {
                             CIconButton {
                                 icon: "📋"
                                 tooltip: "Copy"
-                                onClicked: copyToClipboard(patch?.diff || "")
+                                onClicked: copyToClipboard(detail?.patch?.diff || "")
                             }
-                            
-                            CIconButton {
-                                icon: "💾"
-                                tooltip: "Download"
-                                // Download would require platform-specific code
-                            }
-                        }
-                        
-                        // Description
-                        MarkdownRenderer {
-                            Layout.fillWidth: true
-                            text: patch?.pr_message || patch?.description || patch?.body || ""
-                            visible: (patch?.pr_message || patch?.description || patch?.body || "") !== ""
                         }
                         
                         // Diff view
@@ -450,7 +299,7 @@ Item {
                             
                             TextArea {
                                 width: parent.width
-                                text: patch?.diff || LanguageContext.t("noPatch")
+                                text: detail?.patch?.diff || LanguageContext.t("noPatch")
                                 font.family: "monospace"
                                 font.pixelSize: 12
                                 color: Theme.text
@@ -467,10 +316,10 @@ Item {
                     
                     // Load patch button
                     CButton {
-                        visible: patch === null
+                        visible: detail?.patch === undefined
                         text: LanguageContext.t("loadPatch")
                         variant: "contained"
-                        onClicked: fetchPatch()
+                        onClicked: extractPatch()
                         Layout.alignment: Qt.AlignHCenter
                     }
                 }

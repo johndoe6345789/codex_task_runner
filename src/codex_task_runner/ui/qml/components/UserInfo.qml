@@ -6,49 +6,61 @@ import "../fakemui"
 
 /**
  * UserInfo.qml - User profile and connection status
- * Mirrors React's UserInfo.jsx
+ * Uses Python AppController (app) - shows session info
  */
 Item {
     id: root
     
-    property string apiBase: ""
+    // State
+    property var sessionInfo: null
+    property string debugLogs: ""
+    property string connectionStatus: "unknown"
     
-    // User state
-    property var userData: null
-    property bool loading: true
-    property string error: ""
-    property string connectionStatus: "unknown" // unknown, connected, disconnected
-    
-    function fetchUserInfo() {
-        loading = true
-        error = ""
-        
-        const reqId = AjaxQueueContext.addRequest("Fetching user info")
-        
-        const xhr = new XMLHttpRequest()
-        xhr.open("GET", apiBase + "/me")
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                loading = false
-                if (xhr.status === 200) {
-                    userData = JSON.parse(xhr.responseText)
-                    connectionStatus = "connected"
-                    AjaxQueueContext.updateRequest(reqId, { status: "success" })
-                } else if (xhr.status === 401) {
-                    connectionStatus = "disconnected"
-                    error = LanguageContext.t("authRequired")
-                    AjaxQueueContext.updateRequest(reqId, { status: "error", error: "Auth required" })
-                } else {
-                    connectionStatus = "disconnected"
-                    error = "Network error"
-                    AjaxQueueContext.updateRequest(reqId, { status: "error", error: error })
-                }
-            }
+    Component.onCompleted: {
+        app.sessionInfoChanged.connect(onSessionInfo)
+        app.debugLog.connect(onDebugLog)
+        // Request session info if in nerd mode
+        if (NerdModeContext.nerdMode) {
+            app.setNerdMode(true)  // This emits sessionInfoChanged
         }
-        xhr.send()
+        // Check connection by loading tasks
+        connectionStatus = "checking"
+        app.tasksLoaded.connect(onConnected)
+        app.errorOccurred.connect(onConnectionError)
     }
     
-    Component.onCompleted: fetchUserInfo()
+    Component.onDestruction: {
+        app.sessionInfoChanged.disconnect(onSessionInfo)
+        app.debugLog.disconnect(onDebugLog)
+        app.tasksLoaded.disconnect(onConnected)
+        app.errorOccurred.disconnect(onConnectionError)
+    }
+    
+    function onSessionInfo(jsonStr) {
+        try {
+            sessionInfo = JSON.parse(jsonStr)
+        } catch (e) {
+            sessionInfo = null
+        }
+    }
+    
+    function onDebugLog(entry) {
+        debugLogs = app.getDebugLogs()
+    }
+    
+    function onConnected() {
+        connectionStatus = "connected"
+    }
+    
+    function onConnectionError(msg) {
+        if (msg.includes("session") || msg.includes("auth")) {
+            connectionStatus = "disconnected"
+        }
+    }
+    
+    function openCodex() {
+        app.openCodexBrowser()
+    }
     
     ScrollView {
         anchors.fill: parent
@@ -58,159 +70,6 @@ Item {
         ColumnLayout {
             width: parent.width
             spacing: 16
-            
-            // User profile card
-            CCard {
-                Layout.fillWidth: true
-                Layout.maximumWidth: 600
-                Layout.alignment: Qt.AlignHCenter
-                
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 24
-                    spacing: 16
-                    
-                    // Title
-                    Text {
-                        text: LanguageContext.t("accountInfo")
-                        font.pixelSize: 24
-                        font.bold: true
-                        color: Theme.text
-                    }
-                    
-                    // Loading indicator
-                    BusyIndicator {
-                        visible: loading
-                        running: loading
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-                    
-                    // Error display
-                    Rectangle {
-                        Layout.fillWidth: true
-                        visible: error !== "" && !loading
-                        height: 64
-                        color: Qt.rgba(Theme.error.r, Theme.error.g, Theme.error.b, 0.12)
-                        radius: 4
-                        
-                        RowLayout {
-                            anchors.centerIn: parent
-                            spacing: 12
-                            
-                            Text {
-                                text: "⚠️"
-                                font.pixelSize: 24
-                            }
-                            
-                            Text {
-                                text: error
-                                color: Theme.error
-                            }
-                        }
-                    }
-                    
-                    // User info display
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        visible: !loading && userData !== null
-                        spacing: 16
-                        
-                        // Avatar and basic info
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 16
-                            
-                            // Avatar
-                            Rectangle {
-                                width: 80
-                                height: 80
-                                radius: 40
-                                color: Theme.primary
-                                
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: userData ? (userData.name || userData.email || "?").charAt(0).toUpperCase() : "?"
-                                    font.pixelSize: 32
-                                    font.bold: true
-                                    color: "white"
-                                }
-                            }
-                            
-                            ColumnLayout {
-                                spacing: 4
-                                
-                                Text {
-                                    text: userData ? (userData.name || LanguageContext.t("noName")) : ""
-                                    font.pixelSize: 20
-                                    font.bold: true
-                                    color: Theme.text
-                                }
-                                
-                                Text {
-                                    text: userData ? (userData.email || "") : ""
-                                    font.pixelSize: 14
-                                    color: Theme.textSecondary
-                                }
-                            }
-                        }
-                        
-                        // Divider
-                        Rectangle {
-                            Layout.fillWidth: true
-                            height: 1
-                            color: Theme.border
-                        }
-                        
-                        // Additional user details
-                        GridLayout {
-                            Layout.fillWidth: true
-                            columns: 2
-                            columnSpacing: 16
-                            rowSpacing: 12
-                            
-                            Text {
-                                text: LanguageContext.t("userId")
-                                font.pixelSize: 14
-                                font.bold: true
-                                color: Theme.textSecondary
-                            }
-                            
-                            Text {
-                                text: userData ? (userData.id || "—") : "—"
-                                font.pixelSize: 14
-                                color: Theme.text
-                                font.family: "Courier New"
-                            }
-                            
-                            Text {
-                                text: LanguageContext.t("organization")
-                                font.pixelSize: 14
-                                font.bold: true
-                                color: Theme.textSecondary
-                            }
-                            
-                            Text {
-                                text: userData ? (userData.org || "—") : "—"
-                                font.pixelSize: 14
-                                color: Theme.text
-                            }
-                            
-                            Text {
-                                text: LanguageContext.t("role")
-                                font.pixelSize: 14
-                                font.bold: true
-                                color: Theme.textSecondary
-                            }
-                            
-                            Text {
-                                text: userData ? (userData.role || "—") : "—"
-                                font.pixelSize: 14
-                                color: Theme.text
-                            }
-                        }
-                    }
-                }
-            }
             
             // Connection status card
             CCard {
@@ -245,6 +104,7 @@ Item {
                         Text {
                             text: connectionStatus === "connected" ? LanguageContext.t("connected") :
                                   connectionStatus === "disconnected" ? LanguageContext.t("disconnected") :
+                                  connectionStatus === "checking" ? "Checking..." :
                                   LanguageContext.t("unknown")
                             font.pixelSize: 16
                             color: Theme.text
@@ -254,24 +114,38 @@ Item {
                     Text {
                         text: connectionStatus === "connected" ? 
                               LanguageContext.t("connectedDesc") :
-                              LanguageContext.t("disconnectedDesc")
+                              connectionStatus === "disconnected" ?
+                              "Set up your .env file with CODEX_SESSION_TOKEN" :
+                              "Checking connection..."
                         font.pixelSize: 14
                         color: Theme.textSecondary
                         wrapMode: Text.WordWrap
                         Layout.fillWidth: true
                     }
                     
-                    // Refresh button
-                    CButton {
-                        text: LanguageContext.t("refresh")
-                        variant: "outlined"
-                        onClicked: fetchUserInfo()
-                        enabled: !loading
+                    // Actions
+                    RowLayout {
+                        spacing: 12
+                        
+                        CButton {
+                            text: "Open Codex in Browser"
+                            variant: "outlined"
+                            onClicked: openCodex()
+                        }
+                        
+                        CButton {
+                            text: LanguageContext.t("refresh")
+                            variant: "text"
+                            onClicked: {
+                                connectionStatus = "checking"
+                                app.loadTasks()
+                            }
+                        }
                     }
                 }
             }
             
-            // API Info card (nerd mode only)
+            // Session Info card (nerd mode only)
             CCard {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 600
@@ -284,7 +158,7 @@ Item {
                     spacing: 16
                     
                     Text {
-                        text: LanguageContext.t("apiInfo")
+                        text: "Session Info"
                         font.pixelSize: 18
                         font.bold: true
                         color: Theme.text
@@ -297,31 +171,155 @@ Item {
                         rowSpacing: 12
                         
                         Text {
-                            text: LanguageContext.t("apiEndpoint")
+                            text: "Has Session"
                             font.pixelSize: 14
                             font.bold: true
                             color: Theme.textSecondary
                         }
                         
                         Text {
-                            text: apiBase
+                            text: sessionInfo?.has_session ? "Yes" : "No"
                             font.pixelSize: 14
-                            color: Theme.text
-                            font.family: "Courier New"
+                            color: sessionInfo?.has_session ? Theme.success : Theme.error
                         }
                         
                         Text {
-                            text: LanguageContext.t("requestCount")
+                            text: "Base URL"
                             font.pixelSize: 14
                             font.bold: true
                             color: Theme.textSecondary
                         }
                         
                         Text {
-                            text: AjaxQueueContext.queue.length.toString()
+                            text: sessionInfo?.base_url || "—"
                             font.pixelSize: 14
                             color: Theme.text
+                            font.family: "monospace"
                         }
+                        
+                        Text {
+                            text: "Cookie Preview"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: Theme.textSecondary
+                        }
+                        
+                        Text {
+                            text: sessionInfo?.cookie_preview || "—"
+                            font.pixelSize: 14
+                            color: Theme.text
+                            font.family: "monospace"
+                            elide: Text.ElideMiddle
+                            Layout.maximumWidth: 200
+                        }
+                    }
+                }
+            }
+            
+            // Debug Logs card (nerd mode only)
+            CCard {
+                Layout.fillWidth: true
+                Layout.maximumWidth: 600
+                Layout.alignment: Qt.AlignHCenter
+                visible: NerdModeContext.nerdMode
+                
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 24
+                    spacing: 16
+                    
+                    RowLayout {
+                        Layout.fillWidth: true
+                        
+                        Text {
+                            text: "Debug Logs"
+                            font.pixelSize: 18
+                            font.bold: true
+                            color: Theme.text
+                        }
+                        
+                        Item { Layout.fillWidth: true }
+                        
+                        CButton {
+                            text: "Clear"
+                            variant: "text"
+                            size: "small"
+                            onClicked: {
+                                app.clearDebugLogs()
+                                debugLogs = ""
+                            }
+                        }
+                    }
+                    
+                    ScrollView {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 200
+                        clip: true
+                        
+                        TextArea {
+                            text: debugLogs || "(no logs yet)"
+                            font.family: "monospace"
+                            font.pixelSize: 11
+                            color: Theme.text
+                            readOnly: true
+                            wrapMode: Text.NoWrap
+                            
+                            background: Rectangle {
+                                color: Theme.surface
+                                radius: 4
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Setup instructions
+            CCard {
+                Layout.fillWidth: true
+                Layout.maximumWidth: 600
+                Layout.alignment: Qt.AlignHCenter
+                visible: connectionStatus === "disconnected"
+                
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 24
+                    spacing: 16
+                    
+                    Text {
+                        text: "Setup Instructions"
+                        font.pixelSize: 18
+                        font.bold: true
+                        color: Theme.text
+                    }
+                    
+                    Text {
+                        text: "1. Open ChatGPT/Codex in your browser"
+                        font.pixelSize: 14
+                        color: Theme.textSecondary
+                    }
+                    
+                    Text {
+                        text: "2. Open DevTools → Application → Cookies"
+                        font.pixelSize: 14
+                        color: Theme.textSecondary
+                    }
+                    
+                    Text {
+                        text: "3. Copy the __Secure-next-auth.session-token value"
+                        font.pixelSize: 14
+                        color: Theme.textSecondary
+                    }
+                    
+                    Text {
+                        text: "4. Create a .env file with CODEX_SESSION_TOKEN=<token>"
+                        font.pixelSize: 14
+                        color: Theme.textSecondary
+                    }
+                    
+                    Text {
+                        text: "5. Restart the app"
+                        font.pixelSize: 14
+                        color: Theme.textSecondary
                     }
                 }
             }

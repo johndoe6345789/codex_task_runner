@@ -6,12 +6,11 @@ import "../fakemui"
 
 /**
  * NewPrompt.qml - Create new task form
- * Mirrors React's NewPrompt.jsx
+ * Uses Python AppController (app) directly instead of HTTP/XHR
  */
 Item {
     id: root
     
-    property string apiBase: ""
     signal success()
     
     // Form state
@@ -21,6 +20,41 @@ Item {
     property bool loading: false
     property string error: ""
     property string successMessage: ""
+    property var environments: []
+    property string selectedEnvId: ""
+    
+    Component.onCompleted: {
+        app.environmentsLoaded.connect(onEnvironmentsLoaded)
+        app.promptSuccess.connect(onPromptSuccess)
+        app.promptError.connect(onPromptError)
+        // Load environments for task creation
+        app.loadEnvironments()
+    }
+    
+    Component.onDestruction: {
+        app.environmentsLoaded.disconnect(onEnvironmentsLoaded)
+        app.promptSuccess.disconnect(onPromptSuccess)
+        app.promptError.disconnect(onPromptError)
+    }
+    
+    function onEnvironmentsLoaded(envs) {
+        environments = envs
+        if (envs.length > 0) {
+            selectedEnvId = envs[0].id
+        }
+    }
+    
+    function onPromptSuccess(taskId) {
+        loading = false
+        successMessage = LanguageContext.t("taskCreated") + " (" + taskId.substring(0, 8) + "...)"
+        prompt = ""
+        successTimer.start()
+    }
+    
+    function onPromptError(msg) {
+        loading = false
+        error = msg
+    }
     
     function handleSubmit() {
         if (!prompt.trim()) {
@@ -28,40 +62,17 @@ Item {
             return
         }
         
+        if (!selectedEnvId) {
+            error = "Select an environment (repository)"
+            return
+        }
+        
         loading = true
         error = ""
         successMessage = ""
         
-        const reqId = AjaxQueueContext.addRequest("Creating task")
-        
-        const xhr = new XMLHttpRequest()
-        xhr.open("POST", apiBase + "/prompt")
-        xhr.setRequestHeader("Content-Type", "application/json")
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                loading = false
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText)
-                    if (data.success) {
-                        successMessage = LanguageContext.t("taskCreated")
-                        prompt = ""
-                        AjaxQueueContext.updateRequest(reqId, { status: "success" })
-                        successTimer.start()
-                    } else {
-                        error = data.error || LanguageContext.t("failedCreate")
-                        AjaxQueueContext.updateRequest(reqId, { status: "error", error: error })
-                    }
-                } else {
-                    error = "Network error"
-                    AjaxQueueContext.updateRequest(reqId, { status: "error", error: error })
-                }
-            }
-        }
-        xhr.send(JSON.stringify({
-            prompt_text: prompt,
-            branch: branch,
-            best_of: bestOf
-        }))
+        // Use Python controller to create task
+        app.sendPrompt(prompt, selectedEnvId, branch, bestOf)
     }
     
     Timer {
@@ -177,9 +188,54 @@ Item {
                         Layout.fillWidth: true
                         spacing: 16
                         
-                        // Branch input
+                        // Environment selector
                         ColumnLayout {
                             Layout.fillWidth: true
+                            spacing: 8
+                            
+                            Text {
+                                text: "Repository"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: Theme.text
+                            }
+                            
+                            ComboBox {
+                                id: envCombo
+                                Layout.fillWidth: true
+                                model: environments
+                                textRole: "name"
+                                valueRole: "id"
+                                currentIndex: environments.length > 0 ? 0 : -1
+                                onActivated: selectedEnvId = currentValue
+                                enabled: !loading && environments.length > 0
+                                
+                                background: Rectangle {
+                                    color: Theme.surface
+                                    border.color: Theme.border
+                                    border.width: 1
+                                    radius: 4
+                                    implicitHeight: 40
+                                }
+                                
+                                popup.background: Rectangle {
+                                    color: Theme.paper
+                                    border.color: Theme.border
+                                    radius: 4
+                                }
+                            }
+                            
+                            Text {
+                                visible: environments.length === 0
+                                text: "Loading repositories..."
+                                font.pixelSize: 12
+                                color: Theme.textMuted
+                            }
+                        }
+                        
+                        // Branch input
+                        ColumnLayout {
+                            Layout.preferredWidth: 150
                             spacing: 8
                             
                             Text {
