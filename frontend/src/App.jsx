@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createContext, useContext } from 'react'
 import {
   Box,
   Container,
@@ -14,6 +14,9 @@ import {
   Divider,
   IconButton,
   Chip,
+  Switch,
+  FormControlLabel,
+  Tooltip,
 } from '@mui/material'
 import {
   Menu as MenuIcon,
@@ -23,7 +26,11 @@ import {
   Person as PersonIcon,
   Settings as SettingsIcon,
   Refresh as RefreshIcon,
+  Code as CodeIcon,
 } from '@mui/icons-material'
+
+// Nerd mode context
+export const NerdModeContext = createContext({ nerdMode: false, setNerdMode: () => {} })
 
 import TaskList from './components/TaskList'
 import TaskDetail from './components/TaskDetail'
@@ -39,6 +46,14 @@ export default function App() {
   const [currentView, setCurrentView] = useState('tasks')
   const [selectedTask, setSelectedTask] = useState(null)
   const [user, setUser] = useState(null)
+  const [nerdMode, setNerdMode] = useState(() => {
+    const saved = localStorage.getItem('nerdMode')
+    return saved ? JSON.parse(saved) : false
+  })
+
+  useEffect(() => {
+    localStorage.setItem('nerdMode', JSON.stringify(nerdMode))
+  }, [nerdMode])
 
   useEffect(() => {
     fetchUser()
@@ -111,6 +126,27 @@ export default function App() {
           </ListItemButton>
         </ListItem>
       </List>
+      <Divider />
+      <Box sx={{ p: 2 }}>
+        <Tooltip title="Show technical details, raw JSON, and IDs">
+          <FormControlLabel
+            control={
+              <Switch
+                checked={nerdMode}
+                onChange={(e) => setNerdMode(e.target.checked)}
+                size="small"
+                color="primary"
+              />
+            }
+            label={
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <CodeIcon fontSize="small" />
+                <Typography variant="body2">Nerd Mode</Typography>
+              </Box>
+            }
+          />
+        </Tooltip>
+      </Box>
       {user && (
         <Box sx={{ p: 2, mt: 'auto' }}>
           <Chip
@@ -141,6 +177,7 @@ export default function App() {
   }
 
   return (
+    <NerdModeContext.Provider value={{ nerdMode, setNerdMode }}>
     <Box sx={{ display: 'flex' }}>
       <AppBar
         position="fixed"
@@ -209,5 +246,6 @@ export default function App() {
         {renderContent()}
       </Box>
     </Box>
+    </NerdModeContext.Provider>
   )
 }

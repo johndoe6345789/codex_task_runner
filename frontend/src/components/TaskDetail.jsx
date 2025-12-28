@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   Box,
   Card,
@@ -25,8 +25,10 @@ import {
   Download as DownloadIcon,
   GitHub as GitHubIcon,
 } from '@mui/icons-material'
+import { NerdModeContext } from '../App'
 
 export default function TaskDetail({ task, onBack, apiBase }) {
+  const { nerdMode } = useContext(NerdModeContext)
   const [detail, setDetail] = useState(null)
   const [turns, setTurns] = useState(null)
   const [patch, setPatch] = useState(null)
@@ -159,9 +161,14 @@ export default function TaskDetail({ task, onBack, apiBase }) {
               />
             ))}
           </Box>
-          <Typography variant="caption" color="text.secondary">
-            ID: {taskId}
-          </Typography>
+          {nerdMode && (
+            <Typography 
+              variant="caption" 
+              sx={{ fontFamily: 'monospace', color: 'text.disabled', display: 'block' }}
+            >
+              ID: {taskId}
+            </Typography>
+          )}
         </CardContent>
       </Card>
 
@@ -175,35 +182,55 @@ export default function TaskDetail({ task, onBack, apiBase }) {
 
       {tabValue === 0 && detail && (
         <Paper sx={{ p: 2 }}>
-          <Typography variant="subtitle2" gutterBottom>
-            Raw Task Data
-          </Typography>
-          <Box
-            component="pre"
-            sx={{
-              bgcolor: 'background.default',
-              p: 2,
-              borderRadius: 1,
-              overflow: 'auto',
-              maxHeight: 400,
-              fontSize: '0.75rem',
-            }}
-          >
-            {JSON.stringify(detail, null, 2)}
-          </Box>
+          {nerdMode ? (
+            <>
+              <Typography variant="subtitle2" gutterBottom>
+                Raw Task Data
+              </Typography>
+              <Box
+                component="pre"
+                sx={{
+                  bgcolor: 'background.default',
+                  p: 2,
+                  borderRadius: 1,
+                  overflow: 'auto',
+                  maxHeight: 400,
+                  fontSize: '0.75rem',
+                }}
+              >
+                {JSON.stringify(detail, null, 2)}
+              </Box>
+            </>
+          ) : (
+            <Box>
+              <Typography variant="body1" gutterBottom>
+                {detail.title || task?.title || 'No title'}
+              </Typography>
+              {detail.description && (
+                <Typography variant="body2" color="text.secondary">
+                  {detail.description}
+                </Typography>
+              )}
+              {detail.status && (
+                <Chip label={detail.status} size="small" sx={{ mt: 1 }} />
+              )}
+            </Box>
+          )}
         </Paper>
       )}
 
       {tabValue === 1 && turns && (
         <Box>
-          <Typography variant="subtitle2" gutterBottom>
-            Current Turn: {turns.current_turn_id}
-          </Typography>
+          {nerdMode && (
+            <Typography variant="subtitle2" gutterBottom sx={{ fontFamily: 'monospace' }}>
+              Current Turn: {turns.current_turn_id}
+            </Typography>
+          )}
           {Object.entries(turns.turn_mapping || {}).map(([turnId, turnData]) => (
             <Accordion key={turnId}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography sx={{ flexGrow: 1 }}>
-                  Turn: {turnId.slice(0, 8)}...
+                  {nerdMode ? `Turn: ${turnId.slice(0, 8)}...` : `Turn ${Object.keys(turns.turn_mapping || {}).indexOf(turnId) + 1}`}
                 </Typography>
                 {turnId === turns.current_turn_id && (
                   <Chip label="Current" size="small" color="primary" sx={{ mr: 1 }} />
@@ -220,20 +247,27 @@ export default function TaskDetail({ task, onBack, apiBase }) {
                   >
                     Create PR
                   </Button>
+                  {nerdMode && (
+                    <IconButton size="small" onClick={() => copyToClipboard(turnId)}>
+                      <CopyIcon fontSize="small" />
+                    </IconButton>
+                  )}
                 </Box>
-                <Box
-                  component="pre"
-                  sx={{
-                    bgcolor: 'background.default',
-                    p: 2,
-                    borderRadius: 1,
-                    overflow: 'auto',
-                    maxHeight: 300,
-                    fontSize: '0.75rem',
-                  }}
-                >
-                  {JSON.stringify(turnData, null, 2)}
-                </Box>
+                {nerdMode && (
+                  <Box
+                    component="pre"
+                    sx={{
+                      bgcolor: 'background.default',
+                      p: 2,
+                      borderRadius: 1,
+                      overflow: 'auto',
+                      maxHeight: 300,
+                      fontSize: '0.75rem',
+                    }}
+                  >
+                    {JSON.stringify(turnData, null, 2)}
+                  </Box>
+                )}
               </AccordionDetails>
             </Accordion>
           ))}

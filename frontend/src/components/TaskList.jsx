@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   Box,
   Card,
@@ -23,9 +23,12 @@ import {
   OpenInNew as OpenInNewIcon,
   Archive as ArchiveIcon,
   Code as CodeIcon,
+  ContentCopy as CopyIcon,
 } from '@mui/icons-material'
+import { NerdModeContext } from '../App'
 
 export default function TaskList({ onTaskSelect, apiBase }) {
+  const { nerdMode } = useContext(NerdModeContext)
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -150,9 +153,27 @@ export default function TaskList({ onTaskSelect, apiBase }) {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                   {task.repo || 'No repo'}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {task.base_branch || 'main'}
-                </Typography>
+                {nerdMode && (
+                  <Box sx={{ mt: 1 }}>
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        fontFamily: 'monospace', 
+                        color: 'text.disabled',
+                        display: 'block',
+                        fontSize: '0.65rem',
+                        wordBreak: 'break-all'
+                      }}
+                    >
+                      {task.task_id || task.id}
+                    </Typography>
+                  </Box>
+                )}
+                {!nerdMode && (
+                  <Typography variant="caption" color="text.secondary">
+                    {task.base_branch || 'main'}
+                  </Typography>
+                )}
               </CardContent>
               <CardActions>
                 <Button size="small" onClick={() => onTaskSelect(task)}>
