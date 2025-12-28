@@ -404,7 +404,7 @@ ApplicationWindow {
                         CIconButton {
                             icon: "🔄"
                             tooltip: "Refresh"
-                            onClicked: fetchUser()
+                            onClicked: app.loadTasks()
                         }
                     }
                 }
