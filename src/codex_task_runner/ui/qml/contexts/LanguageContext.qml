@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import Qt.labs.settings
 
 /**
  * LanguageContext - Internationalization / translations
@@ -7,6 +8,9 @@ import QtQuick
  */
 QtObject {
     id: i18n
+    
+    // Alias for component compatibility
+    property string currentLanguage: language
     
     // Current language
     property string language: {
@@ -108,19 +112,75 @@ QtObject {
             loading: "Loading...",
             apiConnection: "API Connection",
             connected: "Connected",
+            disconnected: "Disconnected",
+            unknown: "Unknown",
+            connectedDesc: "Your session is active and connected to Codex API",
+            disconnectedDesc: "Could not connect to Codex API. Please check your authentication.",
             apiBase: "API Base",
+            refresh: "Refresh",
+            accountInfo: "Account Information",
+            noName: "No Name",
+            userId: "User ID",
+            organization: "Organization",
+            role: "Role",
+            connectionStatus: "Connection Status",
+            authRequired: "Authentication required",
+            apiInfo: "API Information",
+            apiEndpoint: "API Endpoint",
+            requestCount: "Request Count",
             
             // Documentation
             gettingStarted: "Getting Started",
+            usingUI: "Using the UI",
             apiReference: "API Reference",
             cliCommands: "CLI Commands",
             authentication: "Authentication",
             installation: "Installation",
             quickStart: "Quick Start",
+            quickStartDesc: "Here's how to get started with Codex Task Runner",
+            configDesc: "Configure your environment with the following settings",
+            gettingStartedIntro: "Welcome to Codex Task Runner! This guide will help you get started.",
+            usingUIIntro: "The UI provides an intuitive way to manage your coding tasks.",
+            navigation: "Navigation",
+            navigationDesc: "Use the drawer menu to navigate between sections:",
+            navTasks: "Tasks - View and manage your coding tasks",
+            navNewPrompt: "New Prompt - Create new tasks by sending prompts",
+            navAccount: "Account - View your profile and connection status",
+            navDocs: "Documentation - Access help and API documentation",
+            taskList: "Task List",
+            taskListDesc: "Filter and browse tasks with different status filters and limits.",
+            taskDetailDesc: "View task details, turns, patches, and create pull requests.",
+            keyboardShortcuts: "Keyboard Shortcuts",
+            apiReferenceIntro: "Complete API reference for the Codex Task Runner backend.",
+            getTasksDesc: "List all tasks with optional filtering",
+            getTaskDesc: "Get detailed information about a specific task",
+            postPromptDesc: "Create a new coding task from a prompt",
+            createPRDesc: "Create a pull request from task changes",
+            cliCommandsIntro: "Command-line interface for power users.",
+            cliTasksDesc: "List and filter tasks from the command line",
+            cliRunDesc: "Run a new task with a prompt",
+            cliPollDesc: "Poll a task for status updates",
+            cliPRDesc: "Create a pull request for a task",
+            authenticationIntro: "Authentication methods and security best practices.",
+            apiKey: "API Key",
+            apiKeyDesc: "Use an API key for server-to-server authentication",
+            sessionCookie: "Session Cookie",
+            sessionCookieDesc: "Browser sessions use secure HTTP-only cookies",
+            securityTips: "Security Tips",
+            securityTip1: "Never share your API key or session cookie",
+            securityTip2: "Use environment variables for sensitive data",
+            securityTip3: "Rotate API keys periodically",
+            securityTip4: "Use HTTPS in production",
             
             // Search
             search: "Search",
-            searchPlaceholder: "Search tasks, code, patches..."
+            searchPlaceholder: "Search tasks, code, patches...",
+            noResults: "No results found",
+            searchHelp: "Enter a search term to find tasks or code",
+            code: "Code",
+            
+            // AJAX Queue
+            requests: "Requests"
         },
         
         es: {
@@ -168,16 +228,31 @@ QtObject {
             failedCreate: "Error al crear tarea",
             enterPrompt: "Por favor ingresa un prompt",
             tips: "Consejos",
+            tip1: "Sé específico sobre lo que quieres que Codex implemente",
+            tip2: "Menciona las rutas de archivos si las conoces",
+            tip3: "Incluye restricciones o requisitos",
+            tip4: "Usa \"Mejor de\" > 1 para generar múltiples soluciones",
             loading: "Cargando...",
             apiConnection: "Conexión API",
             connected: "Conectado",
+            disconnected: "Desconectado",
+            unknown: "Desconocido",
+            connectedDesc: "Tu sesión está activa y conectada a la API de Codex",
+            disconnectedDesc: "No se pudo conectar a la API. Verifica tu autenticación.",
             apiBase: "Base API",
+            refresh: "Actualizar",
+            accountInfo: "Información de Cuenta",
+            connectionStatus: "Estado de Conexión",
             gettingStarted: "Primeros Pasos",
+            usingUI: "Usando la UI",
             apiReference: "Referencia API",
             cliCommands: "Comandos CLI",
             authentication: "Autenticación",
             search: "Buscar",
-            searchPlaceholder: "Buscar tareas, código, parches..."
+            searchPlaceholder: "Buscar tareas, código, parches...",
+            noResults: "Sin resultados",
+            code: "Código",
+            requests: "Solicitudes"
         },
         
         fr: {
@@ -190,6 +265,7 @@ QtObject {
             theme: "Thème",
             language: "Langue",
             filter: "Filtre",
+            limit: "Limite",
             current: "Actuel",
             archived: "Archivé",
             all: "Tous",
@@ -205,7 +281,13 @@ QtObject {
             createPR: "Créer PR",
             createNewTask: "Créer Nouvelle Tâche",
             loading: "Chargement...",
-            search: "Rechercher"
+            connected: "Connecté",
+            disconnected: "Déconnecté",
+            refresh: "Rafraîchir",
+            search: "Rechercher",
+            noResults: "Aucun résultat",
+            code: "Code",
+            requests: "Requêtes"
         },
         
         de: {
@@ -218,6 +300,7 @@ QtObject {
             theme: "Thema",
             language: "Sprache",
             filter: "Filter",
+            limit: "Limit",
             current: "Aktuell",
             archived: "Archiviert",
             all: "Alle",
@@ -230,7 +313,13 @@ QtObject {
             createPR: "PR erstellen",
             createNewTask: "Neue Aufgabe erstellen",
             loading: "Laden...",
-            search: "Suchen"
+            connected: "Verbunden",
+            disconnected: "Getrennt",
+            refresh: "Aktualisieren",
+            search: "Suchen",
+            noResults: "Keine Ergebnisse",
+            code: "Code",
+            requests: "Anfragen"
         },
         
         ja: {
@@ -243,6 +332,7 @@ QtObject {
             theme: "テーマ",
             language: "言語",
             filter: "フィルター",
+            limit: "制限",
             current: "現在",
             archived: "アーカイブ済み",
             all: "すべて",
@@ -255,7 +345,13 @@ QtObject {
             createPR: "PRを作成",
             createNewTask: "新規タスクを作成",
             loading: "読み込み中...",
-            search: "検索"
+            connected: "接続済み",
+            disconnected: "切断",
+            refresh: "更新",
+            search: "検索",
+            noResults: "結果なし",
+            code: "コード",
+            requests: "リクエスト"
         },
         
         zh: {
@@ -268,6 +364,7 @@ QtObject {
             theme: "主题",
             language: "语言",
             filter: "筛选",
+            limit: "限制",
             current: "当前",
             archived: "已归档",
             all: "全部",
@@ -280,7 +377,13 @@ QtObject {
             createPR: "创建PR",
             createNewTask: "创建新任务",
             loading: "加载中...",
-            search: "搜索"
+            connected: "已连接",
+            disconnected: "已断开",
+            refresh: "刷新",
+            search: "搜索",
+            noResults: "无结果",
+            code: "代码",
+            requests: "请求"
         },
         
         ko: {
@@ -297,7 +400,10 @@ QtObject {
             all: "전체",
             view: "보기",
             loading: "로딩 중...",
-            search: "검색"
+            connected: "연결됨",
+            refresh: "새로고침",
+            search: "검색",
+            requests: "요청"
         },
         
         ru: {
@@ -314,7 +420,10 @@ QtObject {
             all: "Все",
             view: "Просмотр",
             loading: "Загрузка...",
-            search: "Поиск"
+            connected: "Подключено",
+            refresh: "Обновить",
+            search: "Поиск",
+            requests: "Запросы"
         }
         // Additional languages follow same pattern...
     })
@@ -330,6 +439,7 @@ QtObject {
     function setLanguage(lang) {
         if (languages[lang]) {
             language = lang
+            currentLanguage = lang
             _settings.setValue("language", lang)
         }
     }

@@ -1,5 +1,6 @@
 module Components
 
+# Core UI Components
 CButton 1.0 CButton.qml
 CCard 1.0 CCard.qml
 CChip 1.0 CChip.qml
@@ -25,5 +26,15 @@ CDataGrid 1.0 CDataGrid.qml
 CDatePicker 1.0 CDatePicker.qml
 CTimePicker 1.0 CTimePicker.qml
 CDateTimePicker 1.0 CDateTimePicker.qml
+
+# Application Components (mirroring React app)
+TaskList 1.0 TaskList.qml
+TaskDetail 1.0 TaskDetail.qml
+NewPrompt 1.0 NewPrompt.qml
+UserInfo 1.0 UserInfo.qml
+SearchDialog 1.0 SearchDialog.qml
+Documentation 1.0 Documentation.qml
+MarkdownRenderer 1.0 MarkdownRenderer.qml
+AjaxQueueWidget 1.0 AjaxQueueWidget.qml
 
 singleton Theme 1.0 Theme.qml
