@@ -3,6 +3,6 @@
 Each handler module provides a `handle(args, session)` function.
 """
 
-from . import ping, poll, tasks, task, turns, create_pr, run, discover, archive, patch
+from . import ping, poll, tasks, task, turns, create_pr, run, discover, archive, patch, ui
 
-__all__ = ["ping", "poll", "tasks", "task", "turns", "create_pr", "run", "discover", "archive", "patch"]
+__all__ = ["ping", "poll", "tasks", "task", "turns", "create_pr", "run", "discover", "archive", "patch", "ui"]

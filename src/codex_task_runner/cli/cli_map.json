@@ -155,6 +155,13 @@
         {"flags": ["--raw"], "kwargs": {"action": "store_true", "help": "Output raw patch only (for piping to git apply)"}},
         {"flags": ["-o", "--output"], "kwargs": {"help": "Save patch to file"}}
       ]
+    },
+    {
+      "name": "ui",
+      "aliases": ["gui", "app"],
+      "help": "Launch PyQt6 desktop GUI",
+      "handler": "codex_task_runner.handlers.ui",
+      "args": []
     }
   ]
 }
