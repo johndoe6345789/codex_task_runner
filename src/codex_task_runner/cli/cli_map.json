@@ -185,8 +185,7 @@
         {"flags": ["--port"], "kwargs": {"type": "int", "default": 5000, "help": "Port to bind to (default: 5000)"}},
         {"flags": ["--debug"], "kwargs": {"action": "store_true", "help": "Enable debug mode"}}
       ]
-    }
-    ,
+    },
     {
       "name": "convert-md",
       "aliases": ["md-to-wiki"],
@@ -199,7 +198,7 @@
     },
     {
       "name": "publish-mcp",
-      "aliases": ["publish-wiki","publish-mw"],
+      "aliases": ["publish-wiki", "publish-mw"],
       "help": "Publish a markdown document to a MediaWiki instance (requires bot credentials)",
       "handler": "codex_task_runner.cli_helpers.publish_to_wiki",
       "args": [
@@ -233,7 +232,7 @@
     },
     {
       "name": "run-to-github",
-      "aliases": ["run-codex","run-to-gh"],
+      "aliases": ["run-codex", "run-to-gh"],
       "help": "Fetch tasks from Codex and process them to GitHub (wrapper around run_codex_to_github)",
       "handler": "codex_task_runner.cli_helpers.run_codex_to_github",
       "args": [
