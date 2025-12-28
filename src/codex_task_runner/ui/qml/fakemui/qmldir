@@ -1,5 +1,10 @@
 module Fakemui
 
+# Style System Singletons (mirrors React SCSS)
+singleton Theme 1.0 Theme.qml
+singleton StyleVariables 1.0 StyleVariables.qml
+singleton StyleMixins 1.0 StyleMixins.qml
+
 # Core UI Components (MUI-style)
 CButton 1.0 CButton.qml
 CCard 1.0 CCard.qml
@@ -14,6 +19,23 @@ CLoadingOverlay 1.0 CLoadingOverlay.qml
 CEmptyState 1.0 CEmptyState.qml
 CSidebar 1.0 CSidebar.qml
 
+# Atomic Components (mirrors SCSS atoms)
+CPanel 1.0 CPanel.qml
+CAlert 1.0 CAlert.qml
+CDivider 1.0 CDivider.qml
+CSnackbar 1.0 CSnackbar.qml
+CProgress 1.0 CProgress.qml
+CSpinner 1.0 CSpinner.qml
+CAccordion 1.0 CAccordion.qml
+CAccordionItem 1.0 CAccordionItem.qml
+
+# Utility Components (mirrors SCSS global utilities)
+CText 1.0 CText.qml
+CBox 1.0 CBox.qml
+Spacer 1.0 Spacer.qml
+FlexRow 1.0 FlexRow.qml
+FlexCol 1.0 FlexCol.qml
+
 # Lab Components
 CLoadingButton 1.0 CLoadingButton.qml
 CTimeline 1.0 CTimeline.qml
@@ -26,8 +48,3 @@ CDataGrid 1.0 CDataGrid.qml
 CDatePicker 1.0 CDatePicker.qml
 CTimePicker 1.0 CTimePicker.qml
 CDateTimePicker 1.0 CDateTimePicker.qml
-
-# Style System (mirrors React SCSS)
-singleton Theme 1.0 Theme.qml
-singleton StyleVariables 1.0 StyleVariables.qml
-singleton StyleMixins 1.0 StyleMixins.qml
