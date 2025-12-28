@@ -382,11 +382,23 @@ ApplicationWindow {
     // Status bar message
     property string statusText: "Ready"
     property bool nerdMode: false
+    property bool isLoading: false
     
     Connections {
         target: app
-        function onStatusMessage(msg) { statusText = msg }
-        function onErrorOccurred(msg) { statusText = "Error: " + msg }
+        function onStatusMessage(msg) { 
+            statusText = msg
+            if (msg.startsWith("Loaded") || msg.startsWith("No tasks")) {
+                isLoading = false
+            }
+        }
+        function onErrorOccurred(msg) { 
+            statusText = "Error: " + msg
+            isLoading = false
+        }
+        function onTasksLoaded() {
+            isLoading = false
+        }
         function onPatchReady(patch) { patchDialog.show(patch) }
         function onTaskDetailLoaded(json) { detailPane.taskJson = json }
         function onEnvironmentsLoaded(envList) { sendPromptDialog.setEnvironments(envList) }
@@ -406,6 +418,7 @@ ApplicationWindow {
     }
     
     Component.onCompleted: {
+        isLoading = true
         app.loadTasks()
         // Load saved theme
         var saved = app.getSavedTheme()
@@ -440,7 +453,10 @@ ApplicationWindow {
                 
                 ToolButton {
                     text: "↻ " + tr.refresh
-                    onClicked: app.loadTasks()
+                    onClicked: {
+                        isLoading = true
+                        app.loadTasks()
+                    }
                     
                     contentItem: Text {
                         text: parent.text
@@ -813,6 +829,40 @@ ApplicationWindow {
                             }
                             
                             ScrollBar.vertical: ScrollBar {}
+                            
+                            // Empty state
+                            Label {
+                                anchors.centerIn: parent
+                                text: tr.noTasks || "No tasks found"
+                                opacity: 0.5
+                                font.pixelSize: 14
+                                color: themeColors.windowText
+                                visible: taskList.count === 0 && !isLoading
+                            }
+                        }
+                        
+                        // Loading overlay
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "#CC1e1e1e"
+                            visible: isLoading
+                            
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 12
+                                
+                                BusyIndicator {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    running: isLoading
+                                }
+                                
+                                Label {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    text: tr.loading || "Loading..."
+                                    color: themeColors.windowText
+                                    font.pixelSize: 14
+                                }
+                            }
                         }
                     }
                 }

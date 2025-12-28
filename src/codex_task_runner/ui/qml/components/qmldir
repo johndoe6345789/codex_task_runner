@@ -1,0 +1,16 @@
+module Components
+
+CButton 1.0 CButton.qml
+CCard 1.0 CCard.qml
+CChip 1.0 CChip.qml
+CTextField 1.0 CTextField.qml
+CListItem 1.0 CListItem.qml
+CToolbar 1.0 CToolbar.qml
+CIconButton 1.0 CIconButton.qml
+CTabBar 1.0 CTabBar.qml
+CStatusBadge 1.0 CStatusBadge.qml
+CLoadingOverlay 1.0 CLoadingOverlay.qml
+CEmptyState 1.0 CEmptyState.qml
+CSidebar 1.0 CSidebar.qml
+
+singleton Theme 1.0 Theme.qml

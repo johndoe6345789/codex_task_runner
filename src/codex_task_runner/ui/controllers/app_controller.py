@@ -97,24 +97,34 @@ class TaskModel(QAbstractListModel):
         
         task = self._tasks[index.row()]
         if role == self.IdRole:
-            return task.get("id", "")
+            return task.get("id") or task.get("task_id", "")
         elif role == self.TitleRole:
-            return task.get("title", "Untitled")
+            return task.get("title") or "Untitled"
         elif role == self.StatusRole:
-            return task.get("status", "unknown")
+            return task.get("status") or "unknown"
         elif role == self.RepoRole:
-            return task.get("repository", {}).get("full_name", "")
+            # Support both flat 'repo' field and nested 'repository.full_name'
+            repo = task.get("repository", {})
+            if isinstance(repo, dict):
+                return repo.get("full_name", "")
+            return task.get("repo") or ""
         elif role == self.BranchRole:
-            return task.get("head_branch", "")
+            return task.get("head_branch") or task.get("base_branch") or ""
         elif role == self.CreatedRole:
-            return task.get("created_at", "")[:10] if task.get("created_at") else ""
+            created = task.get("created_at") or ""
+            return created[:10] if len(created) >= 10 else created
         elif role == self.AliasRole:
+            # Prefer alias from cache, fallback to index
+            alias = task.get("_alias")
+            if alias:
+                return str(alias)
             return str(task.get("_original_index", index.row()) + 1)
         elif role == self.PrUrlRole:
             pr = task.get("pull_request") or {}
             return pr.get("html_url") or pr.get("url", "")
         elif role == self.HasPrRole:
-            return bool(task.get("pull_request"))
+            # Check both pull_request object and pr_numbers array
+            return bool(task.get("pull_request") or task.get("pr_numbers"))
         elif role == self.MatchInfoRole:
             return task.get("_match_info", "")
         return None
@@ -153,18 +163,19 @@ class TaskModel(QAbstractListModel):
         if q in title:
             matches.append("title")
         
-        # Search in repo name
-        repo = (task.get("repository", {}).get("full_name") or "").lower()
-        if q in repo:
+        # Search in repo name - support both nested and flat structures
+        repo_obj = task.get("repository") or {}
+        repo_name = (repo_obj.get("full_name") if isinstance(repo_obj, dict) else "") or task.get("repo") or ""
+        if q in repo_name.lower():
             matches.append("repo")
         
         # Search in branch name
-        branch = (task.get("head_branch") or "").lower()
+        branch = (task.get("head_branch") or task.get("base_branch") or "").lower()
         if q in branch:
             matches.append("branch")
         
         # Search in task ID
-        task_id = (task.get("id") or "").lower()
+        task_id = (task.get("id") or task.get("task_id") or "").lower()
         if q in task_id:
             matches.append("id")
         
@@ -386,12 +397,23 @@ class AppController(QObject):
         request_id = self._ajax_queue.addRequest("Loading tasks", "tasks")
         
         try:
-            from ...codex.codex_tasks_list import tasks_list
+            from ...codex.codex_tasks_list import get_tasks_list
             from ...etc.task_aliases import update_aliases
             
             self._log("→ GET /wham/tasks")
             start = time.time()
-            tasks = tasks_list(self._session)
+            # Get tasks and convert TaskRef objects to dicts
+            tasks_refs = get_tasks_list(self._session, limit=100, task_filter="current")
+            tasks = []
+            for t in tasks_refs:
+                d = t.__dict__.copy() if hasattr(t, '__dict__') else dict(t)
+                # Normalize ID field
+                if 'task_id' in d and 'id' not in d:
+                    d['id'] = d['task_id']
+                # Create repository object for consistency with React frontend
+                if 'repo' in d:
+                    d['repository'] = {'full_name': d['repo']}
+                tasks.append(d)
             elapsed = (time.time() - start) * 1000
             
             if tasks:
@@ -405,8 +427,9 @@ class AppController(QObject):
             self.tasksLoaded.emit()
             self._ajax_queue.markSuccess(request_id)
         except Exception as e:
+            import traceback
+            self._log(f"❌ Failed: {e}\n{traceback.format_exc()}")
             self.errorOccurred.emit(f"Failed to load tasks: {e}")
-            self._log(f"❌ Failed: {e}")
             self._ajax_queue.markError(request_id, str(e))
     
     @pyqtSlot(int)
@@ -669,8 +692,28 @@ class AppController(QObject):
     
     def _init_session(self):
         """Initialize session from .env."""
+        import os
+        from pathlib import Path
+        
         try:
             from ...codex.codex_session import session_from_env
+            
+            # Try multiple locations for .env file
+            env_paths = [
+                os.environ.get("CODEX_ENV_PATH"),  # Environment variable
+                ".env",  # Current directory
+                Path.home() / ".config" / "codex-task-runner" / ".env",
+                Path(__file__).parent.parent.parent.parent.parent / ".env",  # Project root
+            ]
+            
+            for env_path in env_paths:
+                if env_path and Path(str(env_path)).exists():
+                    self._session = session_from_env(str(env_path))
+                    self._log(f"✓ Session loaded from {env_path}")
+                    return
+            
+            # Try without path (will use environment variables)
             self._session = session_from_env()
-        except Exception:
-            pass
+            self._log("✓ Session loaded from environment variables")
+        except Exception as e:
+            self._log(f"❌ Failed to init session: {e}")

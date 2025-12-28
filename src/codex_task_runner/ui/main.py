@@ -11,14 +11,26 @@ def launch(session=None):
     """Launch the PyQt6 desktop UI."""
     global _controller
     
+    # macOS-specific Qt settings for proper rendering
+    if sys.platform == 'darwin':
+        # Use basic render loop for better compatibility
+        os.environ.setdefault('QSG_RENDER_LOOP', 'basic')
+        # Disable threaded rendering which can cause issues on macOS
+        os.environ.setdefault('QSG_RHI_BACKEND', 'metal')
+    
     try:
         from PyQt6.QtWidgets import QApplication
         from PyQt6.QtQml import QQmlApplicationEngine
-        from PyQt6.QtCore import QUrl
+        from PyQt6.QtCore import QUrl, Qt
+        from PyQt6.QtQuick import QQuickWindow
     except ImportError:
         print("PyQt6 not installed. Install with:")
         print("  pip install PyQt6 PyQt6-WebEngine")
         return 1
+    
+    # Set high DPI attributes before creating QApplication
+    if hasattr(Qt.ApplicationAttribute, 'AA_UseHighDpiPixmaps'):
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
     
     from .controllers.app_controller import AppController
     
@@ -31,6 +43,13 @@ def launch(session=None):
     
     engine = QQmlApplicationEngine()
     
+    # Handle QML errors
+    def on_object_created(obj, url):
+        if obj is None:
+            print(f"Failed to create QML object from {url}")
+    
+    engine.objectCreated.connect(on_object_created)
+    
     # Register before loading QML
     engine.rootContext().setContextProperty("app", _controller)
     
@@ -39,7 +58,7 @@ def launch(session=None):
     engine.load(QUrl.fromLocalFile(str(qml_path)))
     
     if not engine.rootObjects():
-        print("Failed to load QML")
+        print("Failed to load QML - check for QML syntax errors")
         return 1
     
     return app.exec()
