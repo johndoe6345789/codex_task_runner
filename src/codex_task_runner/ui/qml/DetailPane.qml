@@ -8,6 +8,7 @@ Item {
     property int taskIndex: -1
     property string taskJson: ""
     property var taskData: taskJson ? JSON.parse(taskJson) : null
+    property bool nerdMode: false
     
     signal archiveClicked()
     signal prClicked()
@@ -161,6 +162,118 @@ Item {
                         text: taskData && taskData.created_at ? ("Created: " + taskData.created_at.substring(0, 10)) : ""
                         opacity: 0.6
                         font.pixelSize: 12
+                    }
+                }
+                
+                // Nerd mode: extra info
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+                    visible: nerdMode && taskData
+                    
+                    Rectangle {
+                        Layout.fillWidth: true
+                        height: 1
+                        color: "#00ff41"
+                        opacity: 0.3
+                    }
+                    
+                    GridLayout {
+                        Layout.fillWidth: true
+                        columns: 2
+                        columnSpacing: 16
+                        rowSpacing: 4
+                        
+                        Label {
+                            text: "Task ID:"
+                            opacity: 0.6
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                        }
+                        Label {
+                            text: taskData ? (taskData.id || "N/A") : "N/A"
+                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                            Layout.fillWidth: true
+                            elide: Text.ElideMiddle
+                            
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    if (taskData && taskData.id) {
+                                        app.copyToClipboard(taskData.id)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Label {
+                            text: "Turn ID:"
+                            opacity: 0.6
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                        }
+                        Label {
+                            text: taskData && taskData.current_turn_id ? taskData.current_turn_id : "N/A"
+                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                            Layout.fillWidth: true
+                            elide: Text.ElideMiddle
+                            
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    if (taskData && taskData.current_turn_id) {
+                                        app.copyToClipboard(taskData.current_turn_id)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Label {
+                            text: "Env ID:"
+                            opacity: 0.6
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                        }
+                        Label {
+                            text: taskData && taskData.environment_id ? taskData.environment_id : "N/A"
+                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                            Layout.fillWidth: true
+                            elide: Text.ElideMiddle
+                        }
+                        
+                        Label {
+                            text: "Created:"
+                            opacity: 0.6
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                        }
+                        Label {
+                            text: taskData && taskData.created_at ? taskData.created_at : "N/A"
+                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                        }
+                        
+                        Label {
+                            text: "Updated:"
+                            opacity: 0.6
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                        }
+                        Label {
+                            text: taskData && taskData.updated_at ? taskData.updated_at : "N/A"
+                            font.family: "Menlo, Monaco, Consolas, monospace"
+                            font.pixelSize: 10
+                            color: "#00ff41"
+                        }
                     }
                 }
             }

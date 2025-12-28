@@ -133,6 +133,9 @@ class AppController(QObject):
     environmentsLoaded = pyqtSignal('QVariantList')
     promptSuccess = pyqtSignal(str)  # task_id
     promptError = pyqtSignal(str)  # error message
+    nerdModeChanged = pyqtSignal(bool)
+    debugLog = pyqtSignal(str)  # debug messages for nerd mode
+    sessionInfoChanged = pyqtSignal(str)  # session info JSON
     
     def __init__(self, session=None, parent=None):
         super().__init__(parent)
@@ -143,6 +146,9 @@ class AppController(QObject):
         self._poll_timer = QTimer(self)
         self._poll_timer.timeout.connect(self._poll_tasks)
         self._environments = []
+        self._nerd_mode = False
+        self._debug_logs = []
+        self._start_time = None
     
     @pyqtProperty(QObject, constant=True)
     def taskModel(self):
@@ -152,34 +158,97 @@ class AppController(QObject):
     def envModel(self):
         return self._env_model
     
+    @pyqtProperty(bool, notify=nerdModeChanged)
+    def nerdMode(self):
+        return self._nerd_mode
+    
+    @pyqtSlot(bool)
+    def setNerdMode(self, enabled):
+        """Toggle nerd mode."""
+        self._nerd_mode = enabled
+        self.nerdModeChanged.emit(enabled)
+        if enabled:
+            self._log("🤓 Nerd mode activated")
+            self._emit_session_info()
+        else:
+            self._log("Nerd mode deactivated")
+    
+    def _log(self, msg):
+        """Add debug log entry."""
+        import datetime
+        ts = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        entry = f"[{ts}] {msg}"
+        self._debug_logs.append(entry)
+        # Keep last 500 entries
+        if len(self._debug_logs) > 500:
+            self._debug_logs = self._debug_logs[-500:]
+        self.debugLog.emit(entry)
+    
+    def _emit_session_info(self):
+        """Emit session info for nerd mode display."""
+        info = {
+            "has_session": self._session is not None,
+            "cookie_preview": "",
+            "base_url": "https://chatgpt.com/backend-api",
+        }
+        if self._session:
+            cookie = self._session.cookies.get("__Secure-next-auth.session-token", "")
+            if cookie:
+                info["cookie_preview"] = cookie[:20] + "..." + cookie[-10:] if len(cookie) > 30 else cookie
+            info["headers"] = dict(self._session.headers) if hasattr(self._session, 'headers') else {}
+        self.sessionInfoChanged.emit(json.dumps(info, indent=2))
+    
+    @pyqtSlot(result=str)
+    def getDebugLogs(self):
+        """Get all debug logs as a string."""
+        return "\n".join(self._debug_logs)
+    
+    @pyqtSlot()
+    def clearDebugLogs(self):
+        """Clear debug logs."""
+        self._debug_logs = []
+        self._log("Logs cleared")
+    
     @pyqtSlot()
     def loadTasks(self):
         """Load tasks from API."""
+        import time
+        
         if not self._session:
             self._init_session()
         
         if not self._session:
             self.errorOccurred.emit("No session configured. Set up .env file.")
+            self._log("❌ No session configured")
             return
         
         try:
             from ...codex.codex_tasks_list import tasks_list
             from ...etc.task_aliases import update_aliases
             
+            self._log("→ GET /wham/tasks")
+            start = time.time()
             tasks = tasks_list(self._session)
+            elapsed = (time.time() - start) * 1000
+            
             if tasks:
                 update_aliases(tasks)
                 self._task_model.set_tasks(tasks)
                 self.statusMessage.emit(f"Loaded {len(tasks)} tasks")
+                self._log(f"← {len(tasks)} tasks ({elapsed:.0f}ms)")
             else:
                 self.statusMessage.emit("No tasks found")
+                self._log(f"← 0 tasks ({elapsed:.0f}ms)")
             self.tasksLoaded.emit()
         except Exception as e:
             self.errorOccurred.emit(f"Failed to load tasks: {e}")
+            self._log(f"❌ Failed: {e}")
     
     @pyqtSlot(int)
     def loadTaskDetail(self, index):
         """Load detail for task at index."""
+        import time
+        
         task = self._task_model.get_task(index)
         if not task:
             return
@@ -188,11 +257,17 @@ class AppController(QObject):
             from ...codex.codex_task_detail import task_detail
             
             task_id = task.get("id")
+            self._log(f"→ GET /wham/tasks/{task_id[:8]}...")
+            start = time.time()
             detail = task_detail(self._session, task_id)
+            elapsed = (time.time() - start) * 1000
+            
             self._current_task = detail
             self.taskDetailLoaded.emit(json.dumps(detail, indent=2, default=str))
+            self._log(f"← Task detail ({elapsed:.0f}ms)")
         except Exception as e:
             self.errorOccurred.emit(f"Failed to load task: {e}")
+            self._log(f"❌ Failed: {e}")
     
     @pyqtSlot(int)
     def archiveTask(self, index):
@@ -328,11 +403,14 @@ class AppController(QObject):
     @pyqtSlot(str, str, str, int)
     def sendPrompt(self, prompt, envId, branch, bestOf):
         """Create a new task with the given prompt."""
+        import time
+        
         if not self._session:
             self._init_session()
         
         if not self._session:
             self.promptError.emit("No session configured")
+            self._log("❌ No session for sendPrompt")
             return
         
         if not prompt:
@@ -346,6 +424,10 @@ class AppController(QObject):
         try:
             from ...codex.codex_create_task import create_task
             
+            self._log(f"→ POST /wham/tasks (env={envId[:8]}..., branch={branch})")
+            self._log(f"  Prompt: {prompt[:50]}..." if len(prompt) > 50 else f"  Prompt: {prompt}")
+            start = time.time()
+            
             result = create_task(
                 session=self._session,
                 prompt=prompt,
@@ -353,17 +435,21 @@ class AppController(QObject):
                 branch=branch or "main",
                 best_of_n=bestOf or 1,
             )
+            elapsed = (time.time() - start) * 1000
             
             if result:
                 task_id = result.get("task_id") or result.get("id", "")
                 self.promptSuccess.emit(task_id)
                 self.statusMessage.emit(f"Task created: {task_id[:8]}...")
+                self._log(f"← Task created: {task_id} ({elapsed:.0f}ms)")
                 # Refresh task list after a short delay
                 QTimer.singleShot(2000, self.loadTasks)
             else:
                 self.promptError.emit("Failed to create task. Check authentication.")
+                self._log(f"❌ No result from create_task ({elapsed:.0f}ms)")
         except Exception as e:
             self.promptError.emit(f"Failed to create task: {e}")
+            self._log(f"❌ Exception: {e}")
     
     @pyqtSlot(str)
     def openUrl(self, url):
