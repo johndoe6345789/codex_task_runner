@@ -1,4 +1,23 @@
 #!/usr/bin/env python3
+"""Compatibility shim: delegate all script invocations to the package CLI.
+
+This replaces the old collection of top-level scripts. Use the installed
+console entry (`codex-task-runner`) or run the module directly:
+
+    python -m codex_task_runner.cli
+
+The shim simply forwards argv to the package CLI implementation.
+"""
+from __future__ import annotations
+
+import sys
+
+from codex_task_runner.cli.cli import main
+
+
+if __name__ == "__main__":
+        raise SystemExit(main(sys.argv[1:]))
+#!/usr/bin/env python3
 """Thin shim to the package CLI.
 
 Kept for backwards compatibility; prefer using the installed console entry

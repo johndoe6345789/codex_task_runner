@@ -3,7 +3,6 @@
 from codex_task_runner.codex.codex_session import session_from_env
 import json
 
-session = session_from_env('.env')
 
 # Get a task with turns
 resp = session.get('https://chatgpt.com/backend-api/wham/tasks/list?limit=1&task_filter=current')
@@ -47,3 +46,20 @@ if resp.ok:
                 print(f'GET {endpoint}: {r.status_code}')
                 if r.ok and r.text:
                     print(f'  Preview: {r.text[:300]}')
+session = session_from_env('.env')
+
+#!/usr/bin/env python3
+"""Compatibility shim: delegate to package CLI.
+
+This file is a lightweight stub kept for compatibility; it forwards
+invocations to `codex_task_runner.cli.cli`.
+"""
+from __future__ import annotations
+
+import sys
+
+from codex_task_runner.cli.cli import main
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))

@@ -1,13 +1,18 @@
-"""Discover the task creation endpoint by creating a test task."""
-import asyncio
-import json
-from pathlib import Path
-from playwright.async_api import async_playwright
-from playwright_stealth import Stealth
-from dotenv import load_dotenv
-import os
+#!/usr/bin/env python3
+"""Compatibility shim: delegate to package CLI.
 
-load_dotenv(Path(__file__).parent.parent / ".env")
+This file is a lightweight stub kept for compatibility; it forwards
+invocations to `codex_task_runner.cli.cli`.
+"""
+from __future__ import annotations
+
+import sys
+
+from codex_task_runner.cli.cli import main
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))
 
 def get_cookies():
     cookie_str = os.getenv("COOKIE", "")

@@ -1,5 +1,6 @@
-#!/usr/bin/env bash
-# Helper: apply a patch, commit, push, and open a PR using gh
+#!/usr/bin/env sh
+# Shim to delegate to the package CLI
+exec python -m codex_task_runner.cli "$@"
 set -euo pipefail
 
 PATCHFILE=${1:-patch.diff}
