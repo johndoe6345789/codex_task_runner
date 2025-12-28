@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mediawiki-mcp:
+    build: .
+    image: mediawiki-mcp-server:local
+    ports:
+      - "3000:3000"
+    environment:
+      - MCP_TRANSPORT=http
+      - PORT=3000
+      - CONFIG=/etc/mcp/config.json
+    volumes:
+      - ./config.json:/etc/mcp/config.json:ro
+    restart: unless-stopped
+
+# Notes:
+# - This binds the MCP HTTP port 3000 on the host.
+# - `config.json` is mounted read-only into the container. The default
+#   server URL inside `config.json` points to `host.docker.internal` so
+#   the container can reach a MediaWiki instance running on the host at
+#   port 8080. If your MediaWiki runs in Docker in the same Compose
+#   project, replace the `server` field in `config.json` with the
+#   MediaWiki service name (e.g. http://mediawiki:8080) and attach both
+#   services to the same network.

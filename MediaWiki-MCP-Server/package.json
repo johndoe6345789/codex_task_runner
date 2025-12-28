@@ -1,0 +1,65 @@
+{
+	"name": "@professional-wiki/mediawiki-mcp-server",
+	"version": "0.6.0",
+	"description": "Model Context Protocol (MCP) server for MediaWiki",
+	"mcpName": "io.github.ProfessionalWiki/mediawiki-mcp-server",
+	"keywords": [
+		"modelcontextprotocol",
+		"mcp",
+		"mediawiki"
+	],
+	"homepage": "https://github.com/ProfessionalWiki/MediaWiki-MCP-Server",
+	"bugs": {
+		"url": "https://github.com/ProfessionalWiki/MediaWiki-MCP-Server/issues"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Professional Wiki",
+		"url": "https://professional.wiki"
+	},
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "dist/index.js",
+	"bin": {
+		"mediawiki-mcp-server": "dist/index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ProfessionalWiki/MediaWiki-MCP-Server.git"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"scripts": {
+		"start": "node dist/index.js",
+		"start:http": "MCP_TRANSPORT=http node dist/index.js",
+		"build": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"lint": "eslint --cache src/**/*",
+		"dev": "tsc --watch",
+		"inspector": "concurrently --kill-others \"tsc --watch\" \"npx -y @modelcontextprotocol/inspector@latest node dist/index.js\"",
+		"inspector:http": "concurrently --kill-others \"tsc --watch\" \"npx -y @modelcontextprotocol/inspector@latest\" \"MCP_TRANSPORT=http node dist/index.js\"",
+		"mcpjam": "concurrently --kill-others \"tsc --watch\" \"npx -y @mcpjam/inspector@latest node $(pwd)/dist/index.js\"",
+		"version": "node scripts/sync-version.cjs && git add server.json"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.22.0",
+		"express": "^5.1.0",
+		"mwn": "^3.0.1",
+		"node-fetch": "^3.3.2",
+		"types-mediawiki-api": "^2.0.0"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.2",
+		"@types/node": "^25.0.2",
+		"@types/node-fetch": "^2.6.12",
+		"@typescript-eslint/eslint-plugin": "^8.19.0",
+		"@typescript-eslint/parser": "^8.19.0",
+		"concurrently": "^9.1.2",
+		"eslint": "^8.57.0",
+		"eslint-config-wikimedia": "^0.32.2",
+		"typescript": "^5.8.3"
+	}
+}
