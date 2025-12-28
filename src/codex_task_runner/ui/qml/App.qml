@@ -317,30 +317,27 @@ ApplicationWindow {
                 // Spacer
                 Item { Layout.fillHeight: true }
                 
-                // User chip at bottom
+                // User chip at bottom - shows connection status
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 48
                     Layout.margins: 16
                     color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.08)
                     radius: 24
-                    visible: user !== null
                     
                     RowLayout {
                         anchors.centerIn: parent
                         spacing: 8
                         
                         Text {
-                            text: "👤"
+                            text: "🔌"
                             font.pixelSize: 16
                         }
                         
                         Text {
-                            text: user ? (user.email || user.name || "Connected") : ""
+                            text: "Python API"
                             font.pixelSize: 12
                             color: Theme.text
-                            elide: Text.ElideRight
-                            Layout.maximumWidth: 160
                         }
                     }
                 }
@@ -426,27 +423,22 @@ ApplicationWindow {
                     
                     // Tasks View
                     TaskList {
-                        apiBase: app.apiBase
-                        onTaskSelected: function(task) { selectTask(task) }
+                        onTaskSelected: function(index) { selectTask(index) }
                     }
                     
                     // Task Detail View
                     TaskDetail {
-                        task: selectedTask
-                        apiBase: app.apiBase
+                        taskIndex: selectedTaskIndex
                         onBack: navigateTo("tasks")
                     }
                     
                     // New Prompt View
                     NewPrompt {
-                        apiBase: app.apiBase
                         onSuccess: navigateTo("tasks")
                     }
                     
                     // User Info View
-                    UserInfo {
-                        apiBase: app.apiBase
-                    }
+                    UserInfo {}
                     
                     // Documentation View
                     Documentation {}
@@ -459,11 +451,10 @@ ApplicationWindow {
     SearchDialog {
         id: searchDialog
         visible: searchOpen
-        apiBase: app.apiBase
         onRejected: searchOpen = false
-        onTaskSelected: function(task) {
+        onTaskSelected: function(index) {
             searchOpen = false
-            selectTask(task)
+            selectTask(index)
         }
     }
     
