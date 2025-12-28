@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mediawiki-mcp:
+    build: ./MediaWiki-MCP-Server
+    image: mediawiki-mcp-server:local
+    container_name: mediawiki-mcp
+    ports:
+      - "3000:3000"
+    environment:
+      MCP_TRANSPORT: http
+      PORT: '3000'
+      CONFIG: /etc/mcp/config.json
+    volumes:
+      - ./MediaWiki-MCP-Server/config.json:/etc/mcp/config.json:ro
+    restart: unless-stopped
+    networks:
+      - mediawiki_default
+
+networks:
+  mediawiki_default:
+    external: true
