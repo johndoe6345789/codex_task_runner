@@ -8,6 +8,8 @@ Item {
     property int taskIndex: -1
     property string taskJson: ""
     property var taskData: taskJson ? JSON.parse(taskJson) : null
+    property bool nerdMode: false
+    property var themeColors: ({})
     
     signal archiveClicked()
     signal prClicked()
