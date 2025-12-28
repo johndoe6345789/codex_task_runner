@@ -1,15 +1,15 @@
+#!/usr/bin/env python3
+"""Compatibility shim: delegate to package CLI.
+
+This file is a lightweight stub kept for compatibility; it forwards
+invocations to `codex_task_runner.cli.cli`.
+"""
 from __future__ import annotations
 
-import pathlib
-import subprocess
 import sys
 
-
-def main() -> int:
-    root = pathlib.Path(__file__).resolve().parents[1]
-    cmd = [sys.executable, "-m", "unittest", "discover", "-s", str(root / "tests")]
-    return subprocess.call(cmd, cwd=str(root))
+from codex_task_runner.cli.cli import main
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv[1:]))
