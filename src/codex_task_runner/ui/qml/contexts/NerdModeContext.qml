@@ -9,22 +9,13 @@ QtObject {
     id: nerdModeContext
     
     // Nerd mode state - shows raw JSON, task IDs, debug info
-    property bool nerdMode: {
-        const saved = _settings.value("nerdMode", "false")
-        return saved === "true"
-    }
-    
-    // Settings for persistence
-    property Settings _settings: Settings {
-        category: "nerdMode"
-    }
+    property bool nerdMode: false
     
     /**
-     * Set nerd mode and persist
+     * Set nerd mode
      */
     function setNerdMode(enabled) {
         nerdMode = enabled
-        _settings.setValue("nerdMode", enabled ? "true" : "false")
     }
     
     /**
