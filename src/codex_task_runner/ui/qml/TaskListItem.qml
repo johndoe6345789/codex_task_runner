@@ -107,7 +107,7 @@ Rectangle {
             text: taskId
             font.pixelSize: 9
             font.family: "Menlo"
-            color: "#00ff41"
+            color: themeColors.nerd || "#00ff41"
             elide: Text.ElideMiddle
             visible: showNerdInfo && taskId
             opacity: 0.8
