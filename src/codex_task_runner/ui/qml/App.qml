@@ -121,8 +121,8 @@ ApplicationWindow {
                     interactive: false
                     
                     model: ListModel {
-                        ListElement { viewId: "tasks"; icon: "☰"; labelKey: "tasks" }
-                        ListElement { viewId: "newPrompt"; icon: "＋"; labelKey: "newTask" }
+                        ListElement { viewId: "tasks"; emoji: "☰"; labelKey: "tasks" }
+                        ListElement { viewId: "newPrompt"; emoji: "＋"; labelKey: "newTask" }
                     }
                     
                     delegate: ItemDelegate {
@@ -134,7 +134,7 @@ ApplicationWindow {
                             spacing: 16
                             
                             Text {
-                                text: icon
+                                text: emoji
                                 font.pixelSize: 20
                                 color: Theme.text
                                 Layout.leftMargin: 16
