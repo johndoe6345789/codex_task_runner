@@ -162,6 +162,18 @@
       "help": "Launch PyQt6 desktop GUI",
       "handler": "codex_task_runner.handlers.ui",
       "args": []
+    },
+    {
+      "name": "prompt",
+      "aliases": ["send", "new"],
+      "help": "Send a prompt to Codex to create a new task",
+      "handler": "codex_task_runner.handlers.prompt",
+      "args": [
+        {"flags": ["prompt_text"], "kwargs": {"help": "The prompt text to send to Codex"}},
+        {"flags": ["--env-id"], "kwargs": {"help": "Environment ID (default: most recent)"}},
+        {"flags": ["--branch"], "kwargs": {"default": "main", "help": "Branch name (default: main)"}},
+        {"flags": ["--best-of"], "kwargs": {"type": "int", "default": 1, "help": "Number of responses to generate (default: 1)"}}
+      ]
     }
   ]
 }

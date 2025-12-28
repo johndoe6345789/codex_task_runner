@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 from codex_task_runner.codex.codex_session import session_from_env
-from codex_task_runner.handlers import ping, poll, tasks, task, turns, create_pr, run, yolo, dedup_prs, discover, archive, patch, me, ui
+from codex_task_runner.handlers import ping, poll, tasks, task, turns, create_pr, run, yolo, dedup_prs, discover, archive, patch, me, ui, prompt
 from .cli_parser import build_parser
 
 # Map command names to handler modules
@@ -22,6 +22,7 @@ _HANDLERS = {
     "patch": patch,
     "me": me,
     "ui": ui,
+    "prompt": prompt,
     # Aliases
     "ls": tasks,
     "list": tasks,
@@ -38,6 +39,8 @@ _HANDLERS = {
     "p": patch,
     "gui": ui,
     "app": ui,
+    "send": prompt,
+    "new": prompt,
 }
 
 
