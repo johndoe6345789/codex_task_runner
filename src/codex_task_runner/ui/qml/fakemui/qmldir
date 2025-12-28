@@ -27,5 +27,7 @@ CDatePicker 1.0 CDatePicker.qml
 CTimePicker 1.0 CTimePicker.qml
 CDateTimePicker 1.0 CDateTimePicker.qml
 
-# Theme singleton
+# Style System (mirrors React SCSS)
 singleton Theme 1.0 Theme.qml
+singleton StyleVariables 1.0 StyleVariables.qml
+singleton StyleMixins 1.0 StyleMixins.qml
