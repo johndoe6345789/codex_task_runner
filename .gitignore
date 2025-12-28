@@ -3,3 +3,18 @@ fetch.txt
 run_poll.json
 tasks.json
 codex-task-runner.log
+
+# Frontend
+node_modules/
+frontend/node_modules/
+
+# Build output
+src/codex_task_runner/flask_app/static/assets/
+src/codex_task_runner/flask_app/static/index.html
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+venv/
+.venv/
