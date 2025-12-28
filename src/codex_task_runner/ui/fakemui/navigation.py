@@ -2,11 +2,11 @@
 
 from PyQt6.QtWidgets import (
     QWidget, QFrame, QLabel, QVBoxLayout, QHBoxLayout,
-    QPushButton, QMenu, QAction, QTabWidget, QTabBar,
+    QPushButton, QMenu, QTabWidget, QTabBar,
     QSizePolicy, QSpinBox
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QIcon, QCursor
+from PyQt6.QtGui import QIcon, QCursor, QAction
 
 from .base import FakeMUIWidget, FakeMUIContainer, StyleMixin
 
