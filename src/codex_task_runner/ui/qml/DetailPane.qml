@@ -130,6 +130,7 @@ Item {
                         text: "📁 " + (taskData && taskData.repository ? taskData.repository.full_name : "")
                         opacity: 0.8
                         visible: taskData && taskData.repository
+                        color: themeColors.windowText || "#ffffff"
                         
                         MouseArea {
                             anchors.fill: parent
@@ -146,6 +147,7 @@ Item {
                         text: "🌿 " + (taskData ? (taskData.head_branch || taskData.branch || "") : "")
                         opacity: 0.8
                         visible: taskData && (taskData.head_branch || taskData.branch)
+                        color: themeColors.windowText || "#ffffff"
                     }
                 }
                 
