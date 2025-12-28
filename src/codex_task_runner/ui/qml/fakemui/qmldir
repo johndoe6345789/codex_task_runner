@@ -29,6 +29,31 @@ CProgress 1.0 CProgress.qml
 CSpinner 1.0 CSpinner.qml
 CAccordion 1.0 CAccordion.qml
 CAccordionItem 1.0 CAccordionItem.qml
+CAvatar 1.0 CAvatar.qml
+CBadge 1.0 CBadge.qml
+CDialog 1.0 CDialog.qml
+CIcon 1.0 CIcon.qml
+CErrorState 1.0 CErrorState.qml
+
+# Form Components (mirrors SCSS _form.scss)
+CFormGroup 1.0 CFormGroup.qml
+CLabel 1.0 CLabel.qml
+
+# Typography Components (mirrors SCSS typography)
+CTitle 1.0 CTitle.qml
+CMarkdown 1.0 CMarkdown.qml
+CProse 1.0 CProse.qml
+CHighlight 1.0 CHighlight.qml
+CBlockquote 1.0 CBlockquote.qml
+
+# Code Components (mirrors SCSS code atoms)
+CCodeBlock 1.0 CCodeBlock.qml
+CCodeInline 1.0 CCodeInline.qml
+
+# Data Display Components
+CTable 1.0 CTable.qml
+CStatBadge 1.0 CStatBadge.qml
+CSection 1.0 CSection.qml
 
 # Utility Components (mirrors SCSS global utilities)
 CText 1.0 CText.qml
