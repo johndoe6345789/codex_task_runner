@@ -3,9 +3,11 @@
 .env.*
 
 # Runtime data
-fetch.txt
-run_poll.json
-tasks.json
+*.txt
+*.json
+!package.json
+!package-lock.json
+!pyproject.toml
 codex-task-runner.log
 *.log
 
