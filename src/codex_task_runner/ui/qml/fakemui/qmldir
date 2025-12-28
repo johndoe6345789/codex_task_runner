@@ -62,6 +62,40 @@ CTable 1.0 CTable.qml
 CStatBadge 1.0 CStatBadge.qml
 CSection 1.0 CSection.qml
 
+# Additional stubs added to improve React→QML coverage
+CAppBar 1.0 CAppBar.qml
+CAutoGrid 1.0 CAutoGrid.qml
+CBottomNavigation 1.0 CBottomNavigation.qml
+CClickAwayListener 1.0 CClickAwayListener.qml
+CCssBaseline 1.0 CCssBaseline.qml
+CDrawer 1.0 CDrawer.qml
+CEditorWrapper 1.0 CEditorWrapper.qml
+CFlex 1.0 CFlex.qml
+CFormHelperText 1.0 CFormHelperText.qml
+CGlobalStyles 1.0 CGlobalStyles.qml
+CInput 1.0 CInput.qml
+CInputBase 1.0 CInputBase.qml
+CLink 1.0 CLink.qml
+CList 1.0 CList.qml
+CModal 1.0 CModal.qml
+CNoSsr 1.0 CNoSsr.qml
+CPaper 1.0 CPaper.qml
+CPopper 1.0 CPopper.qml
+CPortal 1.0 CPortal.qml
+CSpeedDial 1.0 CSpeedDial.qml
+CStack 1.0 CStack.qml
+CStates 1.0 CStates.qml
+CTabs 1.0 CTabs.qml
+CTextarea 1.0 CTextarea.qml
+CTextareaAutosize 1.0 CTextareaAutosize.qml
+CThemeProvider 1.0 CThemeProvider.qml
+CTransitions 1.0 CTransitions.qml
+CTypography 1.0 CTypography.qml
+CClassNames 1.0 CClassNames.qml
+index 1.0 index.qml
+CStyled 1.0 CStyled.qml
+CUseMediaQuery 1.0 CUseMediaQuery.qml
+
 # Utility Components (mirrors SCSS global utilities)
 CText 1.0 CText.qml
 CBox 1.0 CBox.qml
