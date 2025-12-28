@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import './NewPrompt.scss'
 
 const SendIcon = () => (
   <svg className="icon" viewBox="0 0 24 24" fill="currentColor">

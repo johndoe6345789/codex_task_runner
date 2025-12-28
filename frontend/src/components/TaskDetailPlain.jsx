@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import { NerdModeContext } from '../App'
 import MarkdownRenderer from './MarkdownRenderer'
 import Editor, { loader } from '@monaco-editor/react'
-import './TaskDetail.scss'
 
 // Simple SVG icons (replace MUI icons)
 const Icons = {

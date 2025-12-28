@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import './MarkdownRenderer.scss'
 
 const components = {
   a: ({ node, ...props }) => (

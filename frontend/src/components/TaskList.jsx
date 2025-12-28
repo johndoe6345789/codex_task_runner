@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { NerdModeContext } from '../App'
 import MarkdownRenderer from './MarkdownRenderer'
-import './TaskList.scss'
 
 const Icons = {
   Refresh: () => (

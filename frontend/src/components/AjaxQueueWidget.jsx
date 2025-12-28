@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useAjaxQueue } from '../contexts/AjaxQueueContext'
-import './AjaxQueueWidget.scss'
 
 // Simple inline SVG icons
 const CloudSyncIcon = () => (
