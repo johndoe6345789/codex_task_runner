@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 from playwright.async_api import async_playwright
+from playwright_stealth import stealth_async
 from dotenv import load_dotenv
 
 
@@ -53,49 +54,19 @@ async def discover_endpoints(output_file: str = "discovered_endpoints.json"):
             ]
         )
         context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
             viewport={"width": 1920, "height": 1080},
             locale="en-US",
             timezone_id="America/New_York",
         )
         
-        # Stealth: Remove webdriver flag and add missing properties
-        await context.add_init_script("""
-            // Remove webdriver flag
-            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-            
-            // Add Chrome plugins
-            Object.defineProperty(navigator, 'plugins', {
-                get: () => [
-                    { name: 'Chrome PDF Viewer', filename: 'internal-pdf-viewer' },
-                    { name: 'Chromium PDF Viewer', filename: 'internal-pdf-viewer' },
-                ],
-            });
-            
-            // Add languages
-            Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
-            
-            // Hide automation
-            delete window.cdc_adoQpoasnfa76pfcZLmcfl_Array;
-            delete window.cdc_adoQpoasnfa76pfcZLmcfl_Promise;
-            delete window.cdc_adoQpoasnfa76pfcZLmcfl_Symbol;
-            
-            // Chrome runtime
-            window.chrome = { runtime: {} };
-            
-            // Permissions
-            const originalQuery = window.navigator.permissions.query;
-            window.navigator.permissions.query = (parameters) => (
-                parameters.name === 'notifications' ?
-                    Promise.resolve({ state: Notification.permission }) :
-                    originalQuery(parameters)
-            );
-        """)
-        
         if cookies:
             await context.add_cookies(cookies)
         
         page = await context.new_page()
+        
+        # Apply playwright-stealth to avoid bot detection
+        await stealth_async(page)
         
         def log_request(request):
             url = request.url
