@@ -40,6 +40,7 @@ FlexCol 1.0 FlexCol.qml
 # Grid/Layout Components (mirrors SCSS _grid.scss)
 CGrid 1.0 CGrid.qml
 CGridItem 1.0 CGridItem.qml
+CContainer 1.0 CContainer.qml
 
 # Lab Components
 CLoadingButton 1.0 CLoadingButton.qml

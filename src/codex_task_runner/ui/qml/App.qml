@@ -20,18 +20,19 @@ ApplicationWindow {
     title: "Codex Runner"
     color: Theme.background
     
+    // Initialize Responsive singleton with this window
+    Component.onCompleted: {
+        Responsive.targetWindow = appWindow
+        app.statusMessage.connect(onStatusMessage)
+    }
+    
     // Current view state
     property string currentView: "tasks"
     property int selectedTaskIndex: -1
     property bool searchOpen: false
     
-    // Drawer width
-    readonly property int drawerWidth: 240
-    
-    // Connect to Python controller signals
-    Component.onCompleted: {
-        app.statusMessage.connect(onStatusMessage)
-    }
+    // Drawer width - responsive!
+    readonly property int drawerWidth: Responsive.isMobile ? 0 : (Responsive.isTablet ? 200 : 240)
     
     function onStatusMessage(msg) {
         // Could show a snackbar/toast here
