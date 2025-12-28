@@ -592,6 +592,7 @@ ApplicationWindow {
                         x: -width + parent.width
                         y: parent.height + 4
                         currentLanguage: window.currentLanguage
+                        themeColors: window.themeColors
                         
                         onLanguageSelected: function(langId) {
                             window.currentLanguage = langId
