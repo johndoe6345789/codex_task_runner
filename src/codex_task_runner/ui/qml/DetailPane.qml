@@ -280,7 +280,7 @@ Item {
                     id: detailText
                     text: taskJson || "No task selected"
                     readOnly: true
-                    font.family: "Menlo, Monaco, Consolas, monospace"
+                    font.family: "Menlo"
                     font.pixelSize: 12
                     wrapMode: Text.Wrap
                     selectByMouse: true
