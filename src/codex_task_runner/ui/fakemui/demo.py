@@ -518,6 +518,9 @@ class DemoWindow(QMainWindow):
         section.add_content(row2)
         
         parent.add_widget(section)
+
+
+def main():
     """Run the demo application."""
     app = QApplication(sys.argv)
     app.setStyleSheet(get_stylesheet('light'))
