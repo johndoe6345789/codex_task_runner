@@ -149,18 +149,12 @@ QtObject {
     readonly property color success: current.success
     readonly property color info: current.info
     
-    // Settings for persistence
-    property Settings _settings: Settings {
-        category: "theme"
-    }
-    
     /**
-     * Set theme and persist
+     * Set theme
      */
     function setTheme(name) {
         if (themes[name]) {
             themeName = name
-            _settings.setValue("theme", name)
         }
     }
     
