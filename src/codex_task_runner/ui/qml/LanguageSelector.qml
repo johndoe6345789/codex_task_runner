@@ -9,8 +9,20 @@ Popup {
     padding: 8
     
     property string currentLanguage: "en"
+    property var themeColors: ({})
     
     signal languageSelected(string langId)
+    
+    // Internal colors with fallbacks
+    readonly property var colors: ({
+        background: themeColors.window || themeColors.background || "#0d0d0d",
+        paper: themeColors.alternateBase || "#1a1a1a",
+        text: themeColors.windowText || themeColors.text || "#ffffff",
+        textSecondary: themeColors.textSecondary || "#a0a0a0",
+        accent: themeColors.accent || "#10a37f",
+        border: themeColors.border || "#333333",
+        hover: themeColors.highlight || "#242424"
+    })
     
     readonly property var languages: [
         { id: "en", name: "English", flag: "🇺🇸" },
@@ -35,8 +47,8 @@ Popup {
     ]
     
     background: Rectangle {
-        color: "#2b2b2b"
-        border.color: "#555"
+        color: colors.background
+        border.color: colors.border
         border.width: 1
         radius: 8
     }
@@ -49,7 +61,7 @@ Popup {
             text: "🌐 Language"
             font.bold: true
             font.pixelSize: 12
-            color: "#fff"
+            color: colors.text
             Layout.bottomMargin: 4
         }
         
@@ -67,7 +79,7 @@ Popup {
                 highlighted: modelData.id === popup.currentLanguage
                 
                 background: Rectangle {
-                    color: parent.highlighted ? "#0078d4" : (parent.hovered ? "#3c3c3c" : "transparent")
+                    color: parent.highlighted ? colors.accent : (parent.hovered ? colors.hover : "transparent")
                     radius: 4
                 }
                 
@@ -81,7 +93,7 @@ Popup {
                     
                     Label {
                         text: modelData.name
-                        color: parent.parent.highlighted ? "#fff" : "#ddd"
+                        color: parent.parent.highlighted ? "#fff" : colors.text
                         Layout.fillWidth: true
                     }
                     
