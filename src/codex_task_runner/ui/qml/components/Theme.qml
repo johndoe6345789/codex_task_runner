@@ -6,29 +6,80 @@ QtObject {
     
     // Current theme name
     property string current: "dark"
+    property string mode: "dark" // light or dark
     
-    // Color palette
-    property color primary: "#4dabf7"
-    property color primaryDark: "#1a73e8"
-    property color secondary: "#69db7c"
-    property color accent: "#ffd43b"
+    // Primary palette
+    property color primary: "#1976d2"
+    property color primaryLight: "#42a5f5"
+    property color primaryDark: "#1565c0"
+    property color primaryContrastText: "#ffffff"
     
-    property color background: "#121212"
-    property color surface: "#1e1e1e"
-    property color surfaceVariant: "#2d2d2d"
-    property color card: "#252525"
+    // Secondary palette
+    property color secondary: "#9c27b0"
+    property color secondaryLight: "#ba68c8"
+    property color secondaryDark: "#7b1fa2"
+    property color secondaryContrastText: "#ffffff"
     
-    property color text: "#ffffff"
-    property color textSecondary: "#b0b0b0"
-    property color textMuted: "#666666"
+    // Error palette
+    property color error: "#d32f2f"
+    property color errorLight: "#ef5350"
+    property color errorDark: "#c62828"
+    property color errorContrastText: "#ffffff"
     
-    property color success: "#4caf50"
-    property color warning: "#ff9800"
-    property color error: "#f44336"
-    property color info: "#2196f3"
+    // Warning palette
+    property color warning: "#ed6c02"
+    property color warningLight: "#ff9800"
+    property color warningDark: "#e65100"
+    property color warningContrastText: "#ffffff"
     
-    property color border: "#3d3d3d"
-    property color divider: "#2d2d2d"
+    // Info palette
+    property color info: "#0288d1"
+    property color infoLight: "#03a9f4"
+    property color infoDark: "#01579b"
+    property color infoContrastText: "#ffffff"
+    
+    // Success palette
+    property color success: "#2e7d32"
+    property color successLight: "#4caf50"
+    property color successDark: "#1b5e20"
+    property color successContrastText: "#ffffff"
+    
+    // Grey scale
+    property color grey50: "#fafafa"
+    property color grey100: "#f5f5f5"
+    property color grey200: "#eeeeee"
+    property color grey300: "#e0e0e0"
+    property color grey400: "#bdbdbd"
+    property color grey500: "#9e9e9e"
+    property color grey600: "#757575"
+    property color grey700: "#616161"
+    property color grey800: "#424242"
+    property color grey900: "#212121"
+    
+    // Background colors
+    property color background: mode === "dark" ? "#121212" : "#ffffff"
+    property color surface: mode === "dark" ? "#1e1e1e" : "#ffffff"
+    property color surfaceVariant: mode === "dark" ? "#2d2d2d" : "#f0f0f0"
+    property color card: mode === "dark" ? "#252525" : "#ffffff"
+    
+    // Text colors
+    property color text: mode === "dark" ? "#ffffff" : "rgba(0, 0, 0, 0.87)"
+    property color textSecondary: mode === "dark" ? "#b0b0b0" : "rgba(0, 0, 0, 0.6)"
+    property color textMuted: mode === "dark" ? "#666666" : "rgba(0, 0, 0, 0.38)"
+    property color textDisabled: mode === "dark" ? "rgba(255, 255, 255, 0.38)" : "rgba(0, 0, 0, 0.38)"
+    
+    // Divider and border
+    property color divider: mode === "dark" ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.12)"
+    property color border: mode === "dark" ? "#3d3d3d" : "#e0e0e0"
+    
+    // Action colors
+    property color actionActive: mode === "dark" ? "rgba(255, 255, 255, 0.54)" : "rgba(0, 0, 0, 0.54)"
+    property color actionHover: mode === "dark" ? "rgba(255, 255, 255, 0.04)" : "rgba(0, 0, 0, 0.04)"
+    property color actionSelected: mode === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)"
+    property color actionDisabled: mode === "dark" ? "rgba(255, 255, 255, 0.26)" : "rgba(0, 0, 0, 0.26)"
+    
+    // Legacy color aliases
+    property alias accent: primary
     
     // Typography
     property int fontSizeXs: 10
@@ -37,11 +88,23 @@ QtObject {
     property int fontSizeLg: 16
     property int fontSizeXl: 20
     property int fontSizeXxl: 24
+    property int fontSizeH1: 96
+    property int fontSizeH2: 60
+    property int fontSizeH3: 48
+    property int fontSizeH4: 34
+    property int fontSizeH5: 24
+    property int fontSizeH6: 20
     
-    property string fontFamily: "SF Pro Display, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
-    property string fontFamilyMono: "Menlo"
+    property int fontWeightLight: 300
+    property int fontWeightRegular: 400
+    property int fontWeightMedium: 500
+    property int fontWeightBold: 700
     
-    // Spacing
+    property string fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
+    property string fontFamilyMono: "Menlo, Monaco, Consolas, monospace"
+    
+    // Spacing (8px base unit)
+    property int spacingUnit: 8
     property int spacingXs: 4
     property int spacingSm: 8
     property int spacingMd: 12
@@ -49,22 +112,58 @@ QtObject {
     property int spacingXl: 24
     property int spacingXxl: 32
     
+    // Spacing function
+    function spacing(factor) {
+        return spacingUnit * factor
+    }
+    
     // Border radius
     property int radiusSm: 4
     property int radiusMd: 8
     property int radiusLg: 12
     property int radiusXl: 16
     property int radiusFull: 9999
+    property int shapeBorderRadius: 4
     
     // Shadows
     property color shadowColor: "#000000"
+    property var shadows: [
+        "none",
+        "0px 2px 1px -1px rgba(0,0,0,0.2)",
+        "0px 3px 1px -2px rgba(0,0,0,0.2)",
+        "0px 3px 3px -2px rgba(0,0,0,0.2)",
+        "0px 2px 4px -1px rgba(0,0,0,0.2)"
+    ]
     
-    // Animation
-    property int animFast: 150
-    property int animNormal: 250
-    property int animSlow: 400
+    // Transitions
+    property int transitionShortest: 150
+    property int transitionShorter: 200
+    property int transitionShort: 250
+    property int transitionStandard: 300
+    property int transitionComplex: 375
     
-    // Status colors
+    // Animation (legacy)
+    property alias animFast: transitionShortest
+    property alias animNormal: transitionStandard
+    property alias animSlow: transitionComplex
+    
+    // Z-index
+    property int zIndexMobileStepper: 1000
+    property int zIndexFab: 1050
+    property int zIndexAppBar: 1100
+    property int zIndexDrawer: 1200
+    property int zIndexModal: 1300
+    property int zIndexSnackbar: 1400
+    property int zIndexTooltip: 1500
+    
+    // Breakpoints
+    property int breakpointXs: 0
+    property int breakpointSm: 600
+    property int breakpointMd: 900
+    property int breakpointLg: 1200
+    property int breakpointXl: 1536
+    
+    // Status colors (utility function)
     function statusColor(status) {
         switch(status) {
             case "completed": return success
@@ -75,49 +174,68 @@ QtObject {
         }
     }
     
+    // Get color by name
+    function getColor(colorName) {
+        switch(colorName) {
+            case "primary": return primary
+            case "secondary": return secondary
+            case "error": return error
+            case "warning": return warning
+            case "info": return info
+            case "success": return success
+            default: return grey500
+        }
+    }
+    
     // Apply theme
     function applyTheme(themeName) {
         current = themeName
         switch(themeName) {
             case "light":
-                background = "#f5f5f5"
-                surface = "#ffffff"
-                surfaceVariant = "#f0f0f0"
-                card = "#ffffff"
-                text = "#1a1a1a"
-                textSecondary = "#666666"
-                textMuted = "#999999"
-                border = "#e0e0e0"
-                divider = "#eeeeee"
+                mode = "light"
                 break
             case "ocean":
+                mode = "dark"
+                primary = "#4dabf7"
                 background = "#0d1b2a"
                 surface = "#1b263b"
                 surfaceVariant = "#273549"
                 card = "#1b263b"
-                primary = "#4dabf7"
-                accent = "#778da9"
                 break
             case "forest":
+                mode = "dark"
+                primary = "#66bb6a"
+                secondary = "#81c784"
                 background = "#1a2f1a"
                 surface = "#1e3a1e"
                 surfaceVariant = "#254725"
                 card = "#1e3a1e"
-                primary = "#66bb6a"
-                accent = "#81c784"
                 break
             default: // dark
-                background = "#121212"
-                surface = "#1e1e1e"
-                surfaceVariant = "#2d2d2d"
-                card = "#252525"
-                text = "#ffffff"
-                textSecondary = "#b0b0b0"
-                textMuted = "#666666"
-                border = "#3d3d3d"
-                divider = "#2d2d2d"
-                primary = "#4dabf7"
+                mode = "dark"
+                primary = "#1976d2"
+                secondary = "#9c27b0"
                 break
+        }
+    }
+    
+    // Create theme with custom options
+    function createTheme(options) {
+        if (options.palette) {
+            if (options.palette.mode) {
+                mode = options.palette.mode
+            }
+            if (options.palette.primary) {
+                if (options.palette.primary.main) primary = options.palette.primary.main
+                if (options.palette.primary.light) primaryLight = options.palette.primary.light
+                if (options.palette.primary.dark) primaryDark = options.palette.primary.dark
+            }
+            if (options.palette.secondary) {
+                if (options.palette.secondary.main) secondary = options.palette.secondary.main
+            }
+        }
+        if (options.shape) {
+            if (options.shape.borderRadius) shapeBorderRadius = options.shape.borderRadius
         }
     }
 }

@@ -13,4 +13,17 @@ CLoadingOverlay 1.0 CLoadingOverlay.qml
 CEmptyState 1.0 CEmptyState.qml
 CSidebar 1.0 CSidebar.qml
 
+# Lab Components
+CLoadingButton 1.0 CLoadingButton.qml
+CTimeline 1.0 CTimeline.qml
+CTimelineItem 1.0 CTimelineItem.qml
+CTreeView 1.0 CTreeView.qml
+CMasonry 1.0 CMasonry.qml
+
+# MUI X Components
+CDataGrid 1.0 CDataGrid.qml
+CDatePicker 1.0 CDatePicker.qml
+CTimePicker 1.0 CTimePicker.qml
+CDateTimePicker 1.0 CDateTimePicker.qml
+
 singleton Theme 1.0 Theme.qml
