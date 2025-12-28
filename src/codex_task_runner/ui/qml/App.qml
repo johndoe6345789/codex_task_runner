@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "components"
 import "contexts"
+import "fakemui"
 
 /**
  * App.qml - Main application component
@@ -17,7 +18,7 @@ ApplicationWindow {
     minimumWidth: 800
     minimumHeight: 600
     title: "Codex Runner"
-    color: ThemeContext.background
+    color: Theme.background
     
     // API configuration
     readonly property string apiBase: "http://localhost:8642/api"
@@ -85,7 +86,7 @@ ApplicationWindow {
             id: drawer
             Layout.preferredWidth: drawerWidth
             Layout.fillHeight: true
-            color: ThemeContext.paper
+            color: Theme.paper
             
             ColumnLayout {
                 anchors.fill: parent
@@ -102,7 +103,7 @@ ApplicationWindow {
                         text: "Codex Runner"
                         font.pixelSize: 18
                         font.bold: true
-                        color: ThemeContext.primary
+                        color: Theme.primary
                     }
                 }
                 
@@ -110,7 +111,7 @@ ApplicationWindow {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 1
-                    color: Qt.rgba(ThemeContext.text.r, ThemeContext.text.g, ThemeContext.text.b, 0.12)
+                    color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.12)
                 }
                 
                 // Navigation Items
@@ -135,20 +136,20 @@ ApplicationWindow {
                             Text {
                                 text: icon
                                 font.pixelSize: 20
-                                color: ThemeContext.text
+                                color: Theme.text
                                 Layout.leftMargin: 16
                             }
                             
                             Text {
                                 text: LanguageContext.t(labelKey)
                                 font.pixelSize: 14
-                                color: ThemeContext.text
+                                color: Theme.text
                             }
                         }
                         
                         background: Rectangle {
-                            color: highlighted ? Qt.rgba(ThemeContext.primary.r, ThemeContext.primary.g, ThemeContext.primary.b, 0.12) 
-                                              : (hovered ? Qt.rgba(ThemeContext.text.r, ThemeContext.text.g, ThemeContext.text.b, 0.04) : "transparent")
+                            color: highlighted ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) 
+                                              : (hovered ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.04) : "transparent")
                         }
                         
                         onClicked: navigateTo(viewId)
@@ -159,7 +160,7 @@ ApplicationWindow {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 1
-                    color: Qt.rgba(ThemeContext.text.r, ThemeContext.text.g, ThemeContext.text.b, 0.12)
+                    color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.12)
                 }
                 
                 // Secondary Navigation
@@ -184,20 +185,20 @@ ApplicationWindow {
                             Text {
                                 text: icon
                                 font.pixelSize: 20
-                                color: ThemeContext.text
+                                color: Theme.text
                                 Layout.leftMargin: 16
                             }
                             
                             Text {
                                 text: LanguageContext.t(labelKey)
                                 font.pixelSize: 14
-                                color: ThemeContext.text
+                                color: Theme.text
                             }
                         }
                         
                         background: Rectangle {
-                            color: highlighted ? Qt.rgba(ThemeContext.primary.r, ThemeContext.primary.g, ThemeContext.primary.b, 0.12) 
-                                              : (hovered ? Qt.rgba(ThemeContext.text.r, ThemeContext.text.g, ThemeContext.text.b, 0.04) : "transparent")
+                            color: highlighted ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12) 
+                                              : (hovered ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.04) : "transparent")
                         }
                         
                         onClicked: navigateTo(viewId)
@@ -208,7 +209,7 @@ ApplicationWindow {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 1
-                    color: Qt.rgba(ThemeContext.text.r, ThemeContext.text.g, ThemeContext.text.b, 0.12)
+                    color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.12)
                 }
                 
                 // Settings Section
@@ -229,7 +230,7 @@ ApplicationWindow {
                         Text {
                             text: LanguageContext.t("nerdMode")
                             font.pixelSize: 14
-                            color: ThemeContext.text
+                            color: Theme.text
                             Layout.fillWidth: true
                         }
                         
@@ -255,9 +256,9 @@ ApplicationWindow {
                         }
                         
                         Text {
-                            text: LanguageContext.t("theme") + ": " + ThemeContext.current.name
+                            text: LanguageContext.t("theme") + ": " + Theme.current.name
                             font.pixelSize: 14
-                            color: ThemeContext.text
+                            color: Theme.text
                         }
                     }
                     
@@ -267,13 +268,13 @@ ApplicationWindow {
                         id: themeMenu
                         
                         Repeater {
-                            model: ThemeContext.themeKeys
+                            model: Theme.themeKeys
                             
                             MenuItem {
-                                text: ThemeContext.themes[modelData].name
+                                text: Theme.themes[modelData].name
                                 checkable: true
-                                checked: ThemeContext.themeName === modelData
-                                onTriggered: ThemeContext.setTheme(modelData)
+                                checked: Theme.themeName === modelData
+                                onTriggered: Theme.setTheme(modelData)
                                 
                                 indicator: Rectangle {
                                     implicitWidth: 12
@@ -281,7 +282,7 @@ ApplicationWindow {
                                     x: 6
                                     y: parent.height / 2 - 6
                                     radius: 6
-                                    color: ThemeContext.themes[modelData].primary
+                                    color: Theme.themes[modelData].primary
                                 }
                             }
                         }
@@ -305,7 +306,7 @@ ApplicationWindow {
                         Text {
                             text: LanguageContext.t("language") + ": " + LanguageContext.languages[LanguageContext.language].flag
                             font.pixelSize: 14
-                            color: ThemeContext.text
+                            color: Theme.text
                         }
                     }
                     
@@ -335,7 +336,7 @@ ApplicationWindow {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 48
                     Layout.margins: 16
-                    color: Qt.rgba(ThemeContext.text.r, ThemeContext.text.g, ThemeContext.text.b, 0.08)
+                    color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.08)
                     radius: 24
                     visible: user !== null
                     
@@ -351,7 +352,7 @@ ApplicationWindow {
                         Text {
                             text: user ? (user.email || user.name || "Connected") : ""
                             font.pixelSize: 12
-                            color: ThemeContext.text
+                            color: Theme.text
                             elide: Text.ElideRight
                             Layout.maximumWidth: 160
                         }
@@ -364,7 +365,7 @@ ApplicationWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: ThemeContext.background
+            color: Theme.background
             
             ColumnLayout {
                 anchors.fill: parent
@@ -374,7 +375,7 @@ ApplicationWindow {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 64
-                    color: ThemeContext.paper
+                    color: Theme.paper
                     
                     RowLayout {
                         anchors.fill: parent
@@ -394,7 +395,7 @@ ApplicationWindow {
                             }
                             font.pixelSize: 20
                             font.bold: true
-                            color: ThemeContext.text
+                            color: Theme.text
                         }
                         
                         Item { Layout.fillWidth: true }
