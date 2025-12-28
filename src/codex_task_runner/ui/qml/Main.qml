@@ -907,30 +907,29 @@ ApplicationWindow {
                                 visible: taskList.count === 0 && !isLoading
                             }
                         }
+                    }
+                    
+                    // Loading overlay (sibling of ColumnLayout, overlays the entire task list area)
+                    Rectangle {
+                        anchors.fill: parent
+                        color: Qt.rgba(0, 0, 0, 0.7)
+                        visible: isLoading
+                        z: 100
                         
-                        // Loading overlay
-                        Rectangle {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            color: Qt.rgba(0, 0, 0, 0.7)
-                            visible: isLoading
-                            z: 100
+                        Column {
+                            anchors.centerIn: parent
+                            spacing: 12
                             
-                            Column {
-                                anchors.centerIn: parent
-                                spacing: 12
-                                
-                                BusyIndicator {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    running: isLoading
-                                }
-                                
-                                Label {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    text: tr.loading || "Loading..."
-                                    color: themeColors.windowText
-                                    font.pixelSize: 14
-                                }
+                            BusyIndicator {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                running: isLoading
+                            }
+                            
+                            Label {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: tr.loading || "Loading..."
+                                color: "#ffffff"
+                                font.pixelSize: 14
                             }
                         }
                     }
