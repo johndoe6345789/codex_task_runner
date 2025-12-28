@@ -118,6 +118,16 @@
       "help": "Show Codex user settings",
       "handler": "codex_task_runner.handlers.settings",
       "args": []
+    },
+    {
+      "name": "discover",
+      "help": "Discover Codex API endpoints via browser interception",
+      "handler": "codex_task_runner.handlers.discover",
+      "args": [
+        {"flags": ["--output"], "kwargs": {"default": "discovered_endpoints.json", "help": "Output JSON file"}},
+        {"flags": ["--timeout"], "kwargs": {"type": "int", "default": 30, "help": "Seconds to wait for manual exploration (0 = unlimited)"}},
+        {"flags": ["--headless"], "kwargs": {"action": "store_true", "help": "Run browser in headless mode"}}
+      ]
     }
   ]
 }
