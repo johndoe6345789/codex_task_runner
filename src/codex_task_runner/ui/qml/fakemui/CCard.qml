@@ -11,11 +11,6 @@ Rectangle {
     property bool elevated: false
     property bool hoverable: false
     property bool clickable: false
-    property alias content: contentLoader.sourceComponent
-    property alias headerContent: headerLoader.sourceComponent
-    
-    // When true, don't add internal padding - let child manage it
-    property bool noPadding: false
     
     signal clicked()
     
@@ -26,7 +21,7 @@ Rectangle {
     border.width: 1
     border.color: hoverable && mouseArea.containsMouse ? Theme.primary : Theme.border
     
-    implicitHeight: contentColumn.implicitHeight + (noPadding ? 0 : 0)
+    implicitHeight: contentColumn.implicitHeight
     implicitWidth: 300
     
     Behavior on border.color { ColorAnimation { duration: 150 } }
