@@ -1,15 +1,13 @@
 module CodexUI
 
+# Main application entry points
 Main 1.0 Main.qml
-MainNew 1.0 MainNew.qml
-DetailPane 1.0 DetailPane.qml
-DetailPaneNew 1.0 DetailPaneNew.qml
+App 1.0 App.qml
+
+# Application-level components
 TaskListItem 1.0 TaskListItem.qml
 NerdPanel 1.0 NerdPanel.qml
 PatchDialog 1.0 PatchDialog.qml
 SendPromptDialog 1.0 SendPromptDialog.qml
 ThemeSelector 1.0 ThemeSelector.qml
 LanguageSelector 1.0 LanguageSelector.qml
-AjaxQueueWidget 1.0 AjaxQueueWidget.qml
-
-singleton Theme 1.0 Theme.qml

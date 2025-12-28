@@ -24,6 +24,14 @@ Key folders under `src/codex_task_runner/`:
 - `proc/` — process/run result types and helpers.
 - `process/` — task processing pipeline (`processor.py`, `process_tasks.py`).
 - `runner/` — high-level runner code (`runner.py`, `runner_core.py`).
+- `ui/` — Desktop UI implementations (PyQt6 and QML).
+
+UI folder structure (`src/codex_task_runner/ui/`):
+
+- `fakemui/` — PyQt6 MUI-style widget library (Material-UI inspired components).
+- `qml/` — QML/Qt Quick UI mirroring the React frontend.
+  - `components/` — Reusable UI components (fakemui + app components).
+  - `contexts/` — Singleton context providers (Theme, Language, NerdMode, AjaxQueue).
 
 Tests:
 
