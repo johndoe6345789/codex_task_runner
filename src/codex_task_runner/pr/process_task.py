@@ -45,6 +45,8 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
             
             # Get PR number from the result
             pr_num = pr_result.get("pr_numbers", {}).get(task.task_id)
+            if pr_num:
+                log.info(f"  Got PR #{pr_num} from API response")
             
             # Dedup immediately after creating
             log.info("  Deduplicating...")
@@ -53,18 +55,22 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
             
             # If we didn't get PR number from API, search for it by title
             if not pr_num:
-                log.debug("  PR number not in API response, searching by title...")
+                log.info("  Searching for PR by title...")
                 pr_num = find_existing_pr(task.repo, task.title)
+                if pr_num:
+                    log.info(f"  Found PR #{pr_num} by title")
                 
                 # If still not found, try refreshing task list as last resort
                 if not pr_num:
-                    log.debug("  Not found by title, refreshing task list...")
+                    log.info("  Refreshing task list...")
                     refreshed = get_tasks_list(session, limit=limit)
                     for rt in refreshed:
                         if rt.task_id == task.task_id:
                             task = rt
                             break
                     pr_num = task.pr_numbers[0] if task.pr_numbers else None
+                    if pr_num:
+                        log.info(f"  Found PR #{pr_num} from refreshed task list")
         else:
             log.warning("  Failed to create PR")
             result["failed"] = 1
@@ -74,6 +80,12 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
     if dry_run:
         log.info(f"  [DRY RUN] Would merge PR #{pr_num}")
         result["merged"] = 1
+        return result
+    
+    if not pr_num:
+        log.warning("  Could not find PR number after creation")
+        log.info("  SKIP: no PR")
+        result["skipped"] = 1
         return result
     
     log.info(f"  Merging PR #{pr_num}...")

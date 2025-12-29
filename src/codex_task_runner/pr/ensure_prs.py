@@ -75,15 +75,16 @@ def ensure_prs(session, tasks) -> dict:
         if result:
             created += 1
             # Extract PR number from the response
-            log.debug(f"API response keys: {list(result.keys())}")
             pr_url = result.get("pr_url") or result.get("url") or ""
             pr_num = _extract_pr_number_from_url(pr_url)
             if pr_num:
                 pr_numbers[t.task_id] = pr_num
                 log.info(f"OK {t.task_id}: PR #{pr_num} created")
             else:
-                log.info(f"OK {t.task_id}: PR created (URL: {pr_url})")
-                log.debug(f"Full API response: {result}")
+                if pr_url:
+                    log.info(f"OK {t.task_id}: PR created but could not extract number from URL: {pr_url}")
+                else:
+                    log.info(f"OK {t.task_id}: PR created (no URL in API response)")
         else:
             log.error(f"FAIL {t.task_id}: API returned None")
             errors.append(f"{t.task_id}: API failed")
