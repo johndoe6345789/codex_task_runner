@@ -51,15 +51,20 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
             dedup_args = argparse.Namespace(repo=repo_filter, dry_run=False)
             dedup_handle(dedup_args)
             
-            # If we didn't get PR number from API, try refreshing task list as fallback
+            # If we didn't get PR number from API, search for it by title
             if not pr_num:
-                log.debug("  PR number not in API response, refreshing task list...")
-                refreshed = get_tasks_list(session, limit=limit)
-                for rt in refreshed:
-                    if rt.task_id == task.task_id:
-                        task = rt
-                        break
-                pr_num = task.pr_numbers[0] if task.pr_numbers else None
+                log.debug("  PR number not in API response, searching by title...")
+                pr_num = find_existing_pr(task.repo, task.title)
+                
+                # If still not found, try refreshing task list as last resort
+                if not pr_num:
+                    log.debug("  Not found by title, refreshing task list...")
+                    refreshed = get_tasks_list(session, limit=limit)
+                    for rt in refreshed:
+                        if rt.task_id == task.task_id:
+                            task = rt
+                            break
+                    pr_num = task.pr_numbers[0] if task.pr_numbers else None
         else:
             log.warning("  Failed to create PR")
             result["failed"] = 1
