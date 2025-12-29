@@ -9,7 +9,8 @@ from ..handlers.dedup_prs import handle as dedup_handle
 from ..codex.codex_tasks_list import get_tasks_list
 from ..etc.log import log
 
-, 
+
+def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = False, 
                  create_followup: bool = False) -> dict:
     """Process one task: create PR if needed, merge, then dedup.
     
@@ -19,8 +20,7 @@ from ..etc.log import log
         repo_filter: Repository filter
         limit: Task fetch limit
         dry_run: If True, don't make changes
-        create_followup: If True, create follow-up tasks for non-mergeable PRsy_run: bool = False) -> dict:
-    """Process one task: create PR if needed, merge, then dedup.
+        create_followup: If True, create follow-up tasks for non-mergeable PRs
     
     Returns dict with keys: created, merged, skipped, failed (each 0 or 1)
     """
