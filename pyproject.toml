@@ -24,7 +24,7 @@ codex-task-runner = "codex_task_runner.cli:main"
 packages = [{include = "codex_task_runner", from = "src"}]
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.0"
+pytest = "^9.0.2"
 mypy = "^1.8"
 
 [tool.mypy]
