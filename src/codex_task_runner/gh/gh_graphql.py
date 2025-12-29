@@ -7,5 +7,5 @@ from .gh_api_call import gh_api
 
 
 def gh_graphql(query: str, variables: dict[str, Any]) -> Any:
-    payload = json.dumps({"query": query, "variables": variables})
-    return gh_api(["graphql", "-f", f"query={query}", "-f", f"variables={payload}"])
+    variables_json = json.dumps(variables)
+    return gh_api(["graphql", "-f", f"query={query}", "-f", f"variables={variables_json}"])
