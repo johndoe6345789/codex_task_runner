@@ -35,7 +35,7 @@ def test_process_task_finds_pr_by_title_after_creation():
         # merge succeeds
         mock_merge.return_value = "MERGED PR #42"
         
-        result = process_task(session, task, "owner/repo", limit=5, dry_run=False)
+        result = process_task(session, task, "owner/repo", limit=5, dry_run=False, interactive=False)
         
         # Verify the flow - dedup happens after merge now
         mock_ensure.assert_called_once()
@@ -80,7 +80,7 @@ def test_process_task_uses_pr_number_from_api():
         # merge succeeds
         mock_merge.return_value = "MERGED PR #99"
         
-        result = process_task(session, task, "owner/repo", limit=5, dry_run=False)
+        result = process_task(session, task, "owner/repo", limit=5, dry_run=False, interactive=False)
         
         # Verify the flow - dedup happens after merge now
         mock_ensure.assert_called_once()
@@ -110,7 +110,7 @@ def test_process_task_with_existing_pr():
         
         mock_merge.return_value = "MERGED PR #100"
         
-        result = process_task(session, task, "owner/repo", limit=5, dry_run=False)
+        result = process_task(session, task, "owner/repo", limit=5, dry_run=False, interactive=False)
         
         # Should NOT call ensure_prs since PR already exists
         mock_ensure.assert_not_called()
@@ -142,7 +142,7 @@ def test_process_task_finds_existing_pr_on_github():
         mock_find.return_value = 50
         mock_merge.return_value = "MERGED PR #50"
         
-        result = process_task(session, task, "owner/repo", limit=5, dry_run=False)
+        result = process_task(session, task, "owner/repo", limit=5, dry_run=False, interactive=False)
         
         # Should find existing PR before trying to create
         mock_find.assert_called_once_with("owner/repo", "Test Task")

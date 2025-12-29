@@ -28,5 +28,6 @@ def handle(args: Any, session) -> dict:
             return {"aborted": True}
     
     return process_all_tasks(session, tasks, opts.repo_filter, opts.limit, 
-                            dry_run=opts.dry_run, create_followup=opts.create_followup)
+                            dry_run=opts.dry_run, create_followup=opts.create_followup,
+                            interactive=opts.interactive)
 

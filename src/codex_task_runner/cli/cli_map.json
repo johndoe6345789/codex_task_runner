@@ -77,6 +77,7 @@
         {"flags": ["--no-confirm"], "kwargs": {"action": "store_true", "help": "Skip confirmation prompt"}},
         {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Show what would happen without doing it"}},
         {"flags": ["--create-followup"], "kwargs": {"action": "store_true", "help": "Auto-create follow-up tasks for non-mergeable PRs"}},
+        {"flags": ["--non-interactive"], "kwargs": {"action": "store_true", "help": "Skip interactive conflict menus (batch mode)"}},
         {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
       ]
     },

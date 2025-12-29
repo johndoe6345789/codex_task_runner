@@ -10,6 +10,7 @@ class YoloArgs(NamedTuple):
     dry_run: bool
     verbose: bool
     create_followup: bool
+    interactive: bool
 
 
 def parse_yolo_args(args: Any) -> YoloArgs:
@@ -21,4 +22,5 @@ def parse_yolo_args(args: Any) -> YoloArgs:
         dry_run=getattr(args, "dry_run", False),
         verbose=getattr(args, "verbose", False),
         create_followup=getattr(args, "create_followup", False),
+        interactive=getattr(args, "interactive", True),  # Default to interactive
     )
