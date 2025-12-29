@@ -9,6 +9,7 @@ class YoloArgs(NamedTuple):
     no_confirm: bool
     dry_run: bool
     verbose: bool
+    create_followup: bool
 
 
 def parse_yolo_args(args: Any) -> YoloArgs:
@@ -19,4 +20,5 @@ def parse_yolo_args(args: Any) -> YoloArgs:
         no_confirm=getattr(args, "no_confirm", False),
         dry_run=getattr(args, "dry_run", False),
         verbose=getattr(args, "verbose", False),
+        create_followup=getattr(args, "create_followup", False),
     )

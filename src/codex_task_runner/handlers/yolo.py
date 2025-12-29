@@ -27,5 +27,6 @@ def handle(args: Any, session) -> dict:
         if not confirm(f"Proceed with {len(tasks)} tasks?"):
             return {"aborted": True}
     
-    return process_all_tasks(session, tasks, opts.repo_filter, opts.limit, dry_run=opts.dry_run)
+    return process_all_tasks(session, tasks, opts.repo_filter, opts.limit, 
+                            dry_run=opts.dry_run, create_followup=opts.create_followup)
 
