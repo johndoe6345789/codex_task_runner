@@ -76,6 +76,7 @@
         {"flags": ["--repo"], "kwargs": {"default": "johndoe6345789/metabuilder", "help": "Only process tasks for this repo"}},
         {"flags": ["--no-confirm"], "kwargs": {"action": "store_true", "help": "Skip confirmation prompt"}},
         {"flags": ["--dry-run"], "kwargs": {"action": "store_true", "help": "Show what would happen without doing it"}},
+        {"flags": ["--create-followup"], "kwargs": {"action": "store_true", "help": "Auto-create follow-up tasks for non-mergeable PRs"}},
         {"flags": ["--output-dir"], "kwargs": {"help": "Output directory", "default": null}}
       ]
     },
