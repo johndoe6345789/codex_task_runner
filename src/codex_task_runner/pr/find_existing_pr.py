@@ -57,6 +57,9 @@ def find_existing_pr(repo: str, title: str) -> int | None:
     expected_branch = f"codex/{slugify(title)}"
     log.debug(f"Looking for PR with title '{title}' or branch '{expected_branch}'")
     
+    # Normalize the expected branch for flexible matching (remove all non-alphanumeric)
+    normalized_expected = re.sub(r'[^a-z0-9]', '', expected_branch.lower())
+    
     # Find PR with matching title (normalized) or branch name
     for pr in prs:
         pr_title = pr.get("title", "")
@@ -76,6 +79,15 @@ def find_existing_pr(repo: str, title: str) -> int | None:
         if pr_branch.startswith(expected_branch + "-"):
             log.debug(f"Branch prefix match: '{expected_branch}' ~ '{pr_branch}'")
             return pr.get("number")
+        
+        # Check flexible match (normalize both and compare, handles different punctuation)
+        # This handles cases where Codex uses different slugification (e.g., keeps commas)
+        if pr_branch.startswith("codex/"):
+            normalized_pr_branch = re.sub(r'[^a-z0-9]', '', pr_branch.lower())
+            # Check if normalized branches match (allowing for trailing suffixes)
+            if normalized_pr_branch == normalized_expected or normalized_pr_branch.startswith(normalized_expected):
+                log.debug(f"Branch flexible match: '{expected_branch}' ~ '{pr_branch}'")
+                return pr.get("number")
     
     log.debug(f"No PR found for title '{title}' or branch '{expected_branch}'")
     return None
