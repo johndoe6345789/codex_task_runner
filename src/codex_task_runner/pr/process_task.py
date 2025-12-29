@@ -1,4 +1,4 @@
-"""Process a single task: create PR, dedup, merge."""
+"""Process a single task: create PR, merge, then dedup."""
 import argparse
 
 from .merge_task import merge_task
@@ -10,7 +10,7 @@ from ..etc.log import log
 
 
 def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = False) -> dict:
-    """Process one task: create PR if needed, dedup, merge.
+    """Process one task: create PR if needed, merge, then dedup.
     
     Returns dict with keys: created, merged, skipped, failed (each 0 or 1)
     """
@@ -31,8 +31,8 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
     if not pr_num:
         if dry_run:
             log.info("  [DRY RUN] Would create PR")
-            log.info("  [DRY RUN] Would dedup")
             log.info("  [DRY RUN] Would merge PR")
+            log.info("  [DRY RUN] Would dedup")
             result["created"] = 1
             result["merged"] = 1
             return result
@@ -48,17 +48,12 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
             if pr_num:
                 log.info(f"  Got PR #{pr_num} from API response")
             
-            # Dedup immediately after creating
-            log.info("  Deduplicating...")
-            dedup_args = argparse.Namespace(repo=repo_filter, dry_run=False)
-            dedup_handle(dedup_args)
-            
-            # If we didn't get PR number from API, search for it by title
+            # If we didn't get PR number from API, search for it by title/branch
             if not pr_num:
-                log.info("  Searching for PR by title...")
+                log.info("  Searching for PR by title/branch...")
                 pr_num = find_existing_pr(task.repo, task.title)
                 if pr_num:
-                    log.info(f"  Found PR #{pr_num} by title")
+                    log.info(f"  Found PR #{pr_num}")
                 
                 # If still not found, try refreshing task list as last resort
                 if not pr_num:
@@ -111,4 +106,12 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
     else:
         result["failed"] = 1
     
+    # Step 4: Dedup after merge (cleanup duplicates)
+    if not dry_run:
+        log.info("  Deduplicating...")
+        dedup_args = argparse.Namespace(repo=repo_filter, dry_run=False)
+        dedup_handle(dedup_args)
+    
     return result
+    
+    

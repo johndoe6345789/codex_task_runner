@@ -37,11 +37,11 @@ def test_process_task_finds_pr_by_title_after_creation():
         
         result = process_task(session, task, "owner/repo", limit=5, dry_run=False)
         
-        # Verify the flow
+        # Verify the flow - dedup happens after merge now
         mock_ensure.assert_called_once()
-        mock_dedup.assert_called_once()
         assert mock_find.call_count == 2  # Called twice
         mock_merge.assert_called_once()
+        mock_dedup.assert_called_once()  # Called after merge
         
         # Check result
         assert result["created"] == 1
@@ -82,11 +82,11 @@ def test_process_task_uses_pr_number_from_api():
         
         result = process_task(session, task, "owner/repo", limit=5, dry_run=False)
         
-        # Verify the flow - should call find_existing_pr once initially
+        # Verify the flow - dedup happens after merge now
         mock_ensure.assert_called_once()
-        mock_dedup.assert_called_once()
         assert mock_find.call_count == 1  # Only initial check
         mock_merge.assert_called_once()
+        mock_dedup.assert_called_once()  # Called after merge
         
         # Check result
         assert result["created"] == 1
@@ -105,6 +105,7 @@ def test_process_task_with_existing_pr():
     )
     
     with patch("codex_task_runner.pr.process_task.ensure_prs") as mock_ensure, \
+         patch("codex_task_runner.pr.process_task.dedup_handle") as mock_dedup, \
          patch("codex_task_runner.pr.process_task.merge_task") as mock_merge:
         
         mock_merge.return_value = "MERGED PR #100"
@@ -114,6 +115,7 @@ def test_process_task_with_existing_pr():
         # Should NOT call ensure_prs since PR already exists
         mock_ensure.assert_not_called()
         mock_merge.assert_called_once()
+        mock_dedup.assert_called_once()  # Dedup still runs after merge
         
         # Check result
         assert result["created"] == 0
@@ -133,6 +135,7 @@ def test_process_task_finds_existing_pr_on_github():
     
     with patch("codex_task_runner.pr.process_task.find_existing_pr") as mock_find, \
          patch("codex_task_runner.pr.process_task.ensure_prs") as mock_ensure, \
+         patch("codex_task_runner.pr.process_task.dedup_handle") as mock_dedup, \
          patch("codex_task_runner.pr.process_task.merge_task") as mock_merge:
         
         # First call finds existing PR on GitHub
@@ -145,6 +148,7 @@ def test_process_task_finds_existing_pr_on_github():
         mock_find.assert_called_once_with("owner/repo", "Test Task")
         mock_ensure.assert_not_called()  # Should skip creation
         mock_merge.assert_called_once()
+        mock_dedup.assert_called_once()  # Dedup still runs after merge
         
         # Check result
         assert result["created"] == 0
