@@ -40,11 +40,11 @@ def find_existing_pr(repo: str, title: str) -> int | None:
     
     result = run(cmd)
     if result.code != 0:
-        log.debug(f"gh pr list failed: {result.stderr}")
+        log.debug(f"gh pr list failed: {result.err}")
         return None
     
     try:
-        prs = json.loads(result.stdout)
+        prs = json.loads(result.out)
     except json.JSONDecodeError:
         return None
     

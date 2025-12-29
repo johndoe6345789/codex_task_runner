@@ -14,6 +14,7 @@ dependencies = [
     "requests>=2.31",
     "PyQt6>=6.6",
     "PyQt6-WebEngine>=6.6",
+    "flask>=3.0",
 ]
 
 [project.scripts]
