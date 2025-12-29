@@ -32,7 +32,7 @@ def test_ui_launches_and_screenshots(qt_app, tmp_path):
     engine.rootContext().setContextProperty("app", controller)
     
     # Load QML
-    qml_path = Path(__file__).parent.parent / "src" / "codex_task_runner" / "ui" / "qml" / "Main.qml"
+    qml_path = Path(__file__).parent.parent / "src" / "codex_task_runner" / "ui" / "qml" / "App.qml"
     engine.load(QUrl.fromLocalFile(str(qml_path)))
     
     assert engine.rootObjects(), "QML failed to load"
