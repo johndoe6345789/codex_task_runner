@@ -4,12 +4,22 @@ import argparse
 from .merge_task import merge_task
 from .ensure_prs import ensure_prs
 from .find_existing_pr import find_existing_pr
+from .create_followup_task import create_followup_task
 from ..handlers.dedup_prs import handle as dedup_handle
 from ..codex.codex_tasks_list import get_tasks_list
 from ..etc.log import log
 
-
-def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = False) -> dict:
+, 
+                 create_followup: bool = False) -> dict:
+    """Process one task: create PR if needed, merge, then dedup.
+    
+    Args:
+        session: Authenticated session
+        task: Task to process
+        repo_filter: Repository filter
+        limit: Task fetch limit
+        dry_run: If True, don't make changes
+        create_followup: If True, create follow-up tasks for non-mergeable PRsy_run: bool = False) -> dict:
     """Process one task: create PR if needed, merge, then dedup.
     
     Returns dict with keys: created, merged, skipped, failed (each 0 or 1)
@@ -107,8 +117,28 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
             repo=task.repo,
             base_branch=task.base_branch,
             pr_numbers=(pr_num,),
-        )
-    
+        
+        # If enabled, create follow-up task for non-mergeable PRs
+        if create_followup and not dry_run:
+            # Extract the reason from status message
+            reason = status.split(":", 1)[1].strip() if ":" in status else "not mergeable"
+            
+            # Don't create follow-ups for closed PRs or missing PRs
+            if "is closed" not in reason and "is merged" not in reason and "no PR" not in reason:
+                log.info(f"  Creating follow-up task to address: {reason}")
+                followup = create_followup_task(session, task, pr_num, reason, auto_create=True)
+                if followup:
+                    result["followup_created"] = True
+    else:
+        result["failed"] = 1
+        
+        # Also consider creating follow-up for hard failures
+        if create_followup and not dry_run and "FAIL" in status:
+            reason = status.split("-", 1)[1].strip() if "-" in status else "merge failed"
+            log.info(f"  Creating follow-up task to address: {reason}")
+            followup = create_followup_task(session, task, pr_num, reason, auto_create=True)
+            if followup:
+                result["followup_created"] = True
     status = merge_task(task, dry_run=False)
     log.info(f"  {status}")
     

@@ -15,3 +15,4 @@ class Config:
     auto: bool
     dry_run: bool
     output_dir: pathlib.Path
+    create_followup_tasks: bool = False  # Auto-create tasks for non-mergeable PRs
