@@ -51,21 +51,31 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
             # If we didn't get PR number from API, search for it by title/branch
             if not pr_num:
                 log.info("  Searching for PR by title/branch...")
-                pr_num = find_existing_pr(task.repo, task.title)
-                if pr_num:
-                    log.info(f"  Found PR #{pr_num}")
+                try:
+                    pr_num = find_existing_pr(task.repo, task.title)
+                    if pr_num:
+                        log.info(f"  Found PR #{pr_num}")
+                    else:
+                        log.warning(f"  Could not find PR with title: {task.title[:60]}...")
+                except Exception as e:
+                    log.warning(f"  PR search failed: {e}")
                 
                 # If still not found, try refreshing task list as last resort
                 if not pr_num:
                     log.info("  Refreshing task list...")
-                    refreshed = get_tasks_list(session, limit=limit)
-                    for rt in refreshed:
-                        if rt.task_id == task.task_id:
-                            task = rt
-                            break
-                    pr_num = task.pr_numbers[0] if task.pr_numbers else None
-                    if pr_num:
-                        log.info(f"  Found PR #{pr_num} from refreshed task list")
+                    try:
+                        refreshed = get_tasks_list(session, limit=limit)
+                        for rt in refreshed:
+                            if rt.task_id == task.task_id:
+                                task = rt
+                                break
+                        pr_num = task.pr_numbers[0] if task.pr_numbers else None
+                        if pr_num:
+                            log.info(f"  Found PR #{pr_num} from refreshed task list")
+                        else:
+                            log.warning(f"  Task {task.task_id} has no PR numbers after refresh")
+                    except Exception as e:
+                        log.warning(f"  Task list refresh failed: {e}")
         else:
             log.warning("  Failed to create PR")
             result["failed"] = 1
@@ -79,6 +89,9 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
     
     if not pr_num:
         log.warning("  Could not find PR number after creation")
+        log.warning(f"  Possible causes: API delay, PR creation failed, or title mismatch")
+        log.warning(f"  Task: {task.task_id}")
+        log.warning(f"  Expected title: {task.title[:80]}...")
         log.info("  SKIP: no PR")
         result["skipped"] = 1
         return result
