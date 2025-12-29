@@ -1,13 +1,35 @@
+import re
 from ..codex.codex_turns import get_turns
 from ..codex.codex_create_pr import create_pr_for_turn
 from ..etc.log import log
 
 
+def _extract_pr_number_from_url(url: str) -> int | None:
+    """Extract PR number from GitHub PR URL."""
+    if not url:
+        return None
+    # Match patterns like:
+    # https://github.com/owner/repo/pull/123
+    # http://github.com/owner/repo/pull/123
+    match = re.search(r'/pull/(\d+)', url)
+    if match:
+        return int(match.group(1))
+    return None
+
+
 def ensure_prs(session, tasks) -> dict:
-    """Create PRs via Codex API for tasks that don't have one."""
+    """Create PRs via Codex API for tasks that don't have one.
+    
+    Returns dict with keys:
+    - created: number of PRs created
+    - skipped: number of tasks skipped
+    - errors: list of error messages
+    - pr_numbers: dict mapping task_id to PR number for newly created PRs
+    """
     created = 0
     skipped = 0
     errors = []
+    pr_numbers = {}  # task_id -> pr_number
     
     for t in tasks:
         if t.pr_numbers:
@@ -52,9 +74,21 @@ def ensure_prs(session, tasks) -> dict:
         result = create_pr_for_turn(session, t.task_id, str(turn_id))
         if result:
             created += 1
-            log.info(f"OK {t.task_id}: PR created")
+            # Extract PR number from the response
+            pr_url = result.get("pr_url") or result.get("url") or ""
+            pr_num = _extract_pr_number_from_url(pr_url)
+            if pr_num:
+                pr_numbers[t.task_id] = pr_num
+                log.info(f"OK {t.task_id}: PR #{pr_num} created")
+            else:
+                log.info(f"OK {t.task_id}: PR created (URL: {pr_url})")
         else:
             log.error(f"FAIL {t.task_id}: API returned None")
             errors.append(f"{t.task_id}: API failed")
     
-    return {"created": created, "skipped": skipped, "errors": errors}
+    return {
+        "created": created,
+        "skipped": skipped,
+        "errors": errors,
+        "pr_numbers": pr_numbers,
+    }

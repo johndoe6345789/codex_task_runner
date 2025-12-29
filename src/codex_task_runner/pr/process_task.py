@@ -43,18 +43,23 @@ def process_task(session, task, repo_filter: str, limit: int, dry_run: bool = Fa
             result["created"] = 1
             log.info("  PR created")
             
+            # Get PR number from the result
+            pr_num = pr_result.get("pr_numbers", {}).get(task.task_id)
+            
             # Dedup immediately after creating
             log.info("  Deduplicating...")
             dedup_args = argparse.Namespace(repo=repo_filter, dry_run=False)
             dedup_handle(dedup_args)
             
-            # Refresh task to get PR number
-            refreshed = get_tasks_list(session, limit=limit)
-            for rt in refreshed:
-                if rt.task_id == task.task_id:
-                    task = rt
-                    break
-            pr_num = task.pr_numbers[0] if task.pr_numbers else None
+            # If we didn't get PR number from API, try refreshing task list as fallback
+            if not pr_num:
+                log.debug("  PR number not in API response, refreshing task list...")
+                refreshed = get_tasks_list(session, limit=limit)
+                for rt in refreshed:
+                    if rt.task_id == task.task_id:
+                        task = rt
+                        break
+                pr_num = task.pr_numbers[0] if task.pr_numbers else None
         else:
             log.warning("  Failed to create PR")
             result["failed"] = 1
