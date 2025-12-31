@@ -28,11 +28,13 @@ def show_conflict_menu(task, pr_num: int, reason: str) -> str:
     print("  3. View PR details")
     print("  4. Retry merge (if issue was just fixed)")
     print("  5. Abort processing all tasks")
+    print("  6. Add task to blocklist (never process again)")
+    print("  7. Accept incoming changes (force merge)")
     print()
     
     while True:
         try:
-            choice = input("Enter choice (1-5): ").strip()
+            choice = input("Enter choice (1-7): ").strip()
             
             if choice == "1":
                 return "followup"
@@ -44,8 +46,12 @@ def show_conflict_menu(task, pr_num: int, reason: str) -> str:
                 return "retry"
             elif choice == "5":
                 return "abort"
+            elif choice == "6":
+                return "blocklist"
+            elif choice == "7":
+                return "accept_incoming"
             else:
-                print("Invalid choice. Please enter 1-5.")
+                print("Invalid choice. Please enter 1-7.")
         except (KeyboardInterrupt, EOFError):
             print("\n\nAborted by user.")
             return "abort"

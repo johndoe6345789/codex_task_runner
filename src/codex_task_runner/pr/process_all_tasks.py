@@ -1,5 +1,6 @@
 """Process all tasks: create PR, dedup, merge."""
 from .process_task import process_task
+from ..etc.blocklist import is_blocked
 from ..etc.log import log
 
 
@@ -21,6 +22,13 @@ def process_all_tasks(session, tasks: list, repo_filter: str | None, limit: int,
     
     for i, task in enumerate(tasks, 1):
         log.info(f"\n[{i}/{len(tasks)}] {task.title[:60]}")
+        
+        # Check if task is blocklisted
+        if is_blocked(task.task_id):
+            log.info(f"  SKIP: task {task.task_id} is in blocklist")
+            totals["skipped"] += 1
+            continue
+        
         result = process_task(session, task, repo_filter, limit, dry_run=dry_run, 
                             create_followup=create_followup, interactive=interactive)
         for k in totals:

@@ -32,7 +32,7 @@ def test_show_conflict_menu_invalid_then_valid(monkeypatch):
     task = MagicMock()
     task.title = "Test task"
     
-    inputs = iter(["invalid", "6", "3"])
+    inputs = iter(["invalid", "99", "3"])
     monkeypatch.setattr('builtins.input', lambda _: next(inputs))
     
     result = show_conflict_menu(task, 123, "not mergeable")
@@ -48,6 +48,28 @@ def test_show_conflict_menu_abort(monkeypatch):
     
     result = show_conflict_menu(task, 123, "some error")
     assert result == "abort"
+
+
+def test_show_conflict_menu_blocklist(monkeypatch):
+    """Test menu returns 'blocklist' when user chooses 6."""
+    task = MagicMock()
+    task.title = "Test task"
+    
+    monkeypatch.setattr('builtins.input', lambda _: "6")
+    
+    result = show_conflict_menu(task, 456, "persistent issue")
+    assert result == "blocklist"
+
+
+def test_show_conflict_menu_accept_incoming(monkeypatch):
+    """Test menu returns 'accept_incoming' when user chooses 7."""
+    task = MagicMock()
+    task.title = "Test task"
+    
+    monkeypatch.setattr('builtins.input', lambda _: "7")
+    
+    result = show_conflict_menu(task, 789, "merge conflicts")
+    assert result == "accept_incoming"
 
 
 def test_show_conflict_actions():

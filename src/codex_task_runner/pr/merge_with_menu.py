@@ -1,9 +1,11 @@
 """Process merge with interactive conflict handling."""
 from typing import Optional, Tuple
 from ..gh.get_pr import get_pr
+from ..gh.accept_incoming import accept_incoming_changes
 from ..pr.merge_task import merge_task
 from ..pr.create_followup_task import create_followup_task
 from ..etc.conflict_menu import show_conflict_menu, show_conflict_actions
+from ..etc.blocklist import add_to_blocklist
 from ..etc.log import log
 
 
@@ -91,6 +93,21 @@ def merge_with_menu(session, task, pr_num: int, interactive: bool = True,
     elif choice == "abort":
         log.warning(f"  User aborted processing")
         return "ABORT: user requested abort", None
+    
+    elif choice == "blocklist":
+        log.info(f"  Adding task {task.task_id} to blocklist")
+        add_to_blocklist(task.task_id)
+        return f"SKIP: task {task.task_id} added to blocklist", None
+    
+    elif choice == "accept_incoming":
+        log.info(f"  Accepting incoming changes for PR #{pr_num}")
+        success, message = accept_incoming_changes(task.repo, pr_num, dry_run=dry_run)
+        if success:
+            return message, None
+        else:
+            # Failed to accept incoming - show menu again
+            log.error(f"  {message}")
+            return merge_with_menu(session, task, pr_num, interactive, auto_followup, dry_run)
     
     # Fallback
     return status, None
